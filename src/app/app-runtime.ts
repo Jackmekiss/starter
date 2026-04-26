@@ -48,10 +48,8 @@ const whitelistFulfilledQueries = createTransform(
 export const authAPI = createAuthAPI(authBaseQuery.handle());
 
 export const {
-  useRetrieveAuthCapabilitiesQuery,
   useRetrieveAccountQuery,
   useUpdateAccountMutation,
-  useUpdateSubscriptionMutation,
   useCompleteOnboardingMutation,
   useLoginMutation,
   useLoginWithGoogleMutation,

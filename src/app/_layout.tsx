@@ -10,12 +10,12 @@ export * from "./app-runtime";
 SplashScreen.preventAutoHideAsync();
 
 SplashScreen.setOptions({
-  fade: true
+  fade: true,
 });
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const unstable_settings = {
-  initialRouteName: "/(auth)/index"
+  initialRouteName: "/(auth)/index",
 };
 export default function TabLayout() {
   return (
