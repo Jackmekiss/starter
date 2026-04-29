@@ -36,6 +36,7 @@
     "expo-symbols": "55.0.6-canary-20260327-0789fbc",
     "expo-system-ui": "55.0.12-canary-20260327-0789fbc",
     "expo-web-browser": "55.0.11-canary-20260327-0789fbc",
+    "immer": "^11.1.4",
     "lodash": "^4.18.1",
     "lucide-react-native": "^1.11.0",
     "nativewind": "^4.2.3",
