@@ -1,0 +1,36 @@
+---
+name: coding-standards
+description: Use when reviewing or tightening code quality in this repository: naming, TypeScript boundaries, file splitting, refactoring discipline, review checklists, and final agent rules. Prefer this skill for review, cleanup, and standards-enforcement tasks. Do not use it as the primary skill for feature design unless the task is mainly about standards compliance.
+---
+
+# Coding Standards
+
+Use this skill when the task is mainly about repository-wide coding quality and consistency.
+
+## Goals
+
+- Keep naming business-first and explicit.
+- Keep TypeScript boundaries readable and simple.
+- Split files before they become vague.
+- Review and refactor for clarity, not abstraction for its own sake.
+
+## Workflow
+
+1. Read [naming.md](references/naming.md) for repository naming expectations.
+2. Read [typescript.md](references/typescript.md) for typing conventions.
+3. Read [file-growth.md](references/file-growth.md) for splitting rules.
+4. Read [refactoring.md](references/refactoring.md) for refactor quality checks.
+5. Read [review-checklist.md](references/review-checklist.md) for review criteria and final agent rules.
+
+## Decision rules
+
+- Prefer obvious code over smart code.
+- Prefer business meaning over generic helpers.
+- Prefer smaller clear files over large ambiguous ones.
+- Use this skill as a guardrail, not as a substitute for architecture or domain design.
+
+## Do not use this skill for
+
+- Choosing route, component, or domain ownership as the main task.
+- Styling or layout work.
+- Implementing business-layer flows without a standards or review angle.

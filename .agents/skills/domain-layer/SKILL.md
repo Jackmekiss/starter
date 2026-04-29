@@ -1,0 +1,41 @@
+---
+name: domain-layer
+description: Use when modeling or refactoring the business layer in this repository: bounded contexts, domain entities, use-cases, gateways, adapters, selectors, APIs, and runtime state under core/. Use it for new capabilities, domain refactors, or data-boundary decisions. Do not use it for screen layout, component styling, or presentation-only extraction.
+---
+
+# Domain Layer
+
+Use this skill when the task is mainly about the repository's business layer under `core/`.
+
+## Goals
+
+- Keep business concepts explicit and stable.
+- Model actions as named use-cases.
+- Depend on contracts, not concrete infrastructure.
+- Provide clean facades for screens and UI consumers.
+
+## Workflow
+
+1. Read [domain.md](references/domain.md) to align on what belongs in the domain model.
+2. Read [use-cases.md](references/use-cases.md) for business action modeling and folder structure.
+3. Read [gateways.md](references/gateways.md) and [adapters.md](references/adapters.md) for data-boundary decisions.
+4. Read [selectors.md](references/selectors.md), [apis.md](references/apis.md), and [runtime-state.md](references/runtime-state.md) for read models, facades, and state alignment.
+5. Read [paginated-queries.md](references/paginated-queries.md) when a bounded context exposes a paginated list, history, feed, catalog, or any multi-page retrieval flow.
+6. Read [normalized-collections.md](references/normalized-collections.md) when a bounded context owns a durable collection keyed by id.
+7. Return a concrete design: bounded context ownership, files to touch, and what stays out of the chosen layer.
+
+## Decision rules
+
+- Put business concepts in `domain/`, not in screens or adapters.
+- Model important actions as explicit verb-based use-cases.
+- Keep gateways abstract and adapters replaceable.
+- Expose small context APIs instead of leaking internals.
+- Keep runtime state aligned with domain meaning, not with temporary UI shape.
+- Treat pagination as a bounded-context contract, not as a screen detail.
+- Prefer normalized entity state for durable collections keyed by id.
+
+## Do not use this skill for
+
+- Layout, styling, or JSX-focused UI work.
+- Pure route orchestration or component extraction.
+- Naming-only or review-only tasks with no domain-layer change.
