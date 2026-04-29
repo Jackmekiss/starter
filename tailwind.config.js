@@ -8,6 +8,9 @@ module.exports = {
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
+      spacing: {
+        screen: "var(--spacing-screen)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
