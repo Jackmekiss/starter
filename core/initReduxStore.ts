@@ -16,9 +16,15 @@ import {
 } from "redux-persist";
 import { createAuthAPI } from "./auth/apis/authAPI";
 import { authSlice } from "./auth/domain/slice";
+import { createSubscriptionAPI } from "./subscription/apis/subscriptionAPI";
+import {
+  subscriptionOfferingSlice,
+  subscriptionSlice,
+} from "./subscription/domain/slice";
 
 export interface Apis {
   authAPI: ReturnType<typeof createAuthAPI>;
+  subscriptionAPI: ReturnType<typeof createSubscriptionAPI>;
 }
 
 export interface Dependencies {}
@@ -28,7 +34,12 @@ const createReducers = (apis: Partial<Apis>) =>
     ...(apis.authAPI && {
       [apis.authAPI.reducerPath]: apis.authAPI.reducer,
     }),
+    ...(apis.subscriptionAPI && {
+      [apis.subscriptionAPI.reducerPath]: apis.subscriptionAPI.reducer,
+    }),
     [authSlice.name]: authSlice.reducer,
+    [subscriptionOfferingSlice.name]: subscriptionOfferingSlice.reducer,
+    [subscriptionSlice.name]: subscriptionSlice.reducer,
   });
 
 export interface PersistConfig {
