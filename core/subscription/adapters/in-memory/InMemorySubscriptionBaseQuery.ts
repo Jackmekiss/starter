@@ -1,11 +1,11 @@
 import {
-  createDefaultSubscription,
-  Subscription,
-} from "../../../auth/domain/subscription";
-import {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
 } from "../../apis/types";
+import {
+  createDefaultSubscription,
+  Subscription,
+} from "../../domain/subscription";
 import { SubscriptionOffering } from "../../domain/subscriptionOffering";
 import { SubscriptionBaseQuery } from "../../gateways/SubscriptionBaseQuery";
 

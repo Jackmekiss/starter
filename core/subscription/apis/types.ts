@@ -1,4 +1,4 @@
-import { Subscription } from "../../auth/domain/subscription";
+import { Subscription } from "../domain/subscription";
 import { SubscriptionPlan } from "../domain/subscriptionPlan";
 
 export interface PurchaseSubscriptionPayload {

@@ -1,8 +1,8 @@
-import { Subscription } from "../../../auth/domain/subscription";
 import {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
 } from "../../apis/types";
+import { Subscription } from "../../domain/subscription";
 import { SubscriptionBaseQuery } from "../../gateways/SubscriptionBaseQuery";
 import { RevenueCatSubscriptionRuntime } from "./revenueCatSubscriptionRuntime";
 

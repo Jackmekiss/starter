@@ -1,6 +1,6 @@
 import { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
-import { Subscription } from "../../../auth/domain/subscription";
 import { setSubscription } from "../../domain/slice";
+import { Subscription } from "../../domain/subscription";
 
 export const retrieveSubscriptionStatusBuilder = (
   build: EndpointBuilder<BaseQueryFn, never, "subscriptionAPI">,

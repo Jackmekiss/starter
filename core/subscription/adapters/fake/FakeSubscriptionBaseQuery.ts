@@ -1,9 +1,9 @@
-import { Subscription } from "../../../auth/domain/subscription";
 import { sleep } from "../../../lib/sleep";
 import {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
 } from "../../apis/types";
+import { Subscription } from "../../domain/subscription";
 import { SubscriptionOffering } from "../../domain/subscriptionOffering";
 import { SubscriptionBaseQuery } from "../../gateways/SubscriptionBaseQuery";
 import { InMemorySubscriptionBaseQuery } from "../in-memory/InMemorySubscriptionBaseQuery";

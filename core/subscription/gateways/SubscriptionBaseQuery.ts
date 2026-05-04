@@ -1,9 +1,9 @@
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
-import { Subscription } from "../../auth/domain/subscription";
 import {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
 } from "../apis/types";
+import { Subscription } from "../domain/subscription";
 import { SubscriptionOffering } from "../domain/subscriptionOffering";
 
 export abstract class SubscriptionBaseQuery {

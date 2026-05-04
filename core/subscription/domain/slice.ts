@@ -3,7 +3,7 @@ import {
   createSlice,
   EntityState,
 } from "@reduxjs/toolkit";
-import { Subscription } from "../../auth/domain/subscription";
+import { Subscription } from "./subscription";
 import { SubscriptionOffering } from "./subscriptionOffering";
 
 export const subscriptionOfferingAdapter =

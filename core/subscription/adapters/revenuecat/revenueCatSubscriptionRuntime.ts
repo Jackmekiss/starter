@@ -1,4 +1,4 @@
-import { Subscription } from "../../../auth/domain/subscription";
+import { Subscription } from "../../domain/subscription";
 import { SubscriptionOffering } from "../../domain/subscriptionOffering";
 import { SubscriptionPlan } from "../../domain/subscriptionPlan";
 
