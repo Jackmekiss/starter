@@ -12,13 +12,11 @@ export interface Subscription {
   tier: SubscriptionTier;
   plan?: SubscriptionPlan;
   status: SubscriptionStatus;
+  price?: {
+    amount: number;
+    currency: "EUR";
+  };
   currentPeriodEnd?: string;
   trialEnd?: string;
   cancelAtPeriodEnd: boolean;
 }
-
-export const createDefaultSubscription = (): Subscription => ({
-  tier: "free",
-  status: "inactive",
-  cancelAtPeriodEnd: false,
-});

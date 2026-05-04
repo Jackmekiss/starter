@@ -2,10 +2,7 @@ import {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
 } from "../../apis/types";
-import {
-  createDefaultSubscription,
-  Subscription,
-} from "../../domain/subscription";
+import { Subscription } from "../../domain/subscription";
 import { SubscriptionOffering } from "../../domain/subscriptionOffering";
 import { SubscriptionBaseQuery } from "../../gateways/SubscriptionBaseQuery";
 
@@ -30,7 +27,11 @@ const defaultSubscriptionOfferings: SubscriptionOffering[] = [
   },
 ];
 
-let currentSubscription: Subscription = createDefaultSubscription();
+let currentSubscription: Subscription = {
+  tier: "free",
+  status: "inactive",
+  cancelAtPeriodEnd: false,
+};
 
 const createPremiumSubscription = (
   plan: PurchaseSubscriptionPayload["plan"],
