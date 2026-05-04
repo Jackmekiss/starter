@@ -1,5 +1,3 @@
-import { Subscription } from "./subscription";
-
 export type OnboardingStatus = "pending" | "in-progress" | "completed";
 
 export interface Account {
@@ -9,7 +7,6 @@ export interface Account {
   avatarUri?: string | null;
   firstName?: string;
   lastName?: string;
-  subscription?: Subscription | null;
   onboardingStatus?: OnboardingStatus;
 
   createdAt: string;
