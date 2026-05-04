@@ -1,6 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { QueryStatus } from "@reduxjs/toolkit/query";
 import { pickBy } from "lodash";
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from "react-native-reanimated";
 import { createTransform, persistStore } from "redux-persist";
 import autoMergeLevel1 from "redux-persist/es/stateReconciler/autoMergeLevel1";
 import { FakeAuthBaseQuery } from "../../core/auth/adapters/fake/FakeAuthBaseQuery";
@@ -67,6 +71,11 @@ const persistConfig = {
   stateReconciler: autoMergeLevel1,
   transforms: [whitelistFulfilledQueries],
 };
+
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false,
+});
 
 export const store = createStore(
   {

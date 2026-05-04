@@ -21,6 +21,7 @@
     "@supabase/supabase-js": "^2.104.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "expo": "55.0.10-canary-20260327-0789fbc",
     "expo-constants": "55.0.10-canary-20260327-0789fbc",
     "expo-device": "55.0.11-canary-20260327-0789fbc",
@@ -61,6 +62,7 @@
   "devDependencies": {
     "@eslint/compat": "^2.0.3",
     "@eslint/js": "^10.0.1",
+    "@types/date-fns": "^2.6.3",
     "@types/lodash": "^4.17.24",
     "@types/react": "~19.2.2",
     "babel-preset-expo": "55.0.14-canary-20260327-0789fbc",
