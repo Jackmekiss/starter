@@ -18,7 +18,7 @@ SplashScreen.setOptions({
 export const unstable_settings = {
   initialRouteName: "/(auth)/index",
 };
-export default function TabLayout() {
+export default function AppLayout() {
   return (
     <RootAppProviders>
       <RootNavigator />
