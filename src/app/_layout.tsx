@@ -1,6 +1,7 @@
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
+import Toast from "react-native-toast-message";
 import "../global.css";
 import { RootAppProviders } from "./root-app-providers";
 import { RootNavigator } from "./root-navigator";
@@ -22,6 +23,7 @@ export default function TabLayout() {
     <RootAppProviders>
       <RootNavigator />
       <StatusBar />
+      <Toast />
     </RootAppProviders>
   );
 }
