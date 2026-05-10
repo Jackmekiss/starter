@@ -1651,6 +1651,11 @@
   dependencies:
     idb "8.0.3"
 
+"@react-native-community/netinfo@11.5.2":
+  version "11.5.2"
+  resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-11.5.2.tgz#daf3bc1b5cf6e9fc6725600c9e95875b5e50e694"
+  integrity sha512-/g0m65BtX9HU+bPiCH2517bOHpEIUsGrWFXDzi1a5nNKn5KujQgm04WhL7/OSXWKHyrT8VVtUoJA0XKRxueBpQ==
+
 "@react-native/assets-registry@0.83.4":
   version "0.83.4"
   resolved "https://registry.yarnpkg.com/@react-native/assets-registry/-/assets-registry-0.83.4.tgz#48408565f1a6a40cc91e4bbff38e07665d31fbd6"
