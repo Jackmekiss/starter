@@ -18,7 +18,7 @@ const initialAuthState: AuthState = {
   session: null,
   account: null,
   error: null,
-  logoutRequested: false
+  logoutRequested: false,
 };
 
 export const authSlice = createSlice({
@@ -29,11 +29,11 @@ export const authSlice = createSlice({
       ...state,
       status: "loading",
       error: null,
-      logoutRequested: false
+      logoutRequested: false,
     }),
     setAccount: (state, action) => ({
       ...state,
-      account: action.payload
+      account: action.payload,
     }),
     setAuth: (state, action) => ({
       status: "success",
@@ -41,17 +41,17 @@ export const authSlice = createSlice({
       session: action.payload.session,
       account: action.payload.account,
       error: null,
-      logoutRequested: false
+      logoutRequested: false,
     }),
     setError: (state, action) => ({
       ...state,
       error: action.payload,
       status: "error",
-      logoutRequested: false
+      logoutRequested: false,
     }),
     markLogoutRequested: (state) => ({
       ...state,
-      logoutRequested: true
+      logoutRequested: true,
     }),
     clearAuth: (state) => ({
       ...state,
@@ -60,9 +60,9 @@ export const authSlice = createSlice({
       session: null,
       account: null,
       error: null,
-      logoutRequested: false
-    })
-  }
+      logoutRequested: false,
+    }),
+  },
 });
 
 export const {
@@ -71,5 +71,5 @@ export const {
   clearAuth,
   setLoading,
   setAccount,
-  markLogoutRequested
+  markLogoutRequested,
 } = authSlice.actions;

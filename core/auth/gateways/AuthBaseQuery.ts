@@ -19,47 +19,39 @@ export abstract class AuthBaseQuery {
       params: any;
     }> =>
     async ({ url, body }) => {
-      if (url === "/register") {
-        return { data: await this.register(body) };
-      }
+      switch (url) {
+        case "/register":
+          return { data: await this.register(body) };
 
-      if (url === "/login") {
-        return { data: await this.login(body) };
-      }
+        case "/login":
+          return { data: await this.login(body) };
 
-      if (url === "/retrieve") {
-        return { data: await this.retrieveAccount() };
-      }
+        case "/retrieve":
+          return { data: await this.retrieveAccount() };
 
-      if (url === "/update") {
-        return { data: await this.updateAccount(body) };
-      }
+        case "/update":
+          return { data: await this.updateAccount(body) };
 
-      if (url === "/password/request-reset") {
-        return { data: await this.requestPasswordReset(body) };
-      }
+        case "/password/request-reset":
+          return { data: await this.requestPasswordReset(body) };
 
-      if (url === "/password/reset") {
-        return { data: await this.resetPassword(body) };
-      }
+        case "/password/reset":
+          return { data: await this.resetPassword(body) };
 
-      if (url === "/login/google") {
-        return { data: await this.loginWithGoogle() };
-      }
+        case "/login/google":
+          return { data: await this.loginWithGoogle() };
 
-      if (url === "/login/apple") {
-        return { data: await this.loginWithApple() };
-      }
+        case "/login/apple":
+          return { data: await this.loginWithApple() };
 
-      if (url === "/logout") {
-        return { data: await this.logout() };
-      }
+        case "/logout":
+          return { data: await this.logout() };
 
-      if (url === "/delete") {
-        return { data: await this.deleteAccount() };
+        case "/delete":
+          return { data: await this.deleteAccount() };
+        default:
+          return { data: {} };
       }
-
-      return { data: {} };
     };
 
   abstract retrieveAccount(): Promise<Account | null>;
