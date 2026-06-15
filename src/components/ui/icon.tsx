@@ -15,9 +15,9 @@ cssInterop(IconImpl, {
     target: "style",
     nativeStyleToProp: {
       height: "size",
-      width: "size"
-    }
-  }
+      width: "size",
+    },
+  },
 });
 
 function Icon({

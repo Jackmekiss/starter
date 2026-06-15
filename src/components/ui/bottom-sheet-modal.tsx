@@ -2,7 +2,7 @@ import {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
   BottomSheetModal as BottomSheetModalComponent,
-  BottomSheetView
+  BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import React, { useCallback, useImperativeHandle, useRef } from "react";
 import { THEME } from "../../constants/theme";
@@ -30,7 +30,7 @@ function BottomSheetModal({
   backgroundColor = THEME.light.background,
   minHeight = 300,
   snapPoints,
-  backdropOpacity = 0.4
+  backdropOpacity = 0.4,
 }: Props) {
   const bottomSheetModalRef = useRef<BottomSheetModalComponent>(null);
 
@@ -38,9 +38,9 @@ function BottomSheetModal({
     ref,
     () => ({
       present: () => bottomSheetModalRef.current?.present(),
-      dismiss: () => bottomSheetModalRef.current?.dismiss()
+      dismiss: () => bottomSheetModalRef.current?.dismiss(),
     }),
-    []
+    [],
   );
 
   const renderBackdrop = useCallback(
@@ -52,7 +52,7 @@ function BottomSheetModal({
         opacity={backdropOpacity}
       />
     ),
-    [backdropOpacity]
+    [backdropOpacity],
   );
 
   return (
@@ -63,7 +63,7 @@ function BottomSheetModal({
       handleIndicatorStyle={{
         backgroundColor: THEME.light.secondary,
         width: 60,
-        marginVertical: 16
+        marginVertical: 16,
       }}
       // @ts-ignore
       className="rounded-t-full bg-background"
@@ -72,7 +72,7 @@ function BottomSheetModal({
       <BottomSheetView
         className={cn(
           "gap-4 bg-background px-safe-horizontal pb-safe-4 pt-4",
-          contentClassName
+          contentClassName,
         )}
         style={{ minHeight }}
       >

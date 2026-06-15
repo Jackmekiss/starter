@@ -1,4 +1,4 @@
-import { DarkTheme, DefaultTheme } from "@react-navigation/native";
+import { DarkTheme, DefaultTheme } from "expo-router/react-navigation";
 
 const tintColorLight = "hsl(0 0% 20.5%)";
 const tintColorDark = "hsl(0 0% 98.5%)";
