@@ -3,6 +3,7 @@ import {
   combineReducers,
   configureStore,
   Middleware,
+  Reducer,
   ThunkDispatch,
 } from "@reduxjs/toolkit";
 import {
@@ -14,17 +15,21 @@ import {
   REGISTER,
   REHYDRATE,
 } from "redux-persist";
-import { createAuthAPI } from "./auth/apis/authAPI";
 import { authSlice } from "./auth/domain/slice";
-import { createSubscriptionAPI } from "./subscription/apis/subscriptionAPI";
 import {
   subscriptionOfferingSlice,
   subscriptionSlice,
 } from "./subscription/domain/slice";
 
+export interface StoreApi {
+  reducerPath: string;
+  reducer: Reducer;
+  middleware: Middleware;
+}
+
 export interface Apis {
-  authAPI: ReturnType<typeof createAuthAPI>;
-  subscriptionAPI: ReturnType<typeof createSubscriptionAPI>;
+  authAPI: StoreApi;
+  subscriptionAPI: StoreApi;
 }
 
 export interface Dependencies {}

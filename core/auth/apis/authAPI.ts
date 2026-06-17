@@ -1,4 +1,4 @@
-import { BaseQueryFn, createApi } from "@reduxjs/toolkit/query/react";
+import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import { deleteAccountBuilder } from "../use-cases/account-deletion/deleteAccount";
 import { updateAccountBuilder } from "../use-cases/account-modification/updateAccount";
 import { retrieveAccountBuilder } from "../use-cases/account-retrieval/retrieveAccount";
@@ -11,22 +11,21 @@ import { resetPasswordBuilder } from "../use-cases/password-reset-completion/res
 import { requestPasswordResetBuilder } from "../use-cases/password-reset-request/requestPasswordReset";
 import { registerBuilder } from "../use-cases/registration/register";
 
-export const createAuthAPI = (baseQuery: BaseQueryFn) =>
-  createApi({
-    baseQuery,
-    reducerPath: "authAPI",
-    tagTypes: ["Auth"],
-    endpoints: (builder) => ({
-      ...retrieveAccountBuilder(builder),
-      ...updateAccountBuilder(builder),
-      ...completeOnboardingBuilder(builder),
-      ...loginBuilder(builder),
-      ...loginWithGoogleBuilder(builder),
-      ...loginWithAppleBuilder(builder),
-      ...registerBuilder(builder),
-      ...requestPasswordResetBuilder(builder),
-      ...resetPasswordBuilder(builder),
-      ...logoutBuilder(builder),
-      ...deleteAccountBuilder(builder),
-    }),
-  });
+export const createAuthAPIOptions = (baseQuery: BaseQueryFn) => ({
+  baseQuery,
+  reducerPath: "authAPI",
+  tagTypes: ["Auth"] as const,
+  endpoints: (builder: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">) => ({
+    ...retrieveAccountBuilder(builder),
+    ...updateAccountBuilder(builder),
+    ...completeOnboardingBuilder(builder),
+    ...loginBuilder(builder),
+    ...loginWithGoogleBuilder(builder),
+    ...loginWithAppleBuilder(builder),
+    ...registerBuilder(builder),
+    ...requestPasswordResetBuilder(builder),
+    ...resetPasswordBuilder(builder),
+    ...logoutBuilder(builder),
+    ...deleteAccountBuilder(builder),
+  }),
+});
