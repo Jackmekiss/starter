@@ -7,8 +7,8 @@ import type {
   RequestPasswordResetPayload,
   ResetPasswordPayload,
   UpdateAccountPayload,
-} from "../apis/types";
-import type { Account } from "../domain/account";
+} from "@core/auth/apis/types";
+import type { Account } from "@core/auth/domain/account";
 
 /**
  * Internal request contract accepted by the auth RTK Query adapter.

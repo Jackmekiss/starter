@@ -1,13 +1,13 @@
-import { sleep } from "../../../lib/sleep";
-import { SubscriptionBaseQuery } from "../../gateways/subscription-base-query";
-import { InMemorySubscriptionBaseQuery } from "../in-memory/in-memory-subscription-base-query";
+import { sleep } from "@core/lib/sleep";
+import { SubscriptionBaseQuery } from "@core/subscription/gateways/subscription-base-query";
+import { InMemorySubscriptionBaseQuery } from "@core/subscription/adapters/in-memory/in-memory-subscription-base-query";
 
 import type {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
-} from "../../apis/types";
-import type { Subscription } from "../../domain/subscription";
-import type { SubscriptionOffering } from "../../domain/subscription-offering";
+} from "@core/subscription/apis/types";
+import type { Subscription } from "@core/subscription/domain/subscription";
+import type { SubscriptionOffering } from "@core/subscription/domain/subscription-offering";
 
 /**
  * Fake subscription gateway that simulates purchase latency on memory data.

@@ -2,7 +2,7 @@ import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import type {
   AuthActionResult,
   RequestPasswordResetPayload,
-} from "../../apis/types";
+} from "@core/auth/apis/types";
 
 /**
  * Builds the endpoint that requests a password reset email.

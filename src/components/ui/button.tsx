@@ -3,7 +3,7 @@ import { Platform, Pressable } from "react-native";
 
 import { TextClassContext } from "@/components/ui/Text";
 
-import { cn } from "../../lib/cn";
+import { cn } from "@/lib/cn";
 
 const buttonVariants = cva(
   cn(

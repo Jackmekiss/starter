@@ -1,8 +1,8 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 
 import type { EntityState } from "@reduxjs/toolkit";
-import type { Subscription } from "./subscription";
-import type { SubscriptionOffering } from "./subscription-offering";
+import type { Subscription } from "@core/subscription/domain/subscription";
+import type { SubscriptionOffering } from "@core/subscription/domain/subscription-offering";
 
 export const subscriptionOfferingAdapter =
   createEntityAdapter<SubscriptionOffering>();

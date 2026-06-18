@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import type { AuthError } from "../apis/types";
-import type { Account } from "./account";
-import type { AuthUser, Session } from "./auth";
+import type { AuthError } from "@core/auth/apis/types";
+import type { Account } from "@core/auth/domain/account";
+import type { AuthUser, Session } from "@core/auth/domain/auth";
 
 /**
  * Durable authentication state shared by navigation and account flows.

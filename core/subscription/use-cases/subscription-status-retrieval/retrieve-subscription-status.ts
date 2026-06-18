@@ -1,7 +1,7 @@
-import { setSubscription } from "../../domain/slice";
+import { setSubscription } from "@core/subscription/domain/slice";
 
 import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
-import type { Subscription } from "../../domain/subscription";
+import type { Subscription } from "@core/subscription/domain/subscription";
 
 /**
  * Builds the endpoint that retrieves the current premium entitlement.

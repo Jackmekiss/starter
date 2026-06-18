@@ -1,7 +1,7 @@
-import { updateSubscriptionOfferings } from "../../domain/slice";
+import { updateSubscriptionOfferings } from "@core/subscription/domain/slice";
 
 import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
-import type { SubscriptionOffering } from "../../domain/subscription-offering";
+import type { SubscriptionOffering } from "@core/subscription/domain/subscription-offering";
 
 /**
  * Builds the endpoint that retrieves available premium offerings.

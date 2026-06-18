@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 
-import type { RootState } from "../../../init-redux-store";
-import type { Account } from "../../domain/account";
+import type { RootState } from "@core/init-redux-store";
+import type { Account } from "@core/auth/domain/account";
 
 /**
  * Returns whether the auth context currently has a successful session.

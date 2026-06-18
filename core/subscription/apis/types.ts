@@ -1,5 +1,5 @@
-import type { Subscription } from "../domain/subscription";
-import type { SubscriptionPlan } from "../domain/subscription-plan";
+import type { Subscription } from "@core/subscription/domain/subscription";
+import type { SubscriptionPlan } from "@core/subscription/domain/subscription-plan";
 
 /**
  * Selected premium plan to purchase through the subscription gateway.

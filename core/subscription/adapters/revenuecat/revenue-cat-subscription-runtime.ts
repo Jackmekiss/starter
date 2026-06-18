@@ -1,6 +1,6 @@
-import type { Subscription } from "../../domain/subscription";
-import type { SubscriptionOffering } from "../../domain/subscription-offering";
-import type { SubscriptionPlan } from "../../domain/subscription-plan";
+import type { Subscription } from "@core/subscription/domain/subscription";
+import type { SubscriptionOffering } from "@core/subscription/domain/subscription-offering";
+import type { SubscriptionPlan } from "@core/subscription/domain/subscription-plan";
 
 /**
  * Runtime bridge that isolates RevenueCat SDK details from subscription use-cases.

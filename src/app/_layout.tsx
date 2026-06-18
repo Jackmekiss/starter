@@ -3,11 +3,11 @@ import { StatusBar } from "expo-status-bar";
 import React from "react";
 import Toast from "react-native-toast-message";
 
-import "../global.css";
-import { RootAppProviders } from "./root-app-providers";
-import { RootNavigator } from "./root-navigator";
+import "@/global.css";
+import { RootAppProviders } from "@/app/root-app-providers";
+import { RootNavigator } from "@/app/root-navigator";
 
-export * from "./app-runtime";
+export * from "@/app/app-runtime";
 
 SplashScreen.preventAutoHideAsync();
 

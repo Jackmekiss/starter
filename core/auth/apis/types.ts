@@ -1,5 +1,5 @@
-import type { Account } from "../domain/account";
-import type { AuthUser, Session } from "../domain/auth";
+import type { Account } from "@core/auth/domain/account";
+import type { AuthUser, Session } from "@core/auth/domain/auth";
 
 /**
  * Credentials and optional profile data required to create an account.

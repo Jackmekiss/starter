@@ -6,8 +6,8 @@ import {
 } from "@gorhom/bottom-sheet";
 import React, { useCallback, useImperativeHandle, useRef } from "react";
 
-import { THEME } from "../../constants/theme";
-import { cn } from "../../lib/cn";
+import { THEME } from "@/constants/theme";
+import { cn } from "@/lib/cn";
 
 /**
  * Imperative controls exposed by the shared bottom sheet modal.

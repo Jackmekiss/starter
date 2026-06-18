@@ -1,4 +1,4 @@
-import type { SubscriptionPlan } from "./subscription-plan";
+import type { SubscriptionPlan } from "@core/subscription/domain/subscription-plan";
 
 /**
  * Sellable premium option displayed to users before purchase.

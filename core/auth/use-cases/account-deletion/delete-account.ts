@@ -1,4 +1,4 @@
-import { clearAuth, markLogoutRequested } from "../../domain/slice";
+import { clearAuth, markLogoutRequested } from "@core/auth/domain/slice";
 
 import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 

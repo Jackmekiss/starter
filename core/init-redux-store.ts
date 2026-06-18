@@ -9,8 +9,11 @@ import {
   REHYDRATE,
 } from "redux-persist";
 
-import { authSlice } from "./auth/domain/slice";
-import { subscriptionSlice } from "./subscription/domain/slice";
+import { authSlice } from "@core/auth/domain/slice";
+import {
+  subscriptionOfferingSlice,
+  subscriptionSlice,
+} from "@core/subscription/domain/slice";
 
 import type { PersistConfig as ReduxPersistConfig } from "redux-persist";
 import type {
@@ -55,6 +58,7 @@ function createReducers(apis: Partial<Apis>) {
     }),
     [authSlice.name]: authSlice.reducer,
     [subscriptionSlice.name]: subscriptionSlice.reducer,
+    [subscriptionOfferingSlice.name]: subscriptionOfferingSlice.reducer,
   });
 }
 

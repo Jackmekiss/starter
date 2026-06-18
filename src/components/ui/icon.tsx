@@ -1,6 +1,6 @@
 import { cssInterop } from "nativewind";
 
-import { cn } from "../../lib/cn";
+import { cn } from "@/lib/cn";
 
 import type { LucideIcon, LucideProps } from "lucide-react-native";
 

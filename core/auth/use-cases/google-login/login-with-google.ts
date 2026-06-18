@@ -1,7 +1,7 @@
-import { setAuth, setError, setLoading } from "../../domain/slice";
+import { setAuth, setError, setLoading } from "@core/auth/domain/slice";
 
 import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
-import type { AuthResult } from "../../apis/types";
+import type { AuthResult } from "@core/auth/apis/types";
 
 /**
  * Builds the endpoint that authenticates through Google Sign In.

@@ -1,5 +1,5 @@
 import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
-import type { AuthActionResult, ResetPasswordPayload } from "../../apis/types";
+import type { AuthActionResult, ResetPasswordPayload } from "@core/auth/apis/types";
 
 /**
  * Builds the endpoint that completes a password reset challenge.

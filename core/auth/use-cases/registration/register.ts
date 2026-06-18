@@ -1,7 +1,7 @@
-import { setAuth, setError, setLoading } from "../../domain/slice";
+import { setAuth, setError, setLoading } from "@core/auth/domain/slice";
 
 import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
-import type { AuthResult, RegisterPayload } from "../../apis/types";
+import type { AuthResult, RegisterPayload } from "@core/auth/apis/types";
 
 /**
  * Builds the endpoint that registers an account and stores the auth session.

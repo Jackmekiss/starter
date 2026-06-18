@@ -1,6 +1,6 @@
 import { produce } from "immer";
 
-import { AuthBaseQuery } from "../../gateways/auth-base-query";
+import { AuthBaseQuery } from "@core/auth/gateways/auth-base-query";
 
 import type {
   AuthActionResult,
@@ -10,9 +10,9 @@ import type {
   RequestPasswordResetPayload,
   ResetPasswordPayload,
   UpdateAccountPayload,
-} from "../../apis/types";
-import type { Account } from "../../domain/account";
-import type { AuthUser, Session } from "../../domain/auth";
+} from "@core/auth/apis/types";
+import type { Account } from "@core/auth/domain/account";
+import type { AuthUser, Session } from "@core/auth/domain/auth";
 
 function resolveNextOnboardingStatus(
   currentStatus: Account["onboardingStatus"],

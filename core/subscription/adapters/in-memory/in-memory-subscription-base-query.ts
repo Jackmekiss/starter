@@ -1,11 +1,11 @@
-import { SubscriptionBaseQuery } from "../../gateways/subscription-base-query";
+import { SubscriptionBaseQuery } from "@core/subscription/gateways/subscription-base-query";
 
 import type {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
-} from "../../apis/types";
-import type { Subscription } from "../../domain/subscription";
-import type { SubscriptionOffering } from "../../domain/subscription-offering";
+} from "@core/subscription/apis/types";
+import type { Subscription } from "@core/subscription/domain/subscription";
+import type { SubscriptionOffering } from "@core/subscription/domain/subscription-offering";
 
 const defaultSubscriptionOfferings: SubscriptionOffering[] = [
   {

@@ -6,7 +6,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
-import { persistor, store } from "./app-runtime";
+import { persistor, store } from "@/app/app-runtime";
 
 type RootAppProvidersProps = PropsWithChildren;
 
