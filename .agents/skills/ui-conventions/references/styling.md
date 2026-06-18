@@ -6,7 +6,7 @@ Default styling mechanism:
 
 - use `className` with NativeWind
 - use design tokens such as `bg-background`, `text-foreground`, `bg-card`, `border-border`, and `text-muted-foreground`
-- use `cn()` to compose class names
+- use `classNames()` to compose class names
 - use `cssInterop` when a third-party component does not support `className`
 
 Prefer:
