@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+/** Persisted UI session state used before auth account retrieval completes. */
 export interface SessionStore {
   isConnected: boolean;
   toggleIsConnected: () => void;

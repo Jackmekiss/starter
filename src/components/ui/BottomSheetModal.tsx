@@ -9,6 +9,7 @@ import React, { useCallback, useImperativeHandle, useRef } from "react";
 import { THEME } from "../../constants/theme";
 import { cn } from "../../lib/cn";
 
+/** Imperative controls exposed by the shared bottom sheet modal. */
 export interface BottomSheetModalRef {
   present: () => void;
   dismiss: () => void;
@@ -24,6 +25,7 @@ interface Props {
   backdropOpacity?: number;
 }
 
+/** Shared bottom sheet wrapper with themed backdrop and safe-area spacing. */
 function BottomSheetModal({
   children,
   ref,

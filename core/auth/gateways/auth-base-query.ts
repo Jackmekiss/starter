@@ -10,6 +10,7 @@ import type {
 } from "../apis/types";
 import type { Account } from "../domain/account";
 
+/** Internal request contract accepted by the auth RTK Query adapter. */
 type AuthRequest =
   {
     params?: unknown;
@@ -27,8 +28,8 @@ type AuthRequest =
     | { url: "/login/google"; method: "POST"; body?: undefined }
     | { url: "/login/apple"; method: "POST"; body?: undefined }
     | { url: "/logout"; method: "POST"; body?: undefined }
-  | { url: "/delete"; method: "POST"; body?: undefined }
-);
+    | { url: "/delete"; method: "POST"; body?: undefined }
+  );
 
 /** Gateway contract used by auth endpoints to swap fake, memory, or real adapters. */
 export abstract class AuthBaseQuery {

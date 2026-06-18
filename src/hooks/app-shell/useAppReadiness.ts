@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../../core/init-redux-store";
 import useSessionStore from "../../stores/session-store";
 
+/** Synchronizes splash dismissal and persisted session state during app startup. */
 export function useAppReadiness(isRetrievingAccount: boolean) {
   const [isReady, setIsReady] = useState(false);
   const account = useSelector((state: RootState) => state.auth.account);

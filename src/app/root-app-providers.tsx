@@ -9,6 +9,7 @@ import { persistor, store } from "./app-runtime";
 
 type RootAppProvidersProps = PropsWithChildren;
 
+/** Composes global runtime providers required by every route. */
 export function RootAppProviders({ children }: RootAppProvidersProps) {
   return (
     <Provider store={store}>

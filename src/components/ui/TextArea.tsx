@@ -2,6 +2,7 @@ import { Platform, TextInput } from "react-native";
 
 import { cn } from "../../lib/cn";
 
+/** Multiline text input styled with the shared form control treatment. */
 function Textarea({
   className,
   multiline = true,

@@ -101,9 +101,11 @@ const buttonTextVariants = cva(
   },
 );
 
+/** Props supported by the shared button primitive. */
 type ButtonProps = React.ComponentProps<typeof Pressable> &
   VariantProps<typeof buttonVariants>;
 
+/** Pressable button primitive with shared visual variants and text styling. */
 function Button({ className, variant, size, ...props }: ButtonProps) {
   return (
     <TextClassContext.Provider value={buttonTextVariants({ variant, size })}>

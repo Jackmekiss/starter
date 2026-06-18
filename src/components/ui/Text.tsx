@@ -49,14 +49,10 @@ const textVariants = cva(
   },
 );
 
-/**
- *
- */
+/** Variant props supported by the shared text primitive. */
 type TextVariantProps = VariantProps<typeof textVariants>;
 
-/**
- *
- */
+/** Named text styles mapped to typography and accessibility roles. */
 type TextVariant = NonNullable<TextVariantProps["variant"]>;
 
 const ROLE: Partial<Record<TextVariant, Role>> = {
@@ -77,9 +73,7 @@ const ARIA_LEVEL: Partial<Record<TextVariant, string>> = {
 
 const TextClassContext = React.createContext<string | undefined>(undefined);
 
-/**
- *
- */
+/** Cross-platform text primitive with typography variants and slot support. */
 function Text({
   className,
   asChild = false,

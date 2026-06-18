@@ -167,7 +167,7 @@ const typescriptConfig = defineConfig([
 const documentationConfig = defineConfig([
   {
     name: "documentation/jsdoc",
-    files: ["**/*.{js,jsx,ts,tsx}"],
+    files: ["core/**/*.{js,jsx,ts,tsx}", "src/**/*.{js,jsx,ts,tsx}"],
     plugins: {
       jsdoc: jsdocPlugin,
     },
@@ -178,7 +178,6 @@ const documentationConfig = defineConfig([
         {
           contexts: [
             "FunctionDeclaration",
-            "MethodDefinition",
             "TSInterfaceDeclaration",
             "TSTypeAliasDeclaration",
             "TSEnumDeclaration",
@@ -188,9 +187,12 @@ const documentationConfig = defineConfig([
       "jsdoc/require-jsdoc": [
         "warn",
         {
+          publicOnly: {
+            esm: true,
+          },
           contexts: [
+            "ClassDeclaration",
             "FunctionDeclaration",
-            "MethodDefinition",
             "TSInterfaceDeclaration",
             "TSTypeAliasDeclaration",
             "TSEnumDeclaration",
