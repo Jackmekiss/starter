@@ -4,10 +4,10 @@ import React from "react";
 import Toast from "react-native-toast-message";
 
 import "@/global.css";
-import { RootAppProviders } from "@/app/root-app-providers";
-import { RootNavigator } from "@/app/root-navigator";
+import { RootAppProviders } from "@/app-runtime/root-app-providers";
+import { RootNavigator } from "@/app-runtime/root-navigator";
 
-export * from "@/app/app-runtime";
+export * from "@/app-runtime/app-runtime";
 
 SplashScreen.preventAutoHideAsync();
 

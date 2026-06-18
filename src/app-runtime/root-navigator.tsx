@@ -2,9 +2,9 @@ import { Stack } from "expo-router";
 import React from "react";
 import { useSelector } from "react-redux";
 
+import { useRetrieveAccountQuery } from "@/app-runtime/app-runtime";
 import { useAppReadiness } from "@/hooks/app-shell/useAppReadiness";
 import useSessionStore from "@/stores/session-store";
-import { useRetrieveAccountQuery } from "@/app/app-runtime";
 
 import type { RootState } from "@core/init-redux-store";
 
