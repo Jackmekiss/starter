@@ -1,4 +1,7 @@
 import { sleep } from "../../../lib/sleep";
+import { AuthBaseQuery } from "../../gateways/auth-base-query";
+import { InMemoryAuthBaseQuery } from "../in-memory/in-memory-auth-base-query";
+
 import type {
   AuthActionResult,
   AuthResult,
@@ -9,8 +12,6 @@ import type {
   UpdateAccountPayload,
 } from "../../apis/types";
 import type { Account } from "../../domain/account";
-import { AuthBaseQuery } from "../../gateways/auth-base-query";
-import { InMemoryAuthBaseQuery } from "../in-memory/in-memory-auth-base-query";
 
 /**
  * Fake auth gateway that simulates network latency on top of memory data.

@@ -1,4 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
+
 import type { RootState } from "../../../init-redux-store";
 import type { Account } from "../../domain/account";
 

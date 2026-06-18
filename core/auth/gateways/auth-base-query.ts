@@ -13,25 +13,24 @@ import type { Account } from "../domain/account";
 /**
  * Internal request contract accepted by the auth RTK Query adapter.
  */
-type AuthRequest =
-  {
-    params?: unknown;
-  } & (
-    | { url: "/register"; method: "POST"; body: RegisterPayload }
-    | { url: "/login"; method: "POST"; body: LoginPayload }
-    | { url: "/retrieve"; method: "GET"; body?: undefined }
-    | { url: "/update"; method: "POST"; body: UpdateAccountPayload }
-    | {
-        url: "/password/request-reset";
-        method: "POST";
-        body: RequestPasswordResetPayload;
-      }
-    | { url: "/password/reset"; method: "POST"; body: ResetPasswordPayload }
-    | { url: "/login/google"; method: "POST"; body?: undefined }
-    | { url: "/login/apple"; method: "POST"; body?: undefined }
-    | { url: "/logout"; method: "POST"; body?: undefined }
-    | { url: "/delete"; method: "POST"; body?: undefined }
-  );
+type AuthRequest = {
+  params?: unknown;
+} & (
+  | { url: "/register"; method: "POST"; body: RegisterPayload }
+  | { url: "/login"; method: "POST"; body: LoginPayload }
+  | { url: "/retrieve"; method: "GET"; body?: undefined }
+  | { url: "/update"; method: "POST"; body: UpdateAccountPayload }
+  | {
+      url: "/password/request-reset";
+      method: "POST";
+      body: RequestPasswordResetPayload;
+    }
+  | { url: "/password/reset"; method: "POST"; body: ResetPasswordPayload }
+  | { url: "/login/google"; method: "POST"; body?: undefined }
+  | { url: "/login/apple"; method: "POST"; body?: undefined }
+  | { url: "/logout"; method: "POST"; body?: undefined }
+  | { url: "/delete"; method: "POST"; body?: undefined }
+);
 
 /**
  * Gateway contract used by auth endpoints to swap fake, memory, or real adapters.

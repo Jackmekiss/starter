@@ -1,5 +1,6 @@
-import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import { clearAuth, markLogoutRequested } from "../../domain/slice";
+
+import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 
 /**
  * Builds the endpoint that deletes the current account and clears auth state.

@@ -1,4 +1,7 @@
 import { produce } from "immer";
+
+import { AuthBaseQuery } from "../../gateways/auth-base-query";
+
 import type {
   AuthActionResult,
   AuthResult,
@@ -10,7 +13,6 @@ import type {
 } from "../../apis/types";
 import type { Account } from "../../domain/account";
 import type { AuthUser, Session } from "../../domain/auth";
-import { AuthBaseQuery } from "../../gateways/auth-base-query";
 
 function resolveNextOnboardingStatus(
   currentStatus: Account["onboardingStatus"],

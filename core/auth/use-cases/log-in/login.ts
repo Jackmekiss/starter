@@ -1,6 +1,7 @@
+import { setAuth, setError, setLoading } from "../../domain/slice";
+
 import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import type { AuthResult, LoginPayload } from "../../apis/types";
-import { setAuth, setError, setLoading } from "../../domain/slice";
 
 /**
  * Builds the endpoint that authenticates with email and password.

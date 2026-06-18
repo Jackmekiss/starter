@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 import type { AuthError } from "../apis/types";
 import type { Account } from "./account";
 import type { AuthUser, Session } from "./auth";

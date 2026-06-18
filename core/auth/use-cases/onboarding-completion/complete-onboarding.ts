@@ -1,7 +1,8 @@
+import { setAccount } from "../../domain/slice";
+
 import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import type { UpdateAccountPayload } from "../../apis/types";
 import type { Account } from "../../domain/account";
-import { setAccount } from "../../domain/slice";
 
 /**
  * Builds the endpoint that marks onboarding as completed for the account.

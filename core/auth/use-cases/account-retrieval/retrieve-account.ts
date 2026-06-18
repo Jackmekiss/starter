@@ -1,6 +1,7 @@
+import { setAccount } from "../../domain/slice";
+
 import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import type { Account } from "../../domain/account";
-import { setAccount } from "../../domain/slice";
 
 /**
  * Builds the endpoint that retrieves and stores the current account profile.
