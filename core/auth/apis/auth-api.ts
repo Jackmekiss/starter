@@ -12,8 +12,6 @@ import { registerBuilder } from "@core/auth/use-cases/registration/register";
 
 import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 
-const authTagTypes: ["Auth"] = ["Auth"];
-
 /**
  * Builds RTK Query endpoint options for all authentication use-cases.
  */
@@ -21,7 +19,7 @@ export function createAuthApiOptions(baseQuery: BaseQueryFn) {
   return {
     baseQuery,
     reducerPath: "authApi",
-    tagTypes: authTagTypes,
+    tagTypes: ["Auth"],
     endpoints: (builder: EndpointBuilder<BaseQueryFn, "Auth", "authApi">) => ({
       ...retrieveAccountBuilder(builder),
       ...updateAccountBuilder(builder),
