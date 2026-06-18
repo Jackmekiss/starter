@@ -45,7 +45,9 @@ const session: Session = {
   expiresAt: new Date().getTime() + 1000 * 60 * 60 * 24 * 30,
 };
 
-/** In-memory auth gateway used by local development and starter flows. */
+/**
+ * In-memory auth gateway used by local development and starter flows.
+ */
 export class InMemoryAuthBaseQuery extends AuthBaseQuery {
   async retrieveAccount(): Promise<Account | null> {
     return account;

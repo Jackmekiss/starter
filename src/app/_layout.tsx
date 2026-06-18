@@ -21,7 +21,9 @@ export const unstable_settings = {
   initialRouteName: "/(auth)/index",
 };
 
-/** Root app layout that wires providers, navigation, status bar, and toasts. */
+/**
+ * Root app layout that wires providers, navigation, status bar, and toasts.
+ */
 export default function AppLayout() {
   return (
     <RootAppProviders>

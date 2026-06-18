@@ -4,12 +4,16 @@ import { cn } from "../../lib/cn";
 
 import type { LucideIcon, LucideProps } from "lucide-react-native";
 
-/** Props accepted by the shared Lucide icon wrapper. */
+/**
+ * Props accepted by the shared Lucide icon wrapper.
+ */
 type IconProps = LucideProps & {
   as: LucideIcon;
 };
 
-/** NativeWind interop target that forwards class styles to Lucide props. */
+/**
+ * NativeWind interop target that forwards class styles to Lucide props.
+ */
 function IconImpl({ as: IconComponent, ...props }: IconProps) {
   return <IconComponent {...props} />;
 }
@@ -24,7 +28,9 @@ cssInterop(IconImpl, {
   },
 });
 
-/** Themed icon primitive used by buttons, tabs, and compact controls. */
+/**
+ * Themed icon primitive used by buttons, tabs, and compact controls.
+ */
 function Icon({
   as: IconComponent,
   className,

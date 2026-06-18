@@ -5,7 +5,9 @@ import { purchaseSubscriptionBuilder } from "../use-cases/subscription-purchase/
 import { restoreSubscriptionPurchasesBuilder } from "../use-cases/subscription-restore/restore-subscription-purchases";
 import { retrieveSubscriptionStatusBuilder } from "../use-cases/subscription-status-retrieval/retrieve-subscription-status";
 
-/** Builds RTK Query endpoint options for subscription status and purchases. */
+/**
+ * Builds RTK Query endpoint options for subscription status and purchases.
+ */
 export function createSubscriptionAPIOptions(baseQuery: BaseQueryFn) {
   return {
     baseQuery,

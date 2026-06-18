@@ -10,7 +10,9 @@ import type {
 } from "../apis/types";
 import type { Account } from "../domain/account";
 
-/** Internal request contract accepted by the auth RTK Query adapter. */
+/**
+ * Internal request contract accepted by the auth RTK Query adapter.
+ */
 type AuthRequest =
   {
     params?: unknown;
@@ -31,7 +33,9 @@ type AuthRequest =
     | { url: "/delete"; method: "POST"; body?: undefined }
   );
 
-/** Gateway contract used by auth endpoints to swap fake, memory, or real adapters. */
+/**
+ * Gateway contract used by auth endpoints to swap fake, memory, or real adapters.
+ */
 export abstract class AuthBaseQuery {
   public handle = (): BaseQueryFn<AuthRequest> => async (request) => {
     switch (request.url) {

@@ -2,7 +2,9 @@ import { Platform, TextInput } from "react-native";
 
 import { cn } from "../../lib/cn";
 
-/** Single-line text input styled with the shared form control treatment. */
+/**
+ * Single-line text input styled with the shared form control treatment.
+ */
 function Input({
   className,
   ...props

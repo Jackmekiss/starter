@@ -3,7 +3,9 @@ import { PlatformPressable } from "expo-router/react-navigation";
 
 import type { BottomTabBarButtonProps } from "expo-router/js-tabs";
 
-/** Tab bar button that adds a light haptic press response on iOS. */
+/**
+ * Tab bar button that adds a light haptic press response on iOS.
+ */
 export function HapticTab(props: BottomTabBarButtonProps) {
   return (
     <PlatformPressable

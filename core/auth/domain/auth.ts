@@ -1,4 +1,6 @@
-/** Authentication session tokens currently accepted by the app runtime. */
+/**
+ * Authentication session tokens currently accepted by the app runtime.
+ */
 export interface Session {
   userId: string;
   accessToken: string;
@@ -6,7 +8,9 @@ export interface Session {
   expiresAt?: number;
 }
 
-/** Minimal authenticated identity returned by a login or registration flow. */
+/**
+ * Minimal authenticated identity returned by a login or registration flow.
+ */
 export interface AuthUser {
   id: string;
   email: string;

@@ -2,7 +2,9 @@ import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import type { Subscription } from "../../domain/subscription";
 import { setSubscription } from "../../domain/slice";
 
-/** Builds the endpoint that retrieves the current premium entitlement. */
+/**
+ * Builds the endpoint that retrieves the current premium entitlement.
+ */
 export function retrieveSubscriptionStatusBuilder(
   build: EndpointBuilder<BaseQueryFn, never, "subscriptionApi">,
 ) {

@@ -3,7 +3,9 @@ import type { UpdateAccountPayload } from "../../apis/types";
 import type { Account } from "../../domain/account";
 import { setAccount } from "../../domain/slice";
 
-/** Builds the endpoint that marks onboarding as completed for the account. */
+/**
+ * Builds the endpoint that marks onboarding as completed for the account.
+ */
 export function completeOnboardingBuilder(
   build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
 ) {

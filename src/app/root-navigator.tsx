@@ -9,7 +9,9 @@ import { useRetrieveAccountQuery } from "./app-runtime";
 
 import type { RootState } from "../../core/init-redux-store";
 
-/** Chooses the active route group from session and onboarding state. */
+/**
+ * Chooses the active route group from session and onboarding state.
+ */
 export function RootNavigator() {
   const { isConnected } = useSessionStore();
   const account = useSelector((state: RootState) => state.auth.account);

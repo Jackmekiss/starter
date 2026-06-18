@@ -12,7 +12,9 @@ import type { Account } from "../../domain/account";
 import { AuthBaseQuery } from "../../gateways/auth-base-query";
 import { InMemoryAuthBaseQuery } from "../in-memory/in-memory-auth-base-query";
 
-/** Fake auth gateway that simulates network latency on top of memory data. */
+/**
+ * Fake auth gateway that simulates network latency on top of memory data.
+ */
 export class FakeAuthBaseQuery extends AuthBaseQuery {
   private readonly inMemoryBaseQuery = new InMemoryAuthBaseQuery();
 

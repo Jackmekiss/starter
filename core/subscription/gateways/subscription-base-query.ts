@@ -6,7 +6,9 @@ import type {
 import type { Subscription } from "../domain/subscription";
 import type { SubscriptionOffering } from "../domain/subscription-offering";
 
-/** Internal request contract accepted by the subscription RTK Query adapter. */
+/**
+ * Internal request contract accepted by the subscription RTK Query adapter.
+ */
 type SubscriptionRequest =
   | { url: "/offerings/retrieve"; method: "GET"; body?: undefined }
   | { url: "/purchase"; method: "POST"; body: PurchaseSubscriptionPayload }
@@ -14,7 +16,9 @@ type SubscriptionRequest =
   | { url: "/manage"; method: "POST"; body?: undefined }
   | { url: "/status/retrieve"; method: "GET"; body?: undefined };
 
-/** Gateway contract used by subscription endpoints to swap billing adapters. */
+/**
+ * Gateway contract used by subscription endpoints to swap billing adapters.
+ */
 export abstract class SubscriptionBaseQuery {
   public handle = (): BaseQueryFn<SubscriptionRequest> => async (request) => {
     if (request.url === "/offerings/retrieve") {

@@ -3,7 +3,9 @@ import type { AuthError } from "../apis/types";
 import type { Account } from "./account";
 import type { AuthUser, Session } from "./auth";
 
-/** Durable authentication state shared by navigation and account flows. */
+/**
+ * Durable authentication state shared by navigation and account flows.
+ */
 export interface AuthState {
   status: "idle" | "loading" | "success" | "error";
   user: AuthUser | null;

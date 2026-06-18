@@ -1,6 +1,8 @@
 import { Stack } from "expo-router";
 
-/** Navigation shell for onboarding completion screens. */
+/**
+ * Navigation shell for onboarding completion screens.
+ */
 function OnboardingLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>

@@ -2,7 +2,9 @@ import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import type { AuthResult, RegisterPayload } from "../../apis/types";
 import { setAuth, setError, setLoading } from "../../domain/slice";
 
-/** Builds the endpoint that registers an account and stores the auth session. */
+/**
+ * Builds the endpoint that registers an account and stores the auth session.
+ */
 export function registerBuilder(
   build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
 ) {

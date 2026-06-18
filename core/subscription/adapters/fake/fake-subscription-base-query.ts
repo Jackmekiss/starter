@@ -8,7 +8,9 @@ import type { SubscriptionOffering } from "../../domain/subscription-offering";
 import { SubscriptionBaseQuery } from "../../gateways/subscription-base-query";
 import { InMemorySubscriptionBaseQuery } from "../in-memory/in-memory-subscription-base-query";
 
-/** Fake subscription gateway that simulates purchase latency on memory data. */
+/**
+ * Fake subscription gateway that simulates purchase latency on memory data.
+ */
 export class FakeSubscriptionBaseQuery extends SubscriptionBaseQuery {
   private readonly inMemoryBaseQuery = new InMemorySubscriptionBaseQuery();
 

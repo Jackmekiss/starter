@@ -1,4 +1,6 @@
-/** Converts user-facing labels into stable lowercase slugs for Supabase records. */
+/**
+ * Converts user-facing labels into stable lowercase slugs for Supabase records.
+ */
 export function slugify(value: string): string {
   return value
     .trim()

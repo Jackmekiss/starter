@@ -1,7 +1,9 @@
 import type { Account } from "../domain/account";
 import type { AuthUser, Session } from "../domain/auth";
 
-/** Credentials and optional profile data required to create an account. */
+/**
+ * Credentials and optional profile data required to create an account.
+ */
 export interface RegisterPayload {
   email: string;
   password: string;
@@ -9,13 +11,17 @@ export interface RegisterPayload {
   lastName?: string;
 }
 
-/** Password credentials submitted by the standard login flow. */
+/**
+ * Password credentials submitted by the standard login flow.
+ */
 export interface LoginPayload {
   email: string;
   password: string;
 }
 
-/** Partial account changes allowed through the account update use-case. */
+/**
+ * Partial account changes allowed through the account update use-case.
+ */
 export interface UpdateAccountPayload {
   avatarUri?: Account["avatarUri"];
   firstName?: string;
@@ -23,7 +29,9 @@ export interface UpdateAccountPayload {
   onboardingStatus?: Account["onboardingStatus"];
 }
 
-/** User-facing authentication failure with a stable machine-readable code. */
+/**
+ * User-facing authentication failure with a stable machine-readable code.
+ */
 export interface AuthError {
   code:
     | "INVALID_CREDENTIALS"
@@ -39,18 +47,24 @@ export interface AuthError {
   message: string;
 }
 
-/** Email address that should receive a password reset challenge. */
+/**
+ * Email address that should receive a password reset challenge.
+ */
 export interface RequestPasswordResetPayload {
   email: string;
 }
 
-/** New password plus optional recovery URL returned by the auth provider. */
+/**
+ * New password plus optional recovery URL returned by the auth provider.
+ */
 export interface ResetPasswordPayload {
   password: string;
   recoveryUrl?: string;
 }
 
-/** Result for auth actions that do not create a session. */
+/**
+ * Result for auth actions that do not create a session.
+ */
 export type AuthActionResult =
   | {
       success: true;
@@ -60,7 +74,9 @@ export type AuthActionResult =
       error: AuthError;
     };
 
-/** Result for auth actions that can establish a session and account context. */
+/**
+ * Result for auth actions that can establish a session and account context.
+ */
 export type AuthResult =
   | {
       success: true;

@@ -1,6 +1,8 @@
 import type { SubscriptionPlan } from "./subscription-plan";
 
-/** Sellable premium option displayed to users before purchase. */
+/**
+ * Sellable premium option displayed to users before purchase.
+ */
 export interface SubscriptionOffering {
   id: string;
   plan: SubscriptionPlan;
