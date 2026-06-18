@@ -1,12 +1,14 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { RootState } from "../../../init-redux-store";
-import { Account } from "../../domain/account";
+import type { RootState } from "../../../init-redux-store";
+import type { Account } from "../../domain/account";
 
-export const selectIsConnected = (state: RootState): boolean =>
-  state.auth.status === "success";
+export function selectIsConnected(state: RootState): boolean {
+  return state.auth.status === "success";
+}
 
-export const selectCurrentAccount = (state: RootState): Account | null =>
-  state.auth.account;
+export function selectCurrentAccount(state: RootState): Account | null {
+  return state.auth.account;
+}
 
 export const selectAccount = createSelector(
   [selectCurrentAccount],

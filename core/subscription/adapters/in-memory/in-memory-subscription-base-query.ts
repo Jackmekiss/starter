@@ -1,9 +1,9 @@
-import {
+import type {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
 } from "../../apis/types";
-import { Subscription } from "../../domain/subscription";
-import { SubscriptionOffering } from "../../domain/subscription-offering";
+import type { Subscription } from "../../domain/subscription";
+import type { SubscriptionOffering } from "../../domain/subscription-offering";
 import { SubscriptionBaseQuery } from "../../gateways/subscription-base-query";
 
 const defaultSubscriptionOfferings: SubscriptionOffering[] = [

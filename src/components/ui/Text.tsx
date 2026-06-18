@@ -2,6 +2,7 @@ import * as Slot from "@rn-primitives/slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { Platform, Text as RNText, type Role } from "react-native";
+
 import { cn } from "../../lib/cn";
 
 const textVariants = cva(
@@ -48,8 +49,14 @@ const textVariants = cva(
   },
 );
 
+/**
+ *
+ */
 type TextVariantProps = VariantProps<typeof textVariants>;
 
+/**
+ *
+ */
 type TextVariant = NonNullable<TextVariantProps["variant"]>;
 
 const ROLE: Partial<Record<TextVariant, Role>> = {
@@ -57,8 +64,8 @@ const ROLE: Partial<Record<TextVariant, Role>> = {
   h2: "heading",
   h3: "heading",
   h4: "heading",
-  blockquote: Platform.select({ web: "blockquote" as Role }),
-  code: Platform.select({ web: "code" as Role }),
+  blockquote: Platform.select<Role>({ web: "blockquote" }),
+  code: Platform.select<Role>({ web: "code" }),
 };
 
 const ARIA_LEVEL: Partial<Record<TextVariant, string>> = {
@@ -70,6 +77,9 @@ const ARIA_LEVEL: Partial<Record<TextVariant, string>> = {
 
 const TextClassContext = React.createContext<string | undefined>(undefined);
 
+/**
+ *
+ */
 function Text({
   className,
   asChild = false,

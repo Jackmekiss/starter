@@ -11,8 +11,12 @@ import autoMergeLevel1 from "redux-persist/es/stateReconciler/autoMergeLevel1";
 import { FakeAuthBaseQuery } from "../../core/auth/adapters/fake/fake-auth-base-query";
 import { InMemoryAuthBaseQuery } from "../../core/auth/adapters/in-memory/in-memory-auth-base-query";
 import { createAuthAPIOptions } from "../../core/auth/apis/auth-api";
-import { AuthBaseQuery } from "../../core/auth/gateways/auth-base-query";
+import type { AuthBaseQuery } from "../../core/auth/gateways/auth-base-query";
 import { createStore } from "../../core/init-redux-store";
+
+type PersistedQueryState = {
+  queries?: Record<string, { status?: QueryStatus }>;
+} & Record<string, unknown>;
 
 let authBaseQuery: AuthBaseQuery;
 
@@ -25,7 +29,7 @@ if (appMode === "fake") {
 }
 
 const whitelistFulfilledQueries = createTransform(
-  (inboundState: any) => {
+  (inboundState: PersistedQueryState) => {
     if (inboundState?.queries) {
       return {
         ...inboundState,
@@ -36,7 +40,7 @@ const whitelistFulfilledQueries = createTransform(
 
     return inboundState;
   },
-  (outboundState: any) => {
+  (outboundState: PersistedQueryState) => {
     if (outboundState?.queries) {
       return {
         ...outboundState,

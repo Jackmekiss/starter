@@ -1,27 +1,29 @@
-import { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
-import { AuthResult, LoginPayload } from "../../apis/types";
+import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
+import type { AuthResult, LoginPayload } from "../../apis/types";
 import { setAuth, setError, setLoading } from "../../domain/slice";
 
-export const loginBuilder = (
+export function loginBuilder(
   build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
-) => ({
-  login: build.mutation<AuthResult, LoginPayload>({
-    query: (payload) => ({
-      url: "/login",
-      method: "POST",
-      body: payload,
+) {
+  return {
+    login: build.mutation<AuthResult, LoginPayload>({
+      query: (payload) => ({
+        url: "/login",
+        method: "POST",
+        body: payload,
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        dispatch(setLoading());
+
+        const { data } = await queryFulfilled;
+
+        if (data.success) {
+          dispatch(setAuth(data));
+          return;
+        }
+
+        dispatch(setError(data.error));
+      },
     }),
-    async onQueryStarted(_, { dispatch, queryFulfilled }) {
-      dispatch(setLoading());
-
-      const { data } = await queryFulfilled;
-
-      if (data.success) {
-        dispatch(setAuth(data));
-        return;
-      }
-
-      dispatch(setError(data.error));
-    },
-  }),
-});
+  };
+}

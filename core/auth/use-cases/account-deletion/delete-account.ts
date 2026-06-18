@@ -1,19 +1,21 @@
-import { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
+import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import { clearAuth, markLogoutRequested } from "../../domain/slice";
 
-export const deleteAccountBuilder = (
+export function deleteAccountBuilder(
   build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
-) => ({
-  deleteAccount: build.mutation<void, void>({
-    query: () => ({
-      url: "/delete",
-      method: "POST",
-    }),
-    async onQueryStarted(_, { dispatch, queryFulfilled }) {
-      dispatch(markLogoutRequested());
-      await queryFulfilled;
+) {
+  return {
+    deleteAccount: build.mutation<void, void>({
+      query: () => ({
+        url: "/delete",
+        method: "POST",
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        dispatch(markLogoutRequested());
+        await queryFulfilled;
 
-      dispatch(clearAuth());
-    },
-  }),
-});
+        dispatch(clearAuth());
+      },
+    }),
+  };
+}

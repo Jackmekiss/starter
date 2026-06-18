@@ -1,19 +1,21 @@
-import { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
-import { SubscriptionOffering } from "../../domain/subscription-offering";
+import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
+import type { SubscriptionOffering } from "../../domain/subscription-offering";
 import { updateSubscriptionOfferings } from "../../domain/slice";
 
-export const retrieveSubscriptionOfferingsBuilder = (
+export function retrieveSubscriptionOfferingsBuilder(
   build: EndpointBuilder<BaseQueryFn, never, "subscriptionAPI">,
-) => ({
-  retrieveSubscriptionOfferings: build.query<SubscriptionOffering[], void>({
-    query: () => ({
-      url: "/offerings/retrieve",
-      method: "GET",
-    }),
-    async onQueryStarted(_, { dispatch, queryFulfilled }) {
-      const { data } = await queryFulfilled;
+) {
+  return {
+    retrieveSubscriptionOfferings: build.query<SubscriptionOffering[], void>({
+      query: () => ({
+        url: "/offerings/retrieve",
+        method: "GET",
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
 
-      dispatch(updateSubscriptionOfferings(data));
-    },
-  }),
-});
+        dispatch(updateSubscriptionOfferings(data));
+      },
+    }),
+  };
+}

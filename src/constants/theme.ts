@@ -55,7 +55,7 @@ export const THEME = {
   },
 };
 
-export const NAV_THEME: Record<"light" | "dark", any> = {
+export const NAV_THEME: Record<"light" | "dark", typeof DefaultTheme> = {
   light: {
     ...DefaultTheme,
     colors: {

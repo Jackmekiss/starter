@@ -1,10 +1,10 @@
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../core/init-redux-store";
+import type { RootState } from "../../../core/init-redux-store";
 import useSessionStore from "../../stores/session-store";
 
-export const useAppReadiness = (isRetrievingAccount: boolean) => {
+export function useAppReadiness(isRetrievingAccount: boolean) {
   const [isReady, setIsReady] = useState(false);
   const account = useSelector((state: RootState) => state.auth.account);
   const authStatus = useSelector((state: RootState) => state.auth.status);
@@ -31,4 +31,4 @@ export const useAppReadiness = (isRetrievingAccount: boolean) => {
       SplashScreen.hide();
     }
   }, [isReady]);
-};
+}

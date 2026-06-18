@@ -1,5 +1,5 @@
 import { produce } from "immer";
-import {
+import type {
   AuthActionResult,
   AuthResult,
   LoginPayload,
@@ -8,20 +8,20 @@ import {
   ResetPasswordPayload,
   UpdateAccountPayload,
 } from "../../apis/types";
-import { Account } from "../../domain/account";
-import { AuthUser, Session } from "../../domain/auth";
+import type { Account } from "../../domain/account";
+import type { AuthUser, Session } from "../../domain/auth";
 import { AuthBaseQuery } from "../../gateways/auth-base-query";
 
-const resolveNextOnboardingStatus = (
+function resolveNextOnboardingStatus(
   currentStatus: Account["onboardingStatus"],
   payload: UpdateAccountPayload,
-) => {
+) {
   if (payload.onboardingStatus !== undefined) {
     return payload.onboardingStatus;
   }
 
   return currentStatus;
-};
+}
 
 let account: Account | null = {
   id: "1",

@@ -1,5 +1,5 @@
-import { Account } from "../domain/account";
-import { AuthUser, Session } from "../domain/auth";
+import type { Account } from "../domain/account";
+import type { AuthUser, Session } from "../domain/auth";
 
 export interface RegisterPayload {
   email: string;

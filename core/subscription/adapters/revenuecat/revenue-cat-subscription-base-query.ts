@@ -1,15 +1,17 @@
-import {
+import type {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
 } from "../../apis/types";
-import { Subscription } from "../../domain/subscription";
+import type { Subscription } from "../../domain/subscription";
 import { SubscriptionBaseQuery } from "../../gateways/subscription-base-query";
-import { RevenueCatSubscriptionRuntime } from "./revenue-cat-subscription-runtime";
+import type { RevenueCatSubscriptionRuntime } from "./revenue-cat-subscription-runtime";
 
-const unavailableResult = (message: string): SubscriptionActionResult => ({
-  success: false,
-  errorMessage: message,
-});
+function unavailableResult(message: string): SubscriptionActionResult {
+  return {
+    success: false,
+    errorMessage: message,
+  };
+}
 
 export class RevenueCatSubscriptionBaseQuery extends SubscriptionBaseQuery {
   constructor(private readonly runtime: RevenueCatSubscriptionRuntime) {

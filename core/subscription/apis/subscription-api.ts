@@ -5,16 +5,18 @@ import { purchaseSubscriptionBuilder } from "../use-cases/subscription-purchase/
 import { restoreSubscriptionPurchasesBuilder } from "../use-cases/subscription-restore/restore-subscription-purchases";
 import { retrieveSubscriptionStatusBuilder } from "../use-cases/subscription-status-retrieval/retrieve-subscription-status";
 
-export const createSubscriptionAPIOptions = (baseQuery: BaseQueryFn) => ({
-  baseQuery,
-  reducerPath: "subscriptionAPI",
-  endpoints: (
-    builder: EndpointBuilder<BaseQueryFn, never, "subscriptionAPI">,
-  ) => ({
-    ...retrieveSubscriptionOfferingsBuilder(builder),
-    ...purchaseSubscriptionBuilder(builder),
-    ...restoreSubscriptionPurchasesBuilder(builder),
-    ...openSubscriptionManagementBuilder(builder),
-    ...retrieveSubscriptionStatusBuilder(builder),
-  }),
-});
+export function createSubscriptionAPIOptions(baseQuery: BaseQueryFn) {
+  return {
+    baseQuery,
+    reducerPath: "subscriptionAPI",
+    endpoints: (
+      builder: EndpointBuilder<BaseQueryFn, never, "subscriptionAPI">,
+    ) => ({
+      ...retrieveSubscriptionOfferingsBuilder(builder),
+      ...purchaseSubscriptionBuilder(builder),
+      ...restoreSubscriptionPurchasesBuilder(builder),
+      ...openSubscriptionManagementBuilder(builder),
+      ...retrieveSubscriptionStatusBuilder(builder),
+    }),
+  };
+}

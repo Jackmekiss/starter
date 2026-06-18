@@ -1,17 +1,24 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { RootState } from "../../../init-redux-store";
+import type { RootState } from "../../../init-redux-store";
 import { subscriptionOfferingAdapter } from "../../domain/slice";
+import type { Subscription } from "../../domain/subscription";
 
 export const subscriptionOfferingSelectors =
   subscriptionOfferingAdapter.getSelectors(
     (state: RootState) => state.subscriptionOfferings,
   );
 
-export const selectCurrentSubscription = (state: RootState) =>
-  state.subscription.subscription;
+export function selectCurrentSubscription(
+  state: RootState,
+): Subscription | null {
+  return state.subscription.subscription;
+}
 
-export const selectSubscriptionErrorMessage = (state: RootState) =>
-  state.subscription.errorMessage;
+export function selectSubscriptionErrorMessage(
+  state: RootState,
+): string | null {
+  return state.subscription.errorMessage;
+}
 
 export const selectSubscriptionOfferings =
   subscriptionOfferingSelectors.selectAll;

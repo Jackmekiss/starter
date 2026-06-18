@@ -11,21 +11,25 @@ import { resetPasswordBuilder } from "../use-cases/password-reset-completion/res
 import { requestPasswordResetBuilder } from "../use-cases/password-reset-request/request-password-reset";
 import { registerBuilder } from "../use-cases/registration/register";
 
-export const createAuthAPIOptions = (baseQuery: BaseQueryFn) => ({
-  baseQuery,
-  reducerPath: "authAPI",
-  tagTypes: ["Auth"] as const,
-  endpoints: (builder: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">) => ({
-    ...retrieveAccountBuilder(builder),
-    ...updateAccountBuilder(builder),
-    ...completeOnboardingBuilder(builder),
-    ...loginBuilder(builder),
-    ...loginWithGoogleBuilder(builder),
-    ...loginWithAppleBuilder(builder),
-    ...registerBuilder(builder),
-    ...requestPasswordResetBuilder(builder),
-    ...resetPasswordBuilder(builder),
-    ...logoutBuilder(builder),
-    ...deleteAccountBuilder(builder),
-  }),
-});
+const authTagTypes: ["Auth"] = ["Auth"];
+
+export function createAuthAPIOptions(baseQuery: BaseQueryFn) {
+  return {
+    baseQuery,
+    reducerPath: "authAPI",
+    tagTypes: authTagTypes,
+    endpoints: (builder: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">) => ({
+      ...retrieveAccountBuilder(builder),
+      ...updateAccountBuilder(builder),
+      ...completeOnboardingBuilder(builder),
+      ...loginBuilder(builder),
+      ...loginWithGoogleBuilder(builder),
+      ...loginWithAppleBuilder(builder),
+      ...registerBuilder(builder),
+      ...requestPasswordResetBuilder(builder),
+      ...resetPasswordBuilder(builder),
+      ...logoutBuilder(builder),
+      ...deleteAccountBuilder(builder),
+    }),
+  };
+}

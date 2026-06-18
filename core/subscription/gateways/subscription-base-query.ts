@@ -1,42 +1,42 @@
-import { BaseQueryFn } from "@reduxjs/toolkit/query";
-import {
+import type { BaseQueryFn } from "@reduxjs/toolkit/query";
+import type {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
 } from "../apis/types";
-import { Subscription } from "../domain/subscription";
-import { SubscriptionOffering } from "../domain/subscription-offering";
+import type { Subscription } from "../domain/subscription";
+import type { SubscriptionOffering } from "../domain/subscription-offering";
+
+type SubscriptionRequest =
+  | { url: "/offerings/retrieve"; method: "GET"; body?: undefined }
+  | { url: "/purchase"; method: "POST"; body: PurchaseSubscriptionPayload }
+  | { url: "/restore"; method: "POST"; body?: undefined }
+  | { url: "/manage"; method: "POST"; body?: undefined }
+  | { url: "/status/retrieve"; method: "GET"; body?: undefined };
 
 export abstract class SubscriptionBaseQuery {
-  public handle =
-    (): BaseQueryFn<{
-      url: string;
-      method: "GET" | "POST";
-      body: any;
-      params: any;
-    }> =>
-    async ({ url, body }) => {
-      if (url === "/offerings/retrieve") {
-        return { data: await this.retrieveSubscriptionOfferings() };
-      }
+  public handle = (): BaseQueryFn<SubscriptionRequest> => async (request) => {
+    if (request.url === "/offerings/retrieve") {
+      return { data: await this.retrieveSubscriptionOfferings() };
+    }
 
-      if (url === "/purchase") {
-        return { data: await this.purchaseSubscription(body) };
-      }
+    if (request.url === "/purchase") {
+      return { data: await this.purchaseSubscription(request.body) };
+    }
 
-      if (url === "/restore") {
-        return { data: await this.restoreSubscriptionPurchases() };
-      }
+    if (request.url === "/restore") {
+      return { data: await this.restoreSubscriptionPurchases() };
+    }
 
-      if (url === "/manage") {
-        return { data: await this.openSubscriptionManagement() };
-      }
+    if (request.url === "/manage") {
+      return { data: await this.openSubscriptionManagement() };
+    }
 
-      if (url === "/status/retrieve") {
-        return { data: await this.retrieveSubscriptionStatus() };
-      }
+    if (request.url === "/status/retrieve") {
+      return { data: await this.retrieveSubscriptionStatus() };
+    }
 
-      return { data: { success: false, errorMessage: "Unknown action." } };
-    };
+    return { data: { success: false, errorMessage: "Unknown action." } };
+  };
 
   abstract retrieveSubscriptionOfferings(): Promise<SubscriptionOffering[]>;
 

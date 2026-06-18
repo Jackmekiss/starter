@@ -1,5 +1,5 @@
 import { sleep } from "../../../lib/sleep";
-import {
+import type {
   AuthActionResult,
   AuthResult,
   LoginPayload,
@@ -8,7 +8,7 @@ import {
   ResetPasswordPayload,
   UpdateAccountPayload,
 } from "../../apis/types";
-import { Account } from "../../domain/account";
+import type { Account } from "../../domain/account";
 import { AuthBaseQuery } from "../../gateways/auth-base-query";
 import { InMemoryAuthBaseQuery } from "../in-memory/in-memory-auth-base-query";
 

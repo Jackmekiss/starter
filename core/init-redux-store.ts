@@ -1,7 +1,9 @@
 import {
-  Action,
   combineReducers,
   configureStore,
+} from "@reduxjs/toolkit";
+import type {
+  Action,
   Middleware,
   Reducer,
   ThunkDispatch,
@@ -15,6 +17,7 @@ import {
   REGISTER,
   REHYDRATE,
 } from "redux-persist";
+import type { PersistConfig as ReduxPersistConfig } from "redux-persist";
 import { authSlice } from "./auth/domain/slice";
 import {
   subscriptionOfferingSlice,
@@ -47,27 +50,24 @@ const createReducers = (apis: Partial<Apis>) =>
     [subscriptionSlice.name]: subscriptionSlice.reducer,
   });
 
-export interface PersistConfig {
-  key: string;
-  storage: any;
-}
+export type PersistConfig = Pick<ReduxPersistConfig<RootState>, "key" | "storage">;
 
-export const createStore = (
+export function createStore(
   apis: Partial<Apis> = {},
   dependencies: Partial<Dependencies> = {},
   preloadedState?: Partial<RootState>,
   persistConfig?: PersistConfig,
   customMiddlewares: Middleware[] = [],
-) => {
+) {
   let rootReducer = createReducers(apis);
 
   if (persistConfig) {
-    rootReducer = persistReducer<any>(persistConfig, createReducers(apis));
+    rootReducer = persistReducer<RootState>(persistConfig, createReducers(apis));
   }
 
-  const apiMiddlewares = Object.values(apis).flatMap(
+  const apiMiddlewares: Middleware[] = Object.values(apis).map(
     (api) => api.middleware,
-  ) as Middleware[];
+  );
 
   const store = configureStore({
     reducer: rootReducer,
@@ -82,11 +82,11 @@ export const createStore = (
       })
         .concat(apiMiddlewares)
         .concat(...customMiddlewares),
-    preloadedState: preloadedState as any,
+    preloadedState,
   });
 
   return store;
-};
+}
 
 export type RootState = ReturnType<ReturnType<typeof createReducers>>;
 
