@@ -4,6 +4,7 @@ import type {
   RequestPasswordResetPayload,
 } from "../../apis/types";
 
+/** Builds the endpoint that requests a password reset email. */
 export function requestPasswordResetBuilder(
   build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
 ) {

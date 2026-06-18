@@ -8,12 +8,14 @@ export const subscriptionOfferingSelectors =
     (state: RootState) => state.subscriptionOfferings,
   );
 
+/** Returns the current subscription entitlement, if one is known. */
 export function selectCurrentSubscription(
   state: RootState,
 ): Subscription | null {
   return state.subscription.subscription;
 }
 
+/** Returns the latest subscription action error message for UI display. */
 export function selectSubscriptionErrorMessage(
   state: RootState,
 ): string | null {

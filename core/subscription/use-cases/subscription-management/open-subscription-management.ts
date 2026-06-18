@@ -2,6 +2,7 @@ import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import type { SubscriptionActionResult } from "../../apis/types";
 import { setSubscription, setSubscriptionError } from "../../domain/slice";
 
+/** Builds the endpoint that opens or refreshes subscription management state. */
 export function openSubscriptionManagementBuilder(
   build: EndpointBuilder<BaseQueryFn, never, "subscriptionAPI">,
 ) {

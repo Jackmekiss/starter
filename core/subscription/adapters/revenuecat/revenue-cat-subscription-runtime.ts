@@ -2,6 +2,7 @@ import type { Subscription } from "../../domain/subscription";
 import type { SubscriptionOffering } from "../../domain/subscription-offering";
 import type { SubscriptionPlan } from "../../domain/subscription-plan";
 
+/** Runtime bridge that isolates RevenueCat SDK details from subscription use-cases. */
 export interface RevenueCatSubscriptionRuntime {
   isConfigured(): boolean;
   configure(appUserId?: string): Promise<void>;

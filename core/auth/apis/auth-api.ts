@@ -13,6 +13,7 @@ import { registerBuilder } from "../use-cases/registration/register";
 
 const authTagTypes: ["Auth"] = ["Auth"];
 
+/** Builds RTK Query endpoint options for all authentication use-cases. */
 export function createAuthAPIOptions(baseQuery: BaseQueryFn) {
   return {
     baseQuery,

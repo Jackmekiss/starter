@@ -5,6 +5,7 @@ import type {
 } from "../../apis/types";
 import { setSubscription, setSubscriptionError } from "../../domain/slice";
 
+/** Builds the endpoint that purchases a selected premium plan. */
 export function purchaseSubscriptionBuilder(
   build: EndpointBuilder<BaseQueryFn, never, "subscriptionAPI">,
 ) {

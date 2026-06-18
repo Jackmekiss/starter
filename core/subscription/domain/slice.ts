@@ -9,6 +9,7 @@ import type { SubscriptionOffering } from "./subscription-offering";
 export const subscriptionOfferingAdapter =
   createEntityAdapter<SubscriptionOffering>();
 
+/** Durable subscription state used to gate premium behavior and errors. */
 export interface SubscriptionState {
   subscription: Subscription | null;
   errorMessage: string | null;

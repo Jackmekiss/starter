@@ -2,6 +2,7 @@ import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import type { AuthResult } from "../../apis/types";
 import { setAuth, setError, setLoading } from "../../domain/slice";
 
+/** Builds the endpoint that authenticates through Google Sign In. */
 export function loginWithGoogleBuilder(
   build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
 ) {

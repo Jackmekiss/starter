@@ -53,6 +53,7 @@ const createFailureResult = (message: string): SubscriptionActionResult => ({
   errorMessage: message,
 });
 
+/** In-memory subscription gateway for local premium status and purchase flows. */
 export class InMemorySubscriptionBaseQuery extends SubscriptionBaseQuery {
   async retrieveSubscriptionOfferings(): Promise<SubscriptionOffering[]> {
     return defaultSubscriptionOfferings;

@@ -1,6 +1,7 @@
 import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import { clearAuth, markLogoutRequested } from "../../domain/slice";
 
+/** Builds the endpoint that logs out and clears local auth state. */
 export function logoutBuilder(
   build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
 ) {

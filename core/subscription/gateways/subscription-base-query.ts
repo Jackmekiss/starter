@@ -13,6 +13,7 @@ type SubscriptionRequest =
   | { url: "/manage"; method: "POST"; body?: undefined }
   | { url: "/status/retrieve"; method: "GET"; body?: undefined };
 
+/** Gateway contract used by subscription endpoints to swap billing adapters. */
 export abstract class SubscriptionBaseQuery {
   public handle = (): BaseQueryFn<SubscriptionRequest> => async (request) => {
     if (request.url === "/offerings/retrieve") {

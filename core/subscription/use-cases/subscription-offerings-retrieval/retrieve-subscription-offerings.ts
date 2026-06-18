@@ -2,6 +2,7 @@ import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import type { SubscriptionOffering } from "../../domain/subscription-offering";
 import { updateSubscriptionOfferings } from "../../domain/slice";
 
+/** Builds the endpoint that retrieves available premium offerings. */
 export function retrieveSubscriptionOfferingsBuilder(
   build: EndpointBuilder<BaseQueryFn, never, "subscriptionAPI">,
 ) {

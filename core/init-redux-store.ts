@@ -24,17 +24,20 @@ import {
   subscriptionSlice,
 } from "./subscription/domain/slice";
 
+/** RTK Query API shape required for dynamic reducer and middleware wiring. */
 export interface StoreApi {
   reducerPath: string;
   reducer: Reducer;
   middleware: Middleware;
 }
 
+/** Bounded-context APIs that can be attached to the Redux store. */
 export interface Apis {
   authAPI: StoreApi;
   subscriptionAPI: StoreApi;
 }
 
+/** Runtime dependencies made available to thunks and future use-cases. */
 export interface Dependencies {}
 
 const createReducers = (apis: Partial<Apis>) =>
@@ -50,8 +53,13 @@ const createReducers = (apis: Partial<Apis>) =>
     [subscriptionSlice.name]: subscriptionSlice.reducer,
   });
 
-export type PersistConfig = Pick<ReduxPersistConfig<RootState>, "key" | "storage">;
+/** Persist settings accepted by the starter store factory. */
+export type PersistConfig = Pick<
+  ReduxPersistConfig<RootState>,
+  "key" | "storage"
+>;
 
+/** Creates the Redux store with optional bounded-context APIs and persistence. */
 export function createStore(
   apis: Partial<Apis> = {},
   dependencies: Partial<Dependencies> = {},
@@ -88,8 +96,10 @@ export function createStore(
   return store;
 }
 
+/** Complete Redux state shape produced by the starter reducers. */
 export type RootState = ReturnType<ReturnType<typeof createReducers>>;
 
+/** Store instance with the domain dependency type attached to dispatch. */
 export type ReduxStore = ReturnType<typeof createStore> & {
   dispatch: ThunkDispatch<RootState, Dependencies, Action>;
 };

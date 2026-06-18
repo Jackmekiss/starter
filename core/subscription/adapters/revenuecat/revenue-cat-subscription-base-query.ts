@@ -13,6 +13,7 @@ function unavailableResult(message: string): SubscriptionActionResult {
   };
 }
 
+/** RevenueCat-backed gateway for premium offerings, purchases, and restore flows. */
 export class RevenueCatSubscriptionBaseQuery extends SubscriptionBaseQuery {
   constructor(private readonly runtime: RevenueCatSubscriptionRuntime) {
     super();
