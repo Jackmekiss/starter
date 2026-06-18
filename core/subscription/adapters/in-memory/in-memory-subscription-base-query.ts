@@ -1,10 +1,11 @@
+import { SubscriptionBaseQuery } from "../../gateways/subscription-base-query";
+
 import type {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
 } from "../../apis/types";
 import type { Subscription } from "../../domain/subscription";
 import type { SubscriptionOffering } from "../../domain/subscription-offering";
-import { SubscriptionBaseQuery } from "../../gateways/subscription-base-query";
 
 const defaultSubscriptionOfferings: SubscriptionOffering[] = [
   {
@@ -33,25 +34,29 @@ let currentSubscription: Subscription = {
   cancelAtPeriodEnd: false,
 };
 
-const createPremiumSubscription = (
+function createPremiumSubscription(
   plan: PurchaseSubscriptionPayload["plan"],
-): Subscription => ({
-  tier: "premium",
-  plan,
-  status: "active",
-  cancelAtPeriodEnd: false,
-  currentPeriodEnd: new Date(
-    Date.now() +
-      (plan === "annual"
-        ? 1000 * 60 * 60 * 24 * 365
-        : 1000 * 60 * 60 * 24 * 30),
-  ).toISOString(),
-});
+): Subscription {
+  return {
+    tier: "premium",
+    plan,
+    status: "active",
+    cancelAtPeriodEnd: false,
+    currentPeriodEnd: new Date(
+      Date.now() +
+        (plan === "annual"
+          ? 1000 * 60 * 60 * 24 * 365
+          : 1000 * 60 * 60 * 24 * 30),
+    ).toISOString(),
+  };
+}
 
-const createFailureResult = (message: string): SubscriptionActionResult => ({
-  success: false,
-  errorMessage: message,
-});
+function createFailureResult(message: string): SubscriptionActionResult {
+  return {
+    success: false,
+    errorMessage: message,
+  };
+}
 
 /**
  * In-memory subscription gateway for local premium status and purchase flows.

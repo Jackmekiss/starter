@@ -1,9 +1,10 @@
+import { SubscriptionBaseQuery } from "../../gateways/subscription-base-query";
+
 import type {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
 } from "../../apis/types";
 import type { Subscription } from "../../domain/subscription";
-import { SubscriptionBaseQuery } from "../../gateways/subscription-base-query";
 import type { RevenueCatSubscriptionRuntime } from "./revenue-cat-subscription-runtime";
 
 function unavailableResult(message: string): SubscriptionActionResult {
