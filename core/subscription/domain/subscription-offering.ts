@@ -1,4 +1,4 @@
-import { SubscriptionPlan } from "./subscriptionPlan";
+import { SubscriptionPlan } from "./subscription-plan";
 
 export interface SubscriptionOffering {
   id: string;

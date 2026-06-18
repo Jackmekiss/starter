@@ -1,8 +1,8 @@
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../core/initReduxStore";
-import useSessionStore from "../../stores/sessionStore";
+import { RootState } from "../../../core/init-redux-store";
+import useSessionStore from "../../stores/session-store";
 
 export const useAppReadiness = (isRetrievingAccount: boolean) => {
   const [isReady, setIsReady] = useState(false);

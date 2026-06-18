@@ -1,5 +1,5 @@
 import { Subscription } from "../domain/subscription";
-import { SubscriptionPlan } from "../domain/subscriptionPlan";
+import { SubscriptionPlan } from "../domain/subscription-plan";
 
 export interface PurchaseSubscriptionPayload {
   plan: SubscriptionPlan;

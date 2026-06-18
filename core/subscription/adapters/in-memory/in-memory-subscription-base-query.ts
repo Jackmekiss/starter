@@ -3,8 +3,8 @@ import {
   SubscriptionActionResult,
 } from "../../apis/types";
 import { Subscription } from "../../domain/subscription";
-import { SubscriptionOffering } from "../../domain/subscriptionOffering";
-import { SubscriptionBaseQuery } from "../../gateways/SubscriptionBaseQuery";
+import { SubscriptionOffering } from "../../domain/subscription-offering";
+import { SubscriptionBaseQuery } from "../../gateways/subscription-base-query";
 
 const defaultSubscriptionOfferings: SubscriptionOffering[] = [
   {

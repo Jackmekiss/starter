@@ -1,10 +1,10 @@
 import { Stack } from "expo-router";
 import React from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../../core/initReduxStore";
-import { useAppReadiness } from "../hooks/app-shell/use-app-readiness";
+import { RootState } from "../../core/init-redux-store";
+import { useAppReadiness } from "../hooks/app-shell/useAppReadiness";
 
-import useSessionStore from "../stores/sessionStore";
+import useSessionStore from "../stores/session-store";
 import { useRetrieveAccountQuery } from "./app-runtime";
 
 export function RootNavigator() {

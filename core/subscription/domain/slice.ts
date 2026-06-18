@@ -4,7 +4,7 @@ import {
   EntityState,
 } from "@reduxjs/toolkit";
 import { Subscription } from "./subscription";
-import { SubscriptionOffering } from "./subscriptionOffering";
+import { SubscriptionOffering } from "./subscription-offering";
 
 export const subscriptionOfferingAdapter =
   createEntityAdapter<SubscriptionOffering>();

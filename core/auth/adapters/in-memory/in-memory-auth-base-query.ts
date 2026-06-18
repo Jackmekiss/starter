@@ -10,7 +10,7 @@ import {
 } from "../../apis/types";
 import { Account } from "../../domain/account";
 import { AuthUser, Session } from "../../domain/auth";
-import { AuthBaseQuery } from "../../gateways/AuthBaseQuery";
+import { AuthBaseQuery } from "../../gateways/auth-base-query";
 
 const resolveNextOnboardingStatus = (
   currentStatus: Account["onboardingStatus"],

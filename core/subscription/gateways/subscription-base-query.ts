@@ -4,7 +4,7 @@ import {
   SubscriptionActionResult,
 } from "../apis/types";
 import { Subscription } from "../domain/subscription";
-import { SubscriptionOffering } from "../domain/subscriptionOffering";
+import { SubscriptionOffering } from "../domain/subscription-offering";
 
 export abstract class SubscriptionBaseQuery {
   public handle =

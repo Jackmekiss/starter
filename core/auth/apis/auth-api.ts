@@ -1,14 +1,14 @@
 import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
-import { deleteAccountBuilder } from "../use-cases/account-deletion/deleteAccount";
-import { updateAccountBuilder } from "../use-cases/account-modification/updateAccount";
-import { retrieveAccountBuilder } from "../use-cases/account-retrieval/retrieveAccount";
-import { loginWithAppleBuilder } from "../use-cases/apple-login/loginWithApple";
-import { loginWithGoogleBuilder } from "../use-cases/google-login/loginWithGoogle";
+import { deleteAccountBuilder } from "../use-cases/account-deletion/delete-account";
+import { updateAccountBuilder } from "../use-cases/account-modification/update-account";
+import { retrieveAccountBuilder } from "../use-cases/account-retrieval/retrieve-account";
+import { loginWithAppleBuilder } from "../use-cases/apple-login/login-with-apple";
+import { loginWithGoogleBuilder } from "../use-cases/google-login/login-with-google";
 import { loginBuilder } from "../use-cases/log-in/login";
 import { logoutBuilder } from "../use-cases/log-out/logout";
-import { completeOnboardingBuilder } from "../use-cases/onboarding-completion/completeOnboarding";
-import { resetPasswordBuilder } from "../use-cases/password-reset-completion/resetPassword";
-import { requestPasswordResetBuilder } from "../use-cases/password-reset-request/requestPasswordReset";
+import { completeOnboardingBuilder } from "../use-cases/onboarding-completion/complete-onboarding";
+import { resetPasswordBuilder } from "../use-cases/password-reset-completion/reset-password";
+import { requestPasswordResetBuilder } from "../use-cases/password-reset-request/request-password-reset";
 import { registerBuilder } from "../use-cases/registration/register";
 
 export const createAuthAPIOptions = (baseQuery: BaseQueryFn) => ({

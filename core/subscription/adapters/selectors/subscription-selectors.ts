@@ -1,5 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { RootState } from "../../../initReduxStore";
+import { RootState } from "../../../init-redux-store";
 import { subscriptionOfferingAdapter } from "../../domain/slice";
 
 export const subscriptionOfferingSelectors =

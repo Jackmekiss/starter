@@ -1,5 +1,5 @@
 import { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
-import { SubscriptionOffering } from "../../domain/subscriptionOffering";
+import { SubscriptionOffering } from "../../domain/subscription-offering";
 import { updateSubscriptionOfferings } from "../../domain/slice";
 
 export const retrieveSubscriptionOfferingsBuilder = (

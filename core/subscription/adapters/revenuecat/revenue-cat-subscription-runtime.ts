@@ -1,6 +1,6 @@
 import { Subscription } from "../../domain/subscription";
-import { SubscriptionOffering } from "../../domain/subscriptionOffering";
-import { SubscriptionPlan } from "../../domain/subscriptionPlan";
+import { SubscriptionOffering } from "../../domain/subscription-offering";
+import { SubscriptionPlan } from "../../domain/subscription-plan";
 
 export interface RevenueCatSubscriptionRuntime {
   isConfigured(): boolean;

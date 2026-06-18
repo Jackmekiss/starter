@@ -1,5 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { RootState } from "../../../initReduxStore";
+import { RootState } from "../../../init-redux-store";
 import { Account } from "../../domain/account";
 
 export const selectIsConnected = (state: RootState): boolean =>

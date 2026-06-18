@@ -3,8 +3,8 @@ import {
   SubscriptionActionResult,
 } from "../../apis/types";
 import { Subscription } from "../../domain/subscription";
-import { SubscriptionBaseQuery } from "../../gateways/SubscriptionBaseQuery";
-import { RevenueCatSubscriptionRuntime } from "./revenueCatSubscriptionRuntime";
+import { SubscriptionBaseQuery } from "../../gateways/subscription-base-query";
+import { RevenueCatSubscriptionRuntime } from "./revenue-cat-subscription-runtime";
 
 const unavailableResult = (message: string): SubscriptionActionResult => ({
   success: false,

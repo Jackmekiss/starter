@@ -9,8 +9,8 @@ import {
   UpdateAccountPayload,
 } from "../../apis/types";
 import { Account } from "../../domain/account";
-import { AuthBaseQuery } from "../../gateways/AuthBaseQuery";
-import { InMemoryAuthBaseQuery } from "../in-memory/InMemoryAuthBaseQuery";
+import { AuthBaseQuery } from "../../gateways/auth-base-query";
+import { InMemoryAuthBaseQuery } from "../in-memory/in-memory-auth-base-query";
 
 export class FakeAuthBaseQuery extends AuthBaseQuery {
   private readonly inMemoryBaseQuery = new InMemoryAuthBaseQuery();
