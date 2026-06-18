@@ -1,12 +1,19 @@
+/**
+ * THIS FILE WAS AUTO-GENERATED.
+ * PLEASE DO NOT EDIT IT MANUALLY.
+ * ===============================
+ * IF YOU COPY THIS INTO AN ESLINT CONFIG, REMOVE THIS COMMENT BLOCK.
+ */
+
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { includeIgnoreFile } from "@eslint/compat";
 import js from "@eslint/js";
 import { configs, plugins } from "eslint-config-airbnb-extended";
-import { rules as prettierConfigRules } from "eslint-config-prettier";
-import jsdocPlugin from "eslint-plugin-jsdoc";
 import oxlintPlugin from "eslint-plugin-oxlint";
+import jsdocPlugin from "eslint-plugin-jsdoc";
+import { rules as prettierConfigRules } from "eslint-config-prettier";
 import prettierPlugin from "eslint-plugin-prettier";
 import { defineConfig } from "eslint/config";
 
@@ -14,12 +21,16 @@ const configDirectoryPath = path.dirname(fileURLToPath(import.meta.url));
 const gitignorePath = path.resolve(configDirectoryPath, ".gitignore");
 
 const jsConfig = defineConfig([
+  // ESLint recommended config
   {
     name: "js/config",
     ...js.configs.recommended,
   },
+  // Stylistic plugin
   plugins.stylistic,
+  // Import X plugin
   plugins.importX,
+  // Airbnb base recommended config
   ...configs.base.recommended,
   {
     rules: {
@@ -43,7 +54,18 @@ const jsConfig = defineConfig([
       ],
       "no-await-in-loop": "off",
       "no-continue": "off",
-      "id-denylist": ["error", "e", "err", "res", "req", "cfg", "tmp", "val"],
+      "id-denylist": [
+        "error",
+        "ev",
+        "e",
+        "err",
+        "res",
+        "req",
+        "ctx",
+        "cfg",
+        "tmp",
+        "val",
+      ],
       "import-x/order": [
         "warn",
         {
@@ -66,9 +88,13 @@ const jsConfig = defineConfig([
 ]);
 
 const reactConfig = defineConfig([
+  // React plugin
   plugins.react,
+  // React hooks plugin
   plugins.reactHooks,
+  // React JSX A11y plugin
   plugins.reactA11y,
+  // Airbnb React recommended config
   ...configs.react.recommended,
   {
     rules: {
@@ -85,8 +111,11 @@ const reactConfig = defineConfig([
 ]);
 
 const typescriptConfig = defineConfig([
+  // TypeScript ESLint plugin
   plugins.typescriptEslint,
+  // Airbnb base TypeScript config
   ...configs.base.typescript,
+  // Airbnb React TypeScript config
   ...configs.react.typescript,
   {
     rules: {
@@ -149,7 +178,7 @@ const typescriptConfig = defineConfig([
 const documentationConfig = defineConfig([
   {
     name: "documentation/jsdoc",
-    files: ["core/**/*.{js,jsx,ts,tsx}"],
+    files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
       jsdoc: jsdocPlugin,
     },
@@ -170,12 +199,9 @@ const documentationConfig = defineConfig([
       "jsdoc/require-jsdoc": [
         "warn",
         {
-          publicOnly: {
-            esm: true,
-          },
           contexts: [
-            "ClassDeclaration",
             "FunctionDeclaration",
+            "MethodDefinition",
             "TSInterfaceDeclaration",
             "TSTypeAliasDeclaration",
             "TSEnumDeclaration",
@@ -197,12 +223,14 @@ const scriptsConfig = defineConfig([
 ]);
 
 const prettierConfig = defineConfig([
+  // Prettier plugin
   {
     name: "prettier/plugin/config",
     plugins: {
       prettier: prettierPlugin,
     },
   },
+  // Prettier config
   {
     name: "prettier/config",
     rules: {
@@ -213,16 +241,24 @@ const prettierConfig = defineConfig([
 ]);
 
 export default defineConfig([
+  // Ignore files and folders listed in .gitignore
   includeIgnoreFile(gitignorePath),
   {
     name: "generated/core-api-sdk/ignore",
     ignores: ["core/shared/adapters/core-api/generated/**"],
   },
+  // JavaScript config
   ...jsConfig,
+  // React config
   ...reactConfig,
+  // TypeScript config
   ...typescriptConfig,
+  // Documentation config
   ...documentationConfig,
+  // Scripts config
   ...scriptsConfig,
+  // Disable ESLint rules delegated to Oxlint
   ...oxlintPlugin.buildFromOxlintConfigFile("./.oxlintrc.json"),
+  // Prettier config
   ...prettierConfig,
 ]);
