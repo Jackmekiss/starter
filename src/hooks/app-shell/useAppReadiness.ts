@@ -1,8 +1,10 @@
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../../core/init-redux-store";
+
 import useSessionStore from "../../stores/session-store";
+
+import type { RootState } from "../../../core/init-redux-store";
 
 /**
  * Synchronizes splash dismissal and persisted session state during app startup.
