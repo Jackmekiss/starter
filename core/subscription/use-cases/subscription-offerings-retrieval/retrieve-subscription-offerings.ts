@@ -4,7 +4,7 @@ import { updateSubscriptionOfferings } from "../../domain/slice";
 
 /** Builds the endpoint that retrieves available premium offerings. */
 export function retrieveSubscriptionOfferingsBuilder(
-  build: EndpointBuilder<BaseQueryFn, never, "subscriptionAPI">,
+  build: EndpointBuilder<BaseQueryFn, never, "subscriptionApi">,
 ) {
   return {
     retrieveSubscriptionOfferings: build.query<SubscriptionOffering[], void>({

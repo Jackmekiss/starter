@@ -1,13 +1,4 @@
-import {
-  combineReducers,
-  configureStore,
-} from "@reduxjs/toolkit";
-import type {
-  Action,
-  Middleware,
-  Reducer,
-  ThunkDispatch,
-} from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import {
   FLUSH,
   PAUSE,
@@ -17,12 +8,20 @@ import {
   REGISTER,
   REHYDRATE,
 } from "redux-persist";
-import type { PersistConfig as ReduxPersistConfig } from "redux-persist";
+
 import { authSlice } from "./auth/domain/slice";
 import {
   subscriptionOfferingSlice,
   subscriptionSlice,
 } from "./subscription/domain/slice";
+
+import type { PersistConfig as ReduxPersistConfig } from "redux-persist";
+import type {
+  Action,
+  Middleware,
+  Reducer,
+  ThunkDispatch,
+} from "@reduxjs/toolkit";
 
 /** RTK Query API shape required for dynamic reducer and middleware wiring. */
 export interface StoreApi {
@@ -33,20 +32,20 @@ export interface StoreApi {
 
 /** Bounded-context APIs that can be attached to the Redux store. */
 export interface Apis {
-  authAPI: StoreApi;
-  subscriptionAPI: StoreApi;
+  authApi: StoreApi;
+  subscriptionApi: StoreApi;
 }
 
 /** Runtime dependencies made available to thunks and future use-cases. */
 export interface Dependencies {}
 
-const createReducers = (apis: Partial<Apis>) =>
+function createReducers(apis: Partial<Apis>) {
   combineReducers({
-    ...(apis.authAPI && {
-      [apis.authAPI.reducerPath]: apis.authAPI.reducer,
+    ...(apis.authApi && {
+      [apis.authApi.reducerPath]: apis.authApi.reducer,
     }),
-    ...(apis.subscriptionAPI && {
-      [apis.subscriptionAPI.reducerPath]: apis.subscriptionAPI.reducer,
+    ...(apis.subscriptionApi && {
+      [apis.subscriptionApi.reducerPath]: apis.subscriptionApi.reducer,
     }),
     [authSlice.name]: authSlice.reducer,
     [subscriptionOfferingSlice.name]: subscriptionOfferingSlice.reducer,
@@ -70,7 +69,10 @@ export function createStore(
   let rootReducer = createReducers(apis);
 
   if (persistConfig) {
-    rootReducer = persistReducer<RootState>(persistConfig, createReducers(apis));
+    rootReducer = persistReducer<RootState>(
+      persistConfig,
+      createReducers(apis),
+    );
   }
 
   const apiMiddlewares: Middleware[] = Object.values(apis).map(

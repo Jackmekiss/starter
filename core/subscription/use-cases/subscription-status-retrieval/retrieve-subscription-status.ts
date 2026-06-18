@@ -4,7 +4,7 @@ import { setSubscription } from "../../domain/slice";
 
 /** Builds the endpoint that retrieves the current premium entitlement. */
 export function retrieveSubscriptionStatusBuilder(
-  build: EndpointBuilder<BaseQueryFn, never, "subscriptionAPI">,
+  build: EndpointBuilder<BaseQueryFn, never, "subscriptionApi">,
 ) {
   return {
     retrieveSubscriptionStatus: build.query<Subscription | null, void>({

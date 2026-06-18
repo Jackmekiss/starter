@@ -9,9 +9,9 @@ import { retrieveSubscriptionStatusBuilder } from "../use-cases/subscription-sta
 export function createSubscriptionAPIOptions(baseQuery: BaseQueryFn) {
   return {
     baseQuery,
-    reducerPath: "subscriptionAPI",
+    reducerPath: "subscriptionApi",
     endpoints: (
-      builder: EndpointBuilder<BaseQueryFn, never, "subscriptionAPI">,
+      builder: EndpointBuilder<BaseQueryFn, never, "subscriptionApi">,
     ) => ({
       ...retrieveSubscriptionOfferingsBuilder(builder),
       ...purchaseSubscriptionBuilder(builder),

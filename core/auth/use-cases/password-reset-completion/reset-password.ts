@@ -3,7 +3,7 @@ import type { AuthActionResult, ResetPasswordPayload } from "../../apis/types";
 
 /** Builds the endpoint that completes a password reset challenge. */
 export function resetPasswordBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
 ) {
   return {
     resetPassword: build.mutation<AuthActionResult, ResetPasswordPayload>({

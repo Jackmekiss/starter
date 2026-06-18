@@ -188,7 +188,7 @@ Le pipeline existe dans le `core/`, même si l'écran d'authentification est enc
 ```text
 useLoginMutation()
         ↓
-authAPI
+authApi
         ↓
 loginBuilder
         ↓
@@ -287,7 +287,7 @@ Cette frontière permet de :
 - Supabase est installé, mais aucun adapter d'authentification réel n'est branché ;
 - une classe d'adapter RevenueCat existe ;
 - le runtime RevenueCat et son SDK ne sont pas implémentés ;
-- `subscriptionAPI` n'est pas encore injectée dans `app-runtime.ts`.
+- `subscriptionApi` n'est pas encore injectée dans `app-runtime.ts`.
 
 ---
 
@@ -373,7 +373,7 @@ Le point de départ est le sens de la fonctionnalité, pas le JSX du screen.
 2. Supprimer la double source de vérité Redux/Zustand.
 3. Ajouter des tests sur les use-cases et adapters.
 4. Brancher un adapter Supabase réel.
-5. Injecter `subscriptionAPI` et décider de l'intégration RevenueCat.
+5. Injecter `subscriptionApi` et décider de l'intégration RevenueCat.
 6. Ajouter les contrôles de lint, tests et architecture dans la CI.
 7. Créer le brief produit manquant.
 

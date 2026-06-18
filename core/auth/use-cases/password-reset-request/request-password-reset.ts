@@ -6,7 +6,7 @@ import type {
 
 /** Builds the endpoint that requests a password reset email. */
 export function requestPasswordResetBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
 ) {
   return {
     requestPasswordReset: build.mutation<

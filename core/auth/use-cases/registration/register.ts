@@ -4,7 +4,7 @@ import { setAuth, setError, setLoading } from "../../domain/slice";
 
 /** Builds the endpoint that registers an account and stores the auth session. */
 export function registerBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
 ) {
   return {
     register: build.mutation<AuthResult, RegisterPayload>({

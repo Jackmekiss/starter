@@ -3,7 +3,7 @@ import { clearAuth, markLogoutRequested } from "../../domain/slice";
 
 /** Builds the endpoint that deletes the current account and clears auth state. */
 export function deleteAccountBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
 ) {
   return {
     deleteAccount: build.mutation<void, void>({

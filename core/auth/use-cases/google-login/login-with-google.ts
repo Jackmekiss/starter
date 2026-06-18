@@ -4,7 +4,7 @@ import { setAuth, setError, setLoading } from "../../domain/slice";
 
 /** Builds the endpoint that authenticates through Google Sign In. */
 export function loginWithGoogleBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
 ) {
   return {
     loginWithGoogle: build.mutation<AuthResult, void>({

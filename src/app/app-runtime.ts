@@ -8,11 +8,13 @@ import {
 } from "react-native-reanimated";
 import { createTransform, persistStore } from "redux-persist";
 import autoMergeLevel1 from "redux-persist/es/stateReconciler/autoMergeLevel1";
+
 import { FakeAuthBaseQuery } from "../../core/auth/adapters/fake/fake-auth-base-query";
 import { InMemoryAuthBaseQuery } from "../../core/auth/adapters/in-memory/in-memory-auth-base-query";
 import { createAuthAPIOptions } from "../../core/auth/apis/auth-api";
-import type { AuthBaseQuery } from "../../core/auth/gateways/auth-base-query";
 import { createStore } from "../../core/init-redux-store";
+
+import type { AuthBaseQuery } from "../../core/auth/gateways/auth-base-query";
 
 type PersistedQueryState = {
   queries?: Record<string, { status?: QueryStatus }>;

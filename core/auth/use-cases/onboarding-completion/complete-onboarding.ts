@@ -5,7 +5,7 @@ import { setAccount } from "../../domain/slice";
 
 /** Builds the endpoint that marks onboarding as completed for the account. */
 export function completeOnboardingBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
 ) {
   return {
     completeOnboarding: build.mutation<Account, void>({

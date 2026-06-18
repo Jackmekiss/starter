@@ -17,9 +17,9 @@ const authTagTypes: ["Auth"] = ["Auth"];
 export function createAuthAPIOptions(baseQuery: BaseQueryFn) {
   return {
     baseQuery,
-    reducerPath: "authAPI",
+    reducerPath: "authApi",
     tagTypes: authTagTypes,
-    endpoints: (builder: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">) => ({
+    endpoints: (builder: EndpointBuilder<BaseQueryFn, "Auth", "authApi">) => ({
       ...retrieveAccountBuilder(builder),
       ...updateAccountBuilder(builder),
       ...completeOnboardingBuilder(builder),

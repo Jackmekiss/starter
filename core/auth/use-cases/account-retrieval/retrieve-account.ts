@@ -4,7 +4,7 @@ import { setAccount } from "../../domain/slice";
 
 /** Builds the endpoint that retrieves and stores the current account profile. */
 export function retrieveAccountBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
 ) {
   return {
     retrieveAccount: build.query<Account | null, void>({

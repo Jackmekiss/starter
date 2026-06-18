@@ -4,7 +4,7 @@ import { setSubscription, setSubscriptionError } from "../../domain/slice";
 
 /** Builds the endpoint that opens or refreshes subscription management state. */
 export function openSubscriptionManagementBuilder(
-  build: EndpointBuilder<BaseQueryFn, never, "subscriptionAPI">,
+  build: EndpointBuilder<BaseQueryFn, never, "subscriptionApi">,
 ) {
   return {
     openSubscriptionManagement: build.mutation<SubscriptionActionResult, void>({

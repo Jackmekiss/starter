@@ -5,7 +5,7 @@ import { setAccount } from "../../domain/slice";
 
 /** Builds the endpoint that updates account profile fields. */
 export function updateAccountBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
 ) {
   return {
     updateAccount: build.mutation<Account, UpdateAccountPayload>({

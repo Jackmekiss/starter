@@ -4,7 +4,7 @@ import { setSubscription, setSubscriptionError } from "../../domain/slice";
 
 /** Builds the endpoint that restores previous premium purchases. */
 export function restoreSubscriptionPurchasesBuilder(
-  build: EndpointBuilder<BaseQueryFn, never, "subscriptionAPI">,
+  build: EndpointBuilder<BaseQueryFn, never, "subscriptionApi">,
 ) {
   return {
     restoreSubscriptionPurchases: build.mutation<

@@ -4,7 +4,7 @@ import { setAuth, setError, setLoading } from "../../domain/slice";
 
 /** Builds the endpoint that authenticates through Apple Sign In. */
 export function loginWithAppleBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
 ) {
   return {
     loginWithApple: build.mutation<AuthResult, void>({

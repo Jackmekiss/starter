@@ -4,7 +4,7 @@ import { setAuth, setError, setLoading } from "../../domain/slice";
 
 /** Builds the endpoint that authenticates with email and password. */
 export function loginBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
 ) {
   return {
     login: build.mutation<AuthResult, LoginPayload>({
