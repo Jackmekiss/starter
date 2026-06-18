@@ -1,11 +1,11 @@
 import { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import {
   AuthActionResult,
-  RequestPasswordResetPayload
+  RequestPasswordResetPayload,
 } from "../../apis/types";
 
 export const requestPasswordResetBuilder = (
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
 ) => ({
   requestPasswordReset: build.mutation<
     AuthActionResult,
@@ -15,7 +15,7 @@ export const requestPasswordResetBuilder = (
       url: "/password/request-reset",
       method: "POST",
       body: payload,
-      params: undefined
-    })
-  })
+      params: undefined,
+    }),
+  }),
 });

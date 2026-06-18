@@ -14,7 +14,6 @@ SplashScreen.setOptions({
   fade: true,
 });
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const unstable_settings = {
   initialRouteName: "/(auth)/index",
 };

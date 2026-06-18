@@ -3,13 +3,13 @@ import { AuthResult, LoginPayload } from "../../apis/types";
 import { setAuth, setError, setLoading } from "../../domain/slice";
 
 export const loginBuilder = (
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
 ) => ({
   login: build.mutation<AuthResult, LoginPayload>({
     query: (payload) => ({
       url: "/login",
       method: "POST",
-      body: payload
+      body: payload,
     }),
     async onQueryStarted(_, { dispatch, queryFulfilled }) {
       dispatch(setLoading());
@@ -22,6 +22,6 @@ export const loginBuilder = (
       }
 
       dispatch(setError(data.error));
-    }
-  })
+    },
+  }),
 });

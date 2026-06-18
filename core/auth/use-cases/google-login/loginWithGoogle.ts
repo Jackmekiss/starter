@@ -3,14 +3,14 @@ import { AuthResult } from "../../apis/types";
 import { setAuth, setError, setLoading } from "../../domain/slice";
 
 export const loginWithGoogleBuilder = (
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
 ) => ({
   loginWithGoogle: build.mutation<AuthResult, void>({
     query: () => ({
       url: "/login/google",
       method: "POST",
       body: undefined,
-      params: undefined
+      params: undefined,
     }),
     async onQueryStarted(_, { dispatch, queryFulfilled }) {
       dispatch(setLoading());
@@ -23,6 +23,6 @@ export const loginWithGoogleBuilder = (
       }
 
       dispatch(setError(data.error));
-    }
-  })
+    },
+  }),
 });

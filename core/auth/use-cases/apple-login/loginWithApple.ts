@@ -3,14 +3,14 @@ import { AuthResult } from "../../apis/types";
 import { setAuth, setError, setLoading } from "../../domain/slice";
 
 export const loginWithAppleBuilder = (
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
 ) => ({
   loginWithApple: build.mutation<AuthResult, void>({
     query: () => ({
       url: "/login/apple",
       method: "POST",
       body: undefined,
-      params: undefined
+      params: undefined,
     }),
     async onQueryStarted(_, { dispatch, queryFulfilled }) {
       dispatch(setLoading());
@@ -23,6 +23,6 @@ export const loginWithAppleBuilder = (
       }
 
       dispatch(setError(data.error));
-    }
-  })
+    },
+  }),
 });

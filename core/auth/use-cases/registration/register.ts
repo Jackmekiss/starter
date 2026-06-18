@@ -3,13 +3,13 @@ import { AuthResult, RegisterPayload } from "../../apis/types";
 import { setAuth, setError, setLoading } from "../../domain/slice";
 
 export const registerBuilder = (
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">
+  build: EndpointBuilder<BaseQueryFn, "Auth", "authAPI">,
 ) => ({
   register: build.mutation<AuthResult, RegisterPayload>({
     query: (payload) => ({
       url: "/register",
       method: "POST",
-      body: payload
+      body: payload,
     }),
     async onQueryStarted(_, { dispatch, queryFulfilled }) {
       dispatch(setLoading());
@@ -22,6 +22,6 @@ export const registerBuilder = (
       }
 
       dispatch(setError(data.error));
-    }
-  })
+    },
+  }),
 });

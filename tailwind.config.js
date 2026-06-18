@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const { hairlineWidth } = require("nativewind/theme");
 
 /** @type {import('tailwindcss').Config} */
