@@ -1,6 +1,7 @@
+import { setSubscription, setSubscriptionError } from "../../domain/slice";
+
 import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import type { SubscriptionActionResult } from "../../apis/types";
-import { setSubscription, setSubscriptionError } from "../../domain/slice";
 
 /**
  * Builds the endpoint that restores previous premium purchases.

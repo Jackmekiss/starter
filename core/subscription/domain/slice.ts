@@ -1,7 +1,5 @@
-import {
-  createEntityAdapter,
-  createSlice,
-} from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+
 import type { EntityState } from "@reduxjs/toolkit";
 import type { Subscription } from "./subscription";
 import type { SubscriptionOffering } from "./subscription-offering";

@@ -1,9 +1,10 @@
+import { setSubscription, setSubscriptionError } from "../../domain/slice";
+
 import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import type {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
 } from "../../apis/types";
-import { setSubscription, setSubscriptionError } from "../../domain/slice";
 
 /**
  * Builds the endpoint that purchases a selected premium plan.

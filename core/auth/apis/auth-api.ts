@@ -1,4 +1,3 @@
-import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import { deleteAccountBuilder } from "../use-cases/account-deletion/delete-account";
 import { updateAccountBuilder } from "../use-cases/account-modification/update-account";
 import { retrieveAccountBuilder } from "../use-cases/account-retrieval/retrieve-account";
@@ -11,12 +10,14 @@ import { resetPasswordBuilder } from "../use-cases/password-reset-completion/res
 import { requestPasswordResetBuilder } from "../use-cases/password-reset-request/request-password-reset";
 import { registerBuilder } from "../use-cases/registration/register";
 
+import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
+
 const authTagTypes: ["Auth"] = ["Auth"];
 
 /**
  * Builds RTK Query endpoint options for all authentication use-cases.
  */
-export function createAuthAPIOptions(baseQuery: BaseQueryFn) {
+export function createAuthApiOptions(baseQuery: BaseQueryFn) {
   return {
     baseQuery,
     reducerPath: "authApi",

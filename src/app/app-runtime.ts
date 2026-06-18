@@ -11,7 +11,7 @@ import autoMergeLevel1 from "redux-persist/es/stateReconciler/autoMergeLevel1";
 
 import { FakeAuthBaseQuery } from "../../core/auth/adapters/fake/fake-auth-base-query";
 import { InMemoryAuthBaseQuery } from "../../core/auth/adapters/in-memory/in-memory-auth-base-query";
-import { createAuthAPIOptions } from "../../core/auth/apis/auth-api";
+import { createAuthApiOptions } from "../../core/auth/apis/auth-api";
 import { createStore } from "../../core/init-redux-store";
 
 import type { AuthBaseQuery } from "../../core/auth/gateways/auth-base-query";
@@ -56,7 +56,7 @@ const whitelistFulfilledQueries = createTransform(
   },
 );
 
-export const authApi = createApi(createAuthAPIOptions(authBaseQuery.handle()));
+export const authApi = createApi(createAuthApiOptions(authBaseQuery.handle()));
 
 export const {
   useRetrieveAccountQuery,
