@@ -10,10 +10,7 @@ import {
 } from "redux-persist";
 
 import { authSlice } from "./auth/domain/slice";
-import {
-  subscriptionOfferingSlice,
-  subscriptionSlice,
-} from "./subscription/domain/slice";
+import { subscriptionSlice } from "./subscription/domain/slice";
 
 import type { PersistConfig as ReduxPersistConfig } from "redux-persist";
 import type {
@@ -23,24 +20,33 @@ import type {
   ThunkDispatch,
 } from "@reduxjs/toolkit";
 
-/** RTK Query API shape required for dynamic reducer and middleware wiring. */
-export interface StoreApi {
+/**
+ * Minimal RTK Query API surface needed by the Redux store.
+ */
+interface StoreApi {
   reducerPath: string;
   reducer: Reducer;
   middleware: Middleware;
 }
 
-/** Bounded-context APIs that can be attached to the Redux store. */
+/**
+ * RTK Query API instances mounted into the Redux store.
+ */
 export interface Apis {
   authApi: StoreApi;
   subscriptionApi: StoreApi;
 }
 
-/** Runtime dependencies made available to thunks and future use-cases. */
+/**
+ * Extra dependencies available to Redux thunks.
+ */
 export interface Dependencies {}
 
+/**
+ * Creates the root reducer from enabled APIs and domain slices.
+ */
 function createReducers(apis: Partial<Apis>) {
-  combineReducers({
+  return combineReducers({
     ...(apis.authApi && {
       [apis.authApi.reducerPath]: apis.authApi.reducer,
     }),
@@ -48,17 +54,28 @@ function createReducers(apis: Partial<Apis>) {
       [apis.subscriptionApi.reducerPath]: apis.subscriptionApi.reducer,
     }),
     [authSlice.name]: authSlice.reducer,
-    [subscriptionOfferingSlice.name]: subscriptionOfferingSlice.reducer,
     [subscriptionSlice.name]: subscriptionSlice.reducer,
   });
+}
 
-/** Persist settings accepted by the starter store factory. */
-export type PersistConfig = Pick<
-  ReduxPersistConfig<RootState>,
-  "key" | "storage"
->;
+/**
+ * Collects middleware exposed by enabled RTK Query APIs.
+ */
+function createMiddlewares(apis: Partial<Apis>): Middleware[] {
+  return Object.values(apis).flatMap((api) => (api ? [api.middleware] : []));
+}
 
-/** Creates the Redux store with optional bounded-context APIs and persistence. */
+/**
+ * Minimal persistence configuration accepted by the app store factory.
+ */
+export interface PersistConfig {
+  key: string;
+  storage: ReduxPersistConfig<RootState>["storage"];
+}
+
+/**
+ * Creates the application Redux store with optional APIs, dependencies, preloaded state, and persistence.
+ */
 export function createStore(
   apis: Partial<Apis> = {},
   dependencies: Partial<Dependencies> = {},
@@ -66,20 +83,32 @@ export function createStore(
   persistConfig?: PersistConfig,
   customMiddlewares: Middleware[] = [],
 ) {
-  let rootReducer = createReducers(apis);
+  const rootReducer = createReducers(apis);
+  const apiMiddlewares = createMiddlewares(apis);
 
   if (persistConfig) {
-    rootReducer = persistReducer<RootState>(
+    const persistedReducer = persistReducer<RootState>(
       persistConfig,
-      createReducers(apis),
+      rootReducer,
     );
+
+    return configureStore({
+      reducer: persistedReducer,
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          serializableCheck: false,
+          immutableCheck: false,
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+          thunk: {
+            extraArgument: dependencies,
+          },
+        })
+          .concat(apiMiddlewares)
+          .concat(...customMiddlewares),
+    });
   }
 
-  const apiMiddlewares: Middleware[] = Object.values(apis).map(
-    (api) => api.middleware,
-  );
-
-  const store = configureStore({
+  return configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
@@ -94,14 +123,16 @@ export function createStore(
         .concat(...customMiddlewares),
     preloadedState,
   });
-
-  return store;
 }
 
-/** Complete Redux state shape produced by the starter reducers. */
+/**
+ * Root Redux state inferred from the root reducer.
+ */
 export type RootState = ReturnType<ReturnType<typeof createReducers>>;
 
-/** Store instance with the domain dependency type attached to dispatch. */
+/**
+ * Redux store type with thunk dispatch dependencies preserved.
+ */
 export type ReduxStore = ReturnType<typeof createStore> & {
   dispatch: ThunkDispatch<RootState, Dependencies, Action>;
 };

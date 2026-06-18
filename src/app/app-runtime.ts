@@ -56,7 +56,7 @@ const whitelistFulfilledQueries = createTransform(
   },
 );
 
-export const authAPI = createApi(createAuthAPIOptions(authBaseQuery.handle()));
+export const authApi = createApi(createAuthAPIOptions(authBaseQuery.handle()));
 
 export const {
   useRetrieveAccountQuery,
@@ -70,7 +70,7 @@ export const {
   useResetPasswordMutation,
   useDeleteAccountMutation,
   useLogoutMutation,
-} = authAPI;
+} = authApi;
 
 const persistConfig = {
   key: "root",
@@ -86,7 +86,7 @@ configureReanimatedLogger({
 
 export const store = createStore(
   {
-    authAPI,
+    authApi,
   },
   {},
   {},
