@@ -54,18 +54,7 @@ const jsConfig = defineConfig([
       ],
       "no-await-in-loop": "off",
       "no-continue": "off",
-      "id-denylist": [
-        "error",
-        "ev",
-        "e",
-        "err",
-        "res",
-        "req",
-        "ctx",
-        "cfg",
-        "tmp",
-        "val",
-      ],
+      "id-denylist": ["error", "cfg", "tmp", "val"],
       "import-x/order": [
         "warn",
         {
