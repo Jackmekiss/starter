@@ -11,6 +11,7 @@ module.exports = {
     extend: {
       spacing: {
         screen: "var(--spacing-screen)",
+        "safe-4": "calc(env(safe-area-inset-bottom) + 4px)",
       },
       colors: {
         border: "hsl(var(--border))",
