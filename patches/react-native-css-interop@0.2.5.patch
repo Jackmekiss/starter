@@ -1,0 +1,61 @@
+diff --git a/.cache/android.js b/.cache/android.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/.cache/android.map b/.cache/android.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/.cache/ios.js b/.cache/ios.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/.cache/ios.map b/.cache/ios.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/.cache/macos.js b/.cache/macos.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/.cache/native.js b/.cache/native.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/.cache/windows.js b/.cache/windows.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+diff --git a/dist/metro/index.js b/dist/metro/index.js
+index 6ea4a690378b795bbf20c9623ed1d20b9c5ccb9e..2f58a1e9b2ed305f026fed591c9febbd59efcd39 100644
+--- a/dist/metro/index.js
++++ b/dist/metro/index.js
+@@ -153,29 +153,14 @@ function emitHasteFileChange(filePath, debug) {
+     try {
+         const modifiedTime = Date.now();
+         haste.emit("change", {
+-            eventsQueue: [
+-                {
+-                    filePath,
+-                    metadata: {
+-                        modifiedTime: Date.now(),
+-                        size: 1,
+-                        type: "virtual",
+-                    },
+-                    type: "change",
+-                },
+-            ],
+-            get rootDir() {
+-                const rootDir = fileSystem?.lookup("");
+-                (0, assert_1.default)(rootDir?.exists && typeof rootDir.realPath === "string");
+-                return rootDir.realPath;
+-            },
+             changes: {
+-                addedDirectories: EMPTY_SET,
+-                removedDirectories: EMPTY_SET,
+-                addedFiles: EMPTY_SET,
+-                removedFiles: EMPTY_SET,
+-                changedFiles: new Set([[filePath, { isSymlink: false, modifiedTime }]]),
++                addedFiles: [],
++                modifiedFiles: [
++                    [filePath, { modifiedTime, size: 1, type: "virtual" }],
++                ],
++                removedFiles: [],
+             },
++            rootDir: "/",
+         });
+     }
+     catch (error) {
