@@ -31,6 +31,7 @@ Use this skill when the task is primarily about screens, components, and UI comp
 - A generic UI component renders; it does not become a mini feature controller.
 - A screen feature section may read simple selectors, navigate locally, and format local display data.
 - Prefer parent-owned fetching and autonomous sections over screen models plus props drilling.
+- Avoid prop drilling generically: screens place sections; screen feature sections own the simple reads, selectors, and handlers used only by that section; generic UI primitives stay prop-driven.
 - Reuse `components/ui/` primitives before introducing new local systems.
 
 ## Do not use this skill for

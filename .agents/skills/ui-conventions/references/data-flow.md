@@ -29,14 +29,17 @@ Default pattern:
 
 Prefer:
 
-- one fetch in the parent screen
+- one fetch in the parent screen when the parent must gate the whole screen
 - sections reading simple existing selectors when they own a distinct UI block
+- screen feature sections owning queries/selectors/handlers when the resulting data or action is used only inside that section
 - shared read models in `core/.../selectors` when several screens or components need the same shaped data
 - parent gating loading and error, then placing autonomous sections directly
 
 Avoid:
 
 - drilling raw entity fields through many layers
+- passing props through a screen or intermediate component when that component only forwards them
+- keeping queries/selectors in a screen only to pass their result to a single screen feature section
 - broad raw selectors repeated across many components
 - calling the same RTK Query hook again in multiple children after the parent already hydrated the store
 - using selectors in UI components as a shortcut for business logic or cross-screen state orchestration
