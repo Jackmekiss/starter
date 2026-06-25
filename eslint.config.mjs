@@ -54,7 +54,18 @@ const jsConfig = defineConfig([
       ],
       "no-await-in-loop": "off",
       "no-continue": "off",
-      "id-denylist": ["error", "cfg", "tmp", "val"],
+      "id-denylist": [
+        "error",
+        "ev",
+        "e",
+        "err",
+        "res",
+        "req",
+        "ctx",
+        "cfg",
+        "tmp",
+        "val",
+      ],
       "import-x/order": [
         "warn",
         {
@@ -167,7 +178,7 @@ const typescriptConfig = defineConfig([
 const documentationConfig = defineConfig([
   {
     name: "documentation/jsdoc",
-    files: ["core/**/*.{js,jsx,ts,tsx}", "src/**/*.{js,jsx,ts,tsx}"],
+    files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
       jsdoc: jsdocPlugin,
     },
@@ -178,6 +189,7 @@ const documentationConfig = defineConfig([
         {
           contexts: [
             "FunctionDeclaration",
+            "MethodDefinition",
             "TSInterfaceDeclaration",
             "TSTypeAliasDeclaration",
             "TSEnumDeclaration",
@@ -187,12 +199,9 @@ const documentationConfig = defineConfig([
       "jsdoc/require-jsdoc": [
         "warn",
         {
-          publicOnly: {
-            esm: true,
-          },
           contexts: [
-            "ClassDeclaration",
             "FunctionDeclaration",
+            "MethodDefinition",
             "TSInterfaceDeclaration",
             "TSTypeAliasDeclaration",
             "TSEnumDeclaration",
@@ -209,6 +218,39 @@ const scriptsConfig = defineConfig([
     files: ["scripts/**/*.{js,ts}"],
     rules: {
       "no-console": "off",
+    },
+  },
+]);
+
+const unusedVarsEditorFallbackConfig = defineConfig([
+  {
+    name: "unused-vars/editor-fallback/js",
+    files: ["**/*.{js,jsx}"],
+    rules: {
+      "no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
+  {
+    name: "unused-vars/editor-fallback/ts",
+    files: ["**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
     },
   },
 ]);
@@ -250,6 +292,8 @@ export default defineConfig([
   ...scriptsConfig,
   // Disable ESLint rules delegated to Oxlint
   ...oxlintPlugin.buildFromOxlintConfigFile("./.oxlintrc.json"),
+  // Keep unused imports visible in editors that run ESLint but not Oxlint.
+  ...unusedVarsEditorFallbackConfig,
   // Prettier config
   ...prettierConfig,
 ]);

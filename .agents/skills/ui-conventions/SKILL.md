@@ -1,6 +1,6 @@
 ---
 name: ui-conventions
-description: Use when creating or refactoring UI in this repository: screens, routes, components, navigation, screen data flow, styling, layout, forms, and JSX conventions. This skill covers the current UI stack and presentation rules. Do not use it for bounded-context design, use-case modeling, or naming-only reviews.
+description: "Use when creating or refactoring UI in this repository: screens, routes, components, navigation, screen data flow, styling, layout, forms, and JSX conventions. This skill covers the current UI stack and presentation rules. Do not use it for bounded-context design, use-case modeling, or naming-only reviews."
 ---
 
 # UI Conventions

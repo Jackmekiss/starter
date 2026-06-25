@@ -60,11 +60,12 @@ Components should:
 - remain easy to read
 - be split early when they grow too much
 - keep JSX free of inline handlers whenever reasonably possible
+- never pass inline function expressions to JSX event props
 
 Prefer explicit props such as `title`, `subtitle`, `onPress`, `selected`, and `disabled`.
 
 Avoid vague props such as `data`, `payload`, or `configBlob`.
-Avoid inline arrow functions inside JSX returns when a named local handler keeps the code clearer.
+Avoid inline arrow functions, anonymous functions, or `.bind(...)` inside JSX event props such as `onPress`, `onChange`, `onSubmit`, `onDismiss`, and `onSelected`. Declare a named handler before the `return` and pass the handler reference, for example `onPress={handlePress}`.
 
 For screen feature sections:
 
