@@ -11,9 +11,9 @@ import { fileURLToPath } from "node:url";
 import { includeIgnoreFile } from "@eslint/compat";
 import js from "@eslint/js";
 import { configs, plugins } from "eslint-config-airbnb-extended";
-import oxlintPlugin from "eslint-plugin-oxlint";
-import jsdocPlugin from "eslint-plugin-jsdoc";
 import { rules as prettierConfigRules } from "eslint-config-prettier";
+import jsdocPlugin from "eslint-plugin-jsdoc";
+import oxlintPlugin from "eslint-plugin-oxlint";
 import prettierPlugin from "eslint-plugin-prettier";
 import { defineConfig } from "eslint/config";
 
@@ -54,18 +54,7 @@ const jsConfig = defineConfig([
       ],
       "no-await-in-loop": "off",
       "no-continue": "off",
-      "id-denylist": [
-        "error",
-        "ev",
-        "e",
-        "err",
-        "res",
-        "req",
-        "ctx",
-        "cfg",
-        "tmp",
-        "val",
-      ],
+      "id-denylist": ["cfg", "val"],
       "import-x/order": [
         "warn",
         {

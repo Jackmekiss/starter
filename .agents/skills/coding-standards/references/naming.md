@@ -60,4 +60,4 @@ Avoid names such as:
 - types and enum members should use `PascalCase`
 - acronyms should be treated as words in `camelCase` and `PascalCase`: use `createAuthApi`, not `createAuthAPI`; use `AuthScopeDto`, not `AuthScopeDTO`
 - do not use abbreviations for variables, functions, members, or utility names; prefer complete self-explanatory words even when they are longer
-- avoid short aliases such as `cn`, `t`, `ev`, `req`, `res`, `ctx`, `cfg`, `tmp`, and `val`; use names such as `classNames`, `translate`, `event`, `request`, `response`, `context`, `configuration`, `temporary`, or `value`
+- avoid short aliases such as `cfg`, `tmp`, and `val`; use names such as `configuration`, `temporary`, or `value`
