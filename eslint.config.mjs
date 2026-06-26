@@ -1,20 +1,11 @@
-/**
- * THIS FILE WAS AUTO-GENERATED.
- * PLEASE DO NOT EDIT IT MANUALLY.
- * ===============================
- * IF YOU COPY THIS INTO AN ESLINT CONFIG, REMOVE THIS COMMENT BLOCK.
- */
-
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { includeIgnoreFile } from "@eslint/compat";
 import js from "@eslint/js";
 import { configs, plugins } from "eslint-config-airbnb-extended";
-import { rules as prettierConfigRules } from "eslint-config-prettier";
 import jsdocPlugin from "eslint-plugin-jsdoc";
 import oxlintPlugin from "eslint-plugin-oxlint";
-import prettierPlugin from "eslint-plugin-prettier";
 import { defineConfig } from "eslint/config";
 
 const configDirectoryPath = path.dirname(fileURLToPath(import.meta.url));
@@ -51,10 +42,14 @@ const jsConfig = defineConfig([
           message:
             "Declare named functions with `function name()` instead of `const name = () =>`.",
         },
+        {
+          selector: "Identifier[name=/^(?:ev|e|err|res|req|ctx|cfg|tmp|val)$/]",
+          message:
+            "Use a complete, self-explanatory identifier instead of a short alias.",
+        },
       ],
       "no-await-in-loop": "off",
       "no-continue": "off",
-      "id-denylist": ["cfg", "val"],
       "import-x/order": [
         "warn",
         {
@@ -179,7 +174,9 @@ const documentationConfig = defineConfig([
           contexts: [
             "FunctionDeclaration",
             "MethodDefinition",
+            "TSAbstractMethodDefinition",
             "TSInterfaceDeclaration",
+            "TSMethodSignature",
             "TSTypeAliasDeclaration",
             "TSEnumDeclaration",
           ],
@@ -191,7 +188,9 @@ const documentationConfig = defineConfig([
           contexts: [
             "FunctionDeclaration",
             "MethodDefinition",
+            "TSAbstractMethodDefinition",
             "TSInterfaceDeclaration",
+            "TSMethodSignature",
             "TSTypeAliasDeclaration",
             "TSEnumDeclaration",
           ],
@@ -244,21 +243,14 @@ const unusedVarsEditorFallbackConfig = defineConfig([
   },
 ]);
 
-const prettierConfig = defineConfig([
-  // Prettier plugin
+const formatterConfig = defineConfig([
   {
-    name: "prettier/plugin/config",
-    plugins: {
-      prettier: prettierPlugin,
-    },
-  },
-  // Prettier config
-  {
-    name: "prettier/config",
-    rules: {
-      ...prettierConfigRules,
-      "prettier/prettier": "error",
-    },
+    name: "formatter/oxfmt",
+    rules: Object.fromEntries(
+      Object.keys(plugins.stylistic.plugins["@stylistic"].rules).map(
+        (ruleName) => [`@stylistic/${ruleName}`, "off"],
+      ),
+    ),
   },
 ]);
 
@@ -283,6 +275,6 @@ export default defineConfig([
   ...oxlintPlugin.buildFromOxlintConfigFile("./.oxlintrc.json"),
   // Keep unused imports visible in editors that run ESLint but not Oxlint.
   ...unusedVarsEditorFallbackConfig,
-  // Prettier config
-  ...prettierConfig,
+  // Disable ESLint formatting rules delegated to Oxfmt.
+  ...formatterConfig,
 ]);
