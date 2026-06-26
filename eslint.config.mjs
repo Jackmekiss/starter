@@ -1,11 +1,20 @@
+/**
+ * THIS FILE WAS AUTO-GENERATED.
+ * PLEASE DO NOT EDIT IT MANUALLY.
+ * ===============================
+ * IF YOU COPY THIS INTO AN ESLINT CONFIG, REMOVE THIS COMMENT BLOCK.
+ */
+
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { includeIgnoreFile } from "@eslint/compat";
 import js from "@eslint/js";
 import { configs, plugins } from "eslint-config-airbnb-extended";
+import { rules as prettierConfigRules } from "eslint-config-prettier";
 import jsdocPlugin from "eslint-plugin-jsdoc";
 import oxlintPlugin from "eslint-plugin-oxlint";
+import prettierPlugin from "eslint-plugin-prettier";
 import { defineConfig } from "eslint/config";
 
 const configDirectoryPath = path.dirname(fileURLToPath(import.meta.url));
@@ -42,14 +51,10 @@ const jsConfig = defineConfig([
           message:
             "Declare named functions with `function name()` instead of `const name = () =>`.",
         },
-        {
-          selector: "Identifier[name=/^(?:ev|e|err|res|req|ctx|cfg|tmp|val)$/]",
-          message:
-            "Use a complete, self-explanatory identifier instead of a short alias.",
-        },
       ],
       "no-await-in-loop": "off",
       "no-continue": "off",
+      "id-denylist": ["error", "cfg", "tmp", "val"],
       "import-x/order": [
         "warn",
         {
@@ -162,35 +167,37 @@ const typescriptConfig = defineConfig([
 const documentationConfig = defineConfig([
   {
     name: "documentation/jsdoc",
-    files: ["**/*.{js,jsx,ts,tsx}"],
+    files: [
+      "apps/automation-worker/src/**/*.{js,jsx,ts,tsx}",
+      "apps/mobile/src/**/*.{js,jsx,ts,tsx}",
+      "packages/core/src/**/*.{js,jsx,ts,tsx}",
+    ],
     plugins: {
       jsdoc: jsdocPlugin,
     },
     rules: {
-      "jsdoc/check-tag-names": "warn",
+      "jsdoc/check-tag-names": "error",
       "jsdoc/require-description": [
-        "warn",
+        "error",
         {
           contexts: [
             "FunctionDeclaration",
-            "MethodDefinition",
-            "TSAbstractMethodDefinition",
             "TSInterfaceDeclaration",
-            "TSMethodSignature",
             "TSTypeAliasDeclaration",
             "TSEnumDeclaration",
           ],
         },
       ],
       "jsdoc/require-jsdoc": [
-        "warn",
+        "error",
         {
+          publicOnly: {
+            esm: true,
+          },
           contexts: [
+            "ClassDeclaration",
             "FunctionDeclaration",
-            "MethodDefinition",
-            "TSAbstractMethodDefinition",
             "TSInterfaceDeclaration",
-            "TSMethodSignature",
             "TSTypeAliasDeclaration",
             "TSEnumDeclaration",
           ],
@@ -203,54 +210,50 @@ const documentationConfig = defineConfig([
 const scriptsConfig = defineConfig([
   {
     name: "scripts/config",
-    files: ["scripts/**/*.{js,ts}"],
+    files: ["scripts/**/*.{js,mjs,ts}"],
+    languageOptions: {
+      globals: {
+        console: "readonly",
+        process: "readonly",
+      },
+    },
     rules: {
       "no-console": "off",
+      "no-use-before-define": "off",
+    },
+  },
+  {
+    name: "node-config-files/config",
+    files: [
+      "apps/mobile/babel.config.js",
+      "apps/mobile/metro.config.js",
+      "apps/mobile/tailwind.config.js",
+    ],
+    languageOptions: {
+      globals: {
+        __dirname: "readonly",
+        module: "readonly",
+        require: "readonly",
+      },
     },
   },
 ]);
 
-const unusedVarsEditorFallbackConfig = defineConfig([
+const prettierConfig = defineConfig([
+  // Prettier plugin
   {
-    name: "unused-vars/editor-fallback/js",
-    files: ["**/*.{js,jsx}"],
-    rules: {
-      "no-unused-vars": [
-        "error",
-        {
-          argsIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
-          destructuredArrayIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-        },
-      ],
+    name: "prettier/plugin/config",
+    plugins: {
+      prettier: prettierPlugin,
     },
   },
+  // Prettier config
   {
-    name: "unused-vars/editor-fallback/ts",
-    files: ["**/*.{ts,tsx}"],
+    name: "prettier/config",
     rules: {
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          argsIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
-          destructuredArrayIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-        },
-      ],
+      ...prettierConfigRules,
+      "prettier/prettier": "error",
     },
-  },
-]);
-
-const formatterConfig = defineConfig([
-  {
-    name: "formatter/oxfmt",
-    rules: Object.fromEntries(
-      Object.keys(plugins.stylistic.plugins["@stylistic"].rules).map(
-        (ruleName) => [`@stylistic/${ruleName}`, "off"],
-      ),
-    ),
   },
 ]);
 
@@ -259,7 +262,7 @@ export default defineConfig([
   includeIgnoreFile(gitignorePath),
   {
     name: "generated/core-api-sdk/ignore",
-    ignores: ["core/shared/adapters/core-api/generated/**"],
+    ignores: ["packages/core/src/shared/adapters/core-api/generated/**"],
   },
   // JavaScript config
   ...jsConfig,
@@ -273,8 +276,6 @@ export default defineConfig([
   ...scriptsConfig,
   // Disable ESLint rules delegated to Oxlint
   ...oxlintPlugin.buildFromOxlintConfigFile("./.oxlintrc.json"),
-  // Keep unused imports visible in editors that run ESLint but not Oxlint.
-  ...unusedVarsEditorFallbackConfig,
-  // Disable ESLint formatting rules delegated to Oxfmt.
-  ...formatterConfig,
+  // Prettier config
+  ...prettierConfig,
 ]);
