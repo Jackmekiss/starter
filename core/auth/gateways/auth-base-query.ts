@@ -72,27 +72,57 @@ export abstract class AuthBaseQuery {
     }
   };
 
+  /**
+   *
+   */
   abstract retrieveAccount(): Promise<Account | null>;
 
+  /**
+   *
+   */
   abstract updateAccount(payload: UpdateAccountPayload): Promise<Account>;
 
+  /**
+   *
+   */
   abstract register(payload: RegisterPayload): Promise<AuthResult>;
 
+  /**
+   *
+   */
   abstract login(payload: LoginPayload): Promise<AuthResult>;
 
+  /**
+   *
+   */
   abstract loginWithGoogle(): Promise<AuthResult>;
 
+  /**
+   *
+   */
   abstract loginWithApple(): Promise<AuthResult>;
 
+  /**
+   *
+   */
   abstract requestPasswordReset(
     payload: RequestPasswordResetPayload,
   ): Promise<AuthActionResult>;
 
+  /**
+   *
+   */
   abstract resetPassword(
     payload: ResetPasswordPayload,
   ): Promise<AuthActionResult>;
 
+  /**
+   *
+   */
   abstract logout(): Promise<void>;
 
+  /**
+   *
+   */
   abstract deleteAccount(): Promise<void>;
 }

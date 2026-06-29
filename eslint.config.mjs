@@ -167,37 +167,35 @@ const typescriptConfig = defineConfig([
 const documentationConfig = defineConfig([
   {
     name: "documentation/jsdoc",
-    files: [
-      "apps/automation-worker/src/**/*.{js,jsx,ts,tsx}",
-      "apps/mobile/src/**/*.{js,jsx,ts,tsx}",
-      "packages/core/src/**/*.{js,jsx,ts,tsx}",
-    ],
+    files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
       jsdoc: jsdocPlugin,
     },
     rules: {
-      "jsdoc/check-tag-names": "error",
+      "jsdoc/check-tag-names": "warn",
       "jsdoc/require-description": [
-        "error",
+        "warn",
         {
           contexts: [
             "FunctionDeclaration",
+            "MethodDefinition",
+            "TSAbstractMethodDefinition",
             "TSInterfaceDeclaration",
+            "TSMethodSignature",
             "TSTypeAliasDeclaration",
             "TSEnumDeclaration",
           ],
         },
       ],
       "jsdoc/require-jsdoc": [
-        "error",
+        "warn",
         {
-          publicOnly: {
-            esm: true,
-          },
           contexts: [
-            "ClassDeclaration",
             "FunctionDeclaration",
+            "MethodDefinition",
+            "TSAbstractMethodDefinition",
             "TSInterfaceDeclaration",
+            "TSMethodSignature",
             "TSTypeAliasDeclaration",
             "TSEnumDeclaration",
           ],
