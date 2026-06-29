@@ -1,4 +1,3 @@
-import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 import type {
   AuthActionResult,
   AuthResult,
@@ -9,6 +8,7 @@ import type {
   UpdateAccountPayload,
 } from "@core/auth/apis/types";
 import type { Account } from "@core/auth/domain/account";
+import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 
 /**
  * Internal request contract accepted by the auth RTK Query adapter.
