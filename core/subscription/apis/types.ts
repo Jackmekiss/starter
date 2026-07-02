@@ -5,6 +5,9 @@ import type { SubscriptionPlan } from "@core/subscription/domain/subscription-pl
  * Selected premium plan to purchase through the subscription gateway.
  */
 export interface PurchaseSubscriptionPayload {
+  /**
+   * Premium billing interval selected from the paywall.
+   */
   plan: SubscriptionPlan;
 }
 

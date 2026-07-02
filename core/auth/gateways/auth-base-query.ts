@@ -73,56 +73,56 @@ export abstract class AuthBaseQuery {
   };
 
   /**
-   *
+   * Retrieves the account profile attached to the current auth session.
    */
   abstract retrieveAccount(): Promise<Account | null>;
 
   /**
-   *
+   * Persists editable account profile fields for the current user.
    */
   abstract updateAccount(payload: UpdateAccountPayload): Promise<Account>;
 
   /**
-   *
+   * Creates an auth user, account profile, and authenticated session.
    */
   abstract register(payload: RegisterPayload): Promise<AuthResult>;
 
   /**
-   *
+   * Authenticates an existing user from email credentials.
    */
   abstract login(payload: LoginPayload): Promise<AuthResult>;
 
   /**
-   *
+   * Authenticates or provisions a user through the Google identity provider.
    */
   abstract loginWithGoogle(): Promise<AuthResult>;
 
   /**
-   *
+   * Authenticates or provisions a user through the Apple identity provider.
    */
   abstract loginWithApple(): Promise<AuthResult>;
 
   /**
-   *
+   * Starts the password reset flow for the requested account email.
    */
   abstract requestPasswordReset(
     payload: RequestPasswordResetPayload,
   ): Promise<AuthActionResult>;
 
   /**
-   *
+   * Completes the password reset flow with the submitted reset credentials.
    */
   abstract resetPassword(
     payload: ResetPasswordPayload,
   ): Promise<AuthActionResult>;
 
   /**
-   *
+   * Ends the current authenticated session.
    */
   abstract logout(): Promise<void>;
 
   /**
-   *
+   * Permanently removes the current account and related auth state.
    */
   abstract deleteAccount(): Promise<void>;
 }

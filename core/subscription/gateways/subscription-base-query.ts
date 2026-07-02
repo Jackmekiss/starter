@@ -44,15 +44,30 @@ export abstract class SubscriptionBaseQuery {
     return { data: { success: false, errorMessage: "Unknown action." } };
   };
 
+  /**
+   * Retrieves the purchasable subscription offerings for the paywall.
+   */
   abstract retrieveSubscriptionOfferings(): Promise<SubscriptionOffering[]>;
 
+  /**
+   * Purchases the selected subscription plan through the active billing adapter.
+   */
   abstract purchaseSubscription(
     payload: PurchaseSubscriptionPayload,
   ): Promise<SubscriptionActionResult>;
 
+  /**
+   * Restores previous platform purchases for the current user.
+   */
   abstract restoreSubscriptionPurchases(): Promise<SubscriptionActionResult>;
 
+  /**
+   * Opens the platform flow where the user can manage an existing subscription.
+   */
   abstract openSubscriptionManagement(): Promise<SubscriptionActionResult>;
 
+  /**
+   * Retrieves the current subscription state used during app startup.
+   */
   abstract retrieveSubscriptionStatus(): Promise<Subscription | null>;
 }

@@ -15,11 +15,17 @@ import type { SubscriptionOffering } from "@core/subscription/domain/subscriptio
 export class FakeSubscriptionBaseQuery extends SubscriptionBaseQuery {
   private readonly inMemoryBaseQuery = new InMemorySubscriptionBaseQuery();
 
+  /**
+   * Retrieves simulated paywall offerings after a short loading delay.
+   */
   async retrieveSubscriptionOfferings(): Promise<SubscriptionOffering[]> {
     await sleep(800);
     return this.inMemoryBaseQuery.retrieveSubscriptionOfferings();
   }
 
+  /**
+   * Simulates a purchase round trip before activating the local subscription.
+   */
   async purchaseSubscription(
     payload: PurchaseSubscriptionPayload,
   ): Promise<SubscriptionActionResult> {
@@ -27,16 +33,25 @@ export class FakeSubscriptionBaseQuery extends SubscriptionBaseQuery {
     return this.inMemoryBaseQuery.purchaseSubscription(payload);
   }
 
+  /**
+   * Simulates restoring purchases before reading the local subscription state.
+   */
   async restoreSubscriptionPurchases(): Promise<SubscriptionActionResult> {
     await sleep(1200);
     return this.inMemoryBaseQuery.restoreSubscriptionPurchases();
   }
 
+  /**
+   * Simulates opening subscription management from the local billing adapter.
+   */
   async openSubscriptionManagement(): Promise<SubscriptionActionResult> {
     await sleep(600);
     return this.inMemoryBaseQuery.openSubscriptionManagement();
   }
 
+  /**
+   * Retrieves the simulated subscription status after a lightweight delay.
+   */
   async retrieveSubscriptionStatus(): Promise<Subscription | null> {
     await sleep(600);
     return this.inMemoryBaseQuery.retrieveSubscriptionStatus();

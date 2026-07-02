@@ -11,7 +11,14 @@ export const subscriptionOfferingAdapter =
  * Durable subscription state used to gate premium behavior and errors.
  */
 export interface SubscriptionState {
+  /**
+   * Current premium entitlement known by the app.
+   */
   subscription: Subscription | null;
+
+  /**
+   * Latest billing error message surfaced to subscription flows.
+   */
   errorMessage: string | null;
 }
 

@@ -36,7 +36,14 @@ interface StoreApi {
  * RTK Query API instances mounted into the Redux store.
  */
 export interface Apis {
+  /**
+   * Auth RTK Query API mounted when authentication endpoints are available.
+   */
   authApi: StoreApi;
+
+  /**
+   * Subscription RTK Query API mounted when billing endpoints are available.
+   */
   subscriptionApi: StoreApi;
 }
 
@@ -73,7 +80,14 @@ function createMiddlewares(apis: Partial<Apis>): Middleware[] {
  * Minimal persistence configuration accepted by the app store factory.
  */
 export interface PersistConfig {
+  /**
+   * Storage namespace used by redux-persist for the root state.
+   */
   key: string;
+
+  /**
+   * Persistence backend responsible for reading and writing serialized state.
+   */
   storage: ReduxPersistConfig<RootState>["storage"];
 }
 

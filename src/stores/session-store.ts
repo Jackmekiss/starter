@@ -6,8 +6,19 @@ import { createJSONStorage, persist } from "zustand/middleware";
  * Persisted UI session state used before auth account retrieval completes.
  */
 export interface SessionStore {
+  /**
+   * Persisted connection flag used before full account state is loaded.
+   */
   isConnected: boolean;
+
+  /**
+   * Flips the persisted connection flag for session-driven UI flows.
+   */
   toggleIsConnected: () => void;
+
+  /**
+   * Applies an explicit persisted connection state.
+   */
   setIsConnected: (isConnected: boolean) => void;
 }
 

@@ -13,10 +13,20 @@ import { cn } from "@/lib/cn";
  * Imperative controls exposed by the shared bottom sheet modal.
  */
 export interface BottomSheetModalRef {
+  /**
+   * Opens the bottom sheet from parent-controlled flows.
+   */
   present: () => void;
+
+  /**
+   * Closes the bottom sheet from parent-controlled flows.
+   */
   dismiss: () => void;
 }
 
+/**
+ * Props that tune shared bottom sheet content, sizing, and backdrop behavior.
+ */
 interface Props {
   children: React.ReactNode;
   ref: React.Ref<BottomSheetModalRef>;

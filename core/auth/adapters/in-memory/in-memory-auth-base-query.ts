@@ -14,6 +14,9 @@ import type {
 import type { Account } from "@core/auth/domain/account";
 import type { AuthUser, Session } from "@core/auth/domain/auth";
 
+/**
+ * Preserves the current onboarding status unless an account update changes it.
+ */
 function resolveNextOnboardingStatus(
   currentStatus: Account["onboardingStatus"],
   payload: UpdateAccountPayload,
@@ -51,10 +54,16 @@ const session: Session = {
  * In-memory auth gateway used by local development and starter flows.
  */
 export class InMemoryAuthBaseQuery extends AuthBaseQuery {
+  /**
+   * Returns the current local account snapshot without network persistence.
+   */
   async retrieveAccount(): Promise<Account | null> {
     return account;
   }
 
+  /**
+   * Mutates the local account snapshot with editable profile fields.
+   */
   async updateAccount(payload: UpdateAccountPayload): Promise<Account> {
     if (!account) {
       throw new Error("Account not found.");
@@ -74,6 +83,9 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
     return account;
   }
 
+  /**
+   * Replaces the local auth state with a newly registered starter account.
+   */
   async register(payload: RegisterPayload): Promise<AuthResult> {
     account = {
       id: "1",
@@ -97,6 +109,9 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
     };
   }
 
+  /**
+   * Resolves the local auth session when the memory store still has a user.
+   */
   async login(_: LoginPayload): Promise<AuthResult> {
     if (!authUser || !account) {
       return {
@@ -116,6 +131,9 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
     };
   }
 
+  /**
+   * Reuses the stored local user to mimic a successful Google sign-in.
+   */
   async loginWithGoogle(): Promise<AuthResult> {
     if (!authUser) {
       return this.login({
@@ -130,6 +148,9 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
     });
   }
 
+  /**
+   * Reuses the stored local user to mimic a successful Apple sign-in.
+   */
   async loginWithApple(): Promise<AuthResult> {
     if (!authUser) {
       return this.login({
@@ -144,6 +165,9 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
     });
   }
 
+  /**
+   * Acknowledges password reset requests without sending external email.
+   */
   async requestPasswordReset(
     _: RequestPasswordResetPayload,
   ): Promise<AuthActionResult> {
@@ -152,14 +176,23 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
     };
   }
 
+  /**
+   * Acknowledges password reset completion without changing local credentials.
+   */
   async resetPassword(_: ResetPasswordPayload): Promise<AuthActionResult> {
     return {
       success: true,
     };
   }
 
+  /**
+   * Keeps local auth data intact because starter logout has no persisted session.
+   */
   async logout(): Promise<void> {}
 
+  /**
+   * Clears the local account and auth user to mimic permanent account removal.
+   */
   async deleteAccount(): Promise<void> {
     account = null;
     authUser = null;

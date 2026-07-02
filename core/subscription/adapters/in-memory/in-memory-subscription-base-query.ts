@@ -34,6 +34,9 @@ let currentSubscription: Subscription = {
   cancelAtPeriodEnd: false,
 };
 
+/**
+ * Builds the local premium subscription granted by the starter purchase flow.
+ */
 function createPremiumSubscription(
   plan: PurchaseSubscriptionPayload["plan"],
 ): Subscription {
@@ -51,6 +54,9 @@ function createPremiumSubscription(
   };
 }
 
+/**
+ * Creates a consistent failed billing action result for local subscription flows.
+ */
 function createFailureResult(message: string): SubscriptionActionResult {
   return {
     success: false,
@@ -62,10 +68,16 @@ function createFailureResult(message: string): SubscriptionActionResult {
  * In-memory subscription gateway for local premium status and purchase flows.
  */
 export class InMemorySubscriptionBaseQuery extends SubscriptionBaseQuery {
+  /**
+   * Returns the default paywall offerings bundled with the starter app.
+   */
   async retrieveSubscriptionOfferings(): Promise<SubscriptionOffering[]> {
     return defaultSubscriptionOfferings;
   }
 
+  /**
+   * Activates a local premium subscription for the selected plan.
+   */
   async purchaseSubscription(
     payload: PurchaseSubscriptionPayload,
   ): Promise<SubscriptionActionResult> {
@@ -78,6 +90,9 @@ export class InMemorySubscriptionBaseQuery extends SubscriptionBaseQuery {
     };
   }
 
+  /**
+   * Restores the current local premium subscription when one exists.
+   */
   async restoreSubscriptionPurchases(): Promise<SubscriptionActionResult> {
     if (currentSubscription.tier !== "premium" || !currentSubscription.plan) {
       return createFailureResult("No active premium purchase was found.");
@@ -90,6 +105,9 @@ export class InMemorySubscriptionBaseQuery extends SubscriptionBaseQuery {
     };
   }
 
+  /**
+   * Reports successful management access using the current local subscription.
+   */
   async openSubscriptionManagement(): Promise<SubscriptionActionResult> {
     return {
       success: true,
@@ -98,6 +116,9 @@ export class InMemorySubscriptionBaseQuery extends SubscriptionBaseQuery {
     };
   }
 
+  /**
+   * Returns the current local subscription snapshot for app startup checks.
+   */
   async retrieveSubscriptionStatus(): Promise<Subscription | null> {
     return currentSubscription;
   }

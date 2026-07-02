@@ -8,11 +8,34 @@ import type { AuthUser, Session } from "@core/auth/domain/auth";
  * Durable authentication state shared by navigation and account flows.
  */
 export interface AuthState {
+  /**
+   * Current lifecycle state of the latest auth-related request.
+   */
   status: "idle" | "loading" | "success" | "error";
+
+  /**
+   * Authenticated identity currently known by the app.
+   */
   user: AuthUser | null;
+
+  /**
+   * Active session tokens, or null when the user is unauthenticated.
+   */
   session: Session | null;
+
+  /**
+   * Account profile attached to the authenticated identity.
+   */
   account: Account | null;
+
+  /**
+   * Most recent authentication error shown by auth flows.
+   */
   error: AuthError | null;
+
+  /**
+   * Flag consumed by app runtime to coordinate logout side effects.
+   */
   logoutRequested: boolean;
 }
 
