@@ -7,33 +7,6 @@ import type {
 import type { Subscription } from "@core/subscription/domain/subscription";
 import type { SubscriptionOffering } from "@core/subscription/domain/subscription-offering";
 
-const defaultSubscriptionOfferings: SubscriptionOffering[] = [
-  {
-    id: "premium-annual",
-    plan: "annual",
-    title: "Annual Premium",
-    priceLabel: "$59.99",
-    periodLabel: "year",
-    detailsLabel: "Billed yearly",
-    badgeLabel: "Best value",
-    savingsLabel: "Save 38%",
-  },
-  {
-    id: "premium-monthly",
-    plan: "monthly",
-    title: "Monthly Premium",
-    priceLabel: "$7.99",
-    periodLabel: "month",
-    detailsLabel: "Billed monthly",
-  },
-];
-
-let currentSubscription: Subscription = {
-  tier: "free",
-  status: "inactive",
-  cancelAtPeriodEnd: false,
-};
-
 /**
  * Builds the local premium subscription granted by the starter purchase flow.
  */
@@ -68,11 +41,52 @@ function createFailureResult(message: string): SubscriptionActionResult {
  * In-memory subscription gateway for local premium status and purchase flows.
  */
 export class InMemorySubscriptionBaseQuery extends SubscriptionBaseQuery {
+  private currentSubscriptionOfferings: SubscriptionOffering[] = [
+    {
+      id: "premium-annual",
+      plan: "annual",
+      title: "Annual Premium",
+      priceLabel: "$59.99",
+      periodLabel: "year",
+      detailsLabel: "Billed yearly",
+      badgeLabel: "Best value",
+      savingsLabel: "Save 38%",
+    },
+    {
+      id: "premium-monthly",
+      plan: "monthly",
+      title: "Monthly Premium",
+      priceLabel: "$7.99",
+      periodLabel: "month",
+      detailsLabel: "Billed monthly",
+    },
+  ];
+
+  private currentSubscription: Subscription = {
+    tier: "free",
+    status: "inactive",
+    cancelAtPeriodEnd: false,
+  };
+
+  /**
+   * Sets the locally returned subscription offerings.
+   */
+  set subscriptionOfferings(value: SubscriptionOffering[]) {
+    this.currentSubscriptionOfferings = value;
+  }
+
+  /**
+   * Sets the locally stored subscription entitlement.
+   */
+  set subscription(value: Subscription) {
+    this.currentSubscription = value;
+  }
+
   /**
    * Returns the default paywall offerings bundled with the starter app.
    */
   async retrieveSubscriptionOfferings(): Promise<SubscriptionOffering[]> {
-    return defaultSubscriptionOfferings;
+    return this.currentSubscriptionOfferings;
   }
 
   /**
@@ -81,11 +95,11 @@ export class InMemorySubscriptionBaseQuery extends SubscriptionBaseQuery {
   async purchaseSubscription(
     payload: PurchaseSubscriptionPayload,
   ): Promise<SubscriptionActionResult> {
-    currentSubscription = createPremiumSubscription(payload.plan);
+    this.currentSubscription = createPremiumSubscription(payload.plan);
 
     return {
       success: true,
-      subscription: currentSubscription,
+      subscription: this.currentSubscription,
       plan: payload.plan,
     };
   }
@@ -94,14 +108,17 @@ export class InMemorySubscriptionBaseQuery extends SubscriptionBaseQuery {
    * Restores the current local premium subscription when one exists.
    */
   async restoreSubscriptionPurchases(): Promise<SubscriptionActionResult> {
-    if (currentSubscription.tier !== "premium" || !currentSubscription.plan) {
+    if (
+      this.currentSubscription.tier !== "premium" ||
+      !this.currentSubscription.plan
+    ) {
       return createFailureResult("No active premium purchase was found.");
     }
 
     return {
       success: true,
-      subscription: currentSubscription,
-      plan: currentSubscription.plan,
+      subscription: this.currentSubscription,
+      plan: this.currentSubscription.plan,
     };
   }
 
@@ -111,8 +128,8 @@ export class InMemorySubscriptionBaseQuery extends SubscriptionBaseQuery {
   async openSubscriptionManagement(): Promise<SubscriptionActionResult> {
     return {
       success: true,
-      subscription: currentSubscription,
-      plan: currentSubscription.plan ?? "annual",
+      subscription: this.currentSubscription,
+      plan: this.currentSubscription.plan ?? "annual",
     };
   }
 
@@ -120,6 +137,6 @@ export class InMemorySubscriptionBaseQuery extends SubscriptionBaseQuery {
    * Returns the current local subscription snapshot for app startup checks.
    */
   async retrieveSubscriptionStatus(): Promise<Subscription | null> {
-    return currentSubscription;
+    return this.currentSubscription;
   }
 }
