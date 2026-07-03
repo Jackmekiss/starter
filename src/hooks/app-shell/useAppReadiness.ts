@@ -1,18 +1,16 @@
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 
+import { useSelector } from "@/hooks/redux-hooks";
 import useSessionStore from "@/stores/session-store";
-
-import type { RootState } from "@core/init-redux-store";
 
 /**
  * Synchronizes splash dismissal and persisted session state during app startup.
  */
 export function useAppReadiness(isRetrievingAccount: boolean) {
   const [isReady, setIsReady] = useState(false);
-  const account = useSelector((state: RootState) => state.auth.account);
-  const authStatus = useSelector((state: RootState) => state.auth.status);
+  const account = useSelector((state) => state.auth.account);
+  const authStatus = useSelector((state) => state.auth.status);
   const { setIsConnected } = useSessionStore();
 
   useEffect(() => {
