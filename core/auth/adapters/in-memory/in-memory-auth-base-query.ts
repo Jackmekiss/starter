@@ -28,48 +28,78 @@ function resolveNextOnboardingStatus(
   return currentStatus;
 }
 
-let account: Account | null = {
-  id: "1",
-  email: "test@test.com",
-  avatarUri: null,
-  firstName: "John",
-  lastName: "Doe",
-  onboardingStatus: "completed",
-  createdAt: new Date().toISOString(),
-};
-
-let authUser: AuthUser | null = {
-  id: "1",
-  email: "test@test.com",
-};
-
-const session: Session = {
-  userId: "1",
-  accessToken: "accessToken",
-  refreshToken: "refreshToken",
-  expiresAt: new Date().getTime() + 1000 * 60 * 60 * 24 * 30,
-};
-
 /**
  * In-memory auth gateway used by local development and starter flows.
  */
 export class InMemoryAuthBaseQuery extends AuthBaseQuery {
   /**
+   * Backing account snapshot returned by account-related use-cases.
+   */
+  private currentAccount: Account | null = {
+    id: "1",
+    email: "test@test.com",
+    avatarUri: null,
+    firstName: "John",
+    lastName: "Doe",
+    onboardingStatus: "completed",
+    createdAt: new Date().toISOString(),
+  };
+
+  /**
+   * Backing authenticated identity returned by login use-cases.
+   */
+  private currentAuthUser: AuthUser | null = {
+    id: "1",
+    email: "test@test.com",
+  };
+
+  /**
+   * Backing session snapshot returned by successful auth use-cases.
+   */
+  private currentSession: Session = {
+    userId: "1",
+    accessToken: "accessToken",
+    refreshToken: "refreshToken",
+    expiresAt: new Date().getTime() + 1000 * 60 * 60 * 24 * 30,
+  };
+
+  /**
+   * Replaces the account fixture used by the in-memory adapter.
+   */
+  set account(value: Account | null) {
+    this.currentAccount = value;
+  }
+
+  /**
+   * Replaces the auth user fixture used by the in-memory adapter.
+   */
+  set authUser(value: AuthUser | null) {
+    this.currentAuthUser = value;
+  }
+
+  /**
+   * Replaces the session fixture used by the in-memory adapter.
+   */
+  set session(value: Session) {
+    this.currentSession = value;
+  }
+
+  /**
    * Returns the current local account snapshot without network persistence.
    */
   async retrieveAccount(): Promise<Account | null> {
-    return account;
+    return this.currentAccount;
   }
 
   /**
    * Mutates the local account snapshot with editable profile fields.
    */
   async updateAccount(payload: UpdateAccountPayload): Promise<Account> {
-    if (!account) {
+    if (!this.currentAccount) {
       throw new Error("Account not found.");
     }
 
-    account = produce(account, (draft) => {
+    this.currentAccount = produce(this.currentAccount, (draft) => {
       if (payload.avatarUri !== undefined) draft.avatarUri = payload.avatarUri;
       if (payload.firstName !== undefined) draft.firstName = payload.firstName;
       if (payload.lastName !== undefined) draft.lastName = payload.lastName;
@@ -80,14 +110,14 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
       );
     });
 
-    return account;
+    return this.currentAccount;
   }
 
   /**
    * Replaces the local auth state with a newly registered starter account.
    */
   async register(payload: RegisterPayload): Promise<AuthResult> {
-    account = {
+    this.currentAccount = {
       id: "1",
       email: payload.email,
       avatarUri: null,
@@ -96,16 +126,16 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
       onboardingStatus: "pending",
       createdAt: new Date().toISOString(),
     };
-    authUser = {
+    this.currentAuthUser = {
       id: "1",
       email: payload.email,
     };
 
     return {
       success: true,
-      user: authUser,
-      session,
-      account,
+      user: this.currentAuthUser,
+      session: this.currentSession,
+      account: this.currentAccount,
     };
   }
 
@@ -113,7 +143,7 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
    * Resolves the local auth session when the memory store still has a user.
    */
   async login(_: LoginPayload): Promise<AuthResult> {
-    if (!authUser || !account) {
+    if (!this.currentAuthUser || !this.currentAccount) {
       return {
         success: false,
         error: {
@@ -125,9 +155,9 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
 
     return {
       success: true,
-      user: authUser,
-      session,
-      account,
+      user: this.currentAuthUser,
+      session: this.currentSession,
+      account: this.currentAccount,
     };
   }
 
@@ -135,7 +165,7 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
    * Reuses the stored local user to mimic a successful Google sign-in.
    */
   async loginWithGoogle(): Promise<AuthResult> {
-    if (!authUser) {
+    if (!this.currentAuthUser) {
       return this.login({
         email: "",
         password: "password",
@@ -143,7 +173,7 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
     }
 
     return this.login({
-      email: authUser.email,
+      email: this.currentAuthUser.email,
       password: "password",
     });
   }
@@ -152,7 +182,7 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
    * Reuses the stored local user to mimic a successful Apple sign-in.
    */
   async loginWithApple(): Promise<AuthResult> {
-    if (!authUser) {
+    if (!this.currentAuthUser) {
       return this.login({
         email: "",
         password: "password",
@@ -160,7 +190,7 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
     }
 
     return this.login({
-      email: authUser.email,
+      email: this.currentAuthUser.email,
       password: "password",
     });
   }
@@ -194,7 +224,7 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
    * Clears the local account and auth user to mimic permanent account removal.
    */
   async deleteAccount(): Promise<void> {
-    account = null;
-    authUser = null;
+    this.currentAccount = null;
+    this.currentAuthUser = null;
   }
 }
