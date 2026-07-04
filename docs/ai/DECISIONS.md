@@ -1,0 +1,7 @@
+# Decisions
+
+| Date       | Decision                                                                                    | Reason                                                                           | Alternatives Considered                                                       | Scope                        | Status |
+| ---------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------------- | ------ |
+| 2026-07-04 | Store continuity memory in concise Markdown under `docs/ai/`.                               | Keeps project state repo-versioned, reviewable, and independent of chat history. | Generic product memory; large notes inside `AGENTS.md`; raw chat transcripts. | Agent workflow documentation | Active |
+| 2026-07-04 | Keep `AGENTS.md` as routing/instructions only.                                              | Prevents the main agent entrypoint from becoming stale or noisy.                 | Put current state and worklog directly in `AGENTS.md`.                        | Agent workflow documentation | Active |
+| 2026-07-04 | Create task-specific plans only for multi-session features under `plans/<feature-slug>.md`. | Keeps plans useful without adding process overhead for small tasks.              | Create a plan for every task; keep plans only in chat.                        | Planning workflow            | Active |
