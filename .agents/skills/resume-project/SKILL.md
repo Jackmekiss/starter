@@ -30,7 +30,7 @@ Use this skill before editing when a session starts after time away or the user 
 
 - Do not modify source code until the state is summarized.
 - Use `Unknown` for missing facts instead of inventing context.
-- If `docs/product-agent-brief.md` is needed but missing, say so and continue with existing memory.
+- If product facts are missing from memory, mark them as `Unknown` and continue with the available project memory.
 - Keep the summary concise and actionable.
 
 ## Output format

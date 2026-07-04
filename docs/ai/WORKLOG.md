@@ -35,7 +35,7 @@ User requested a lightweight, repo-versioned Project Memory System for humans an
 ### Next
 
 - Run a consistency pass over required memory files, skill references, `AGENTS.md`, git status, and secret patterns.
-- Fill product-specific facts when `docs/product-agent-brief.md` or equivalent confirmed product context is available.
+- Fill product-specific facts in `docs/ai/product-memory.md` when confirmed product context is available.
 
 ## 2026-07-04 - Complete memory consistency pass
 
@@ -68,4 +68,31 @@ Initial memory files and project memory skills had been created and needed a fin
 
 ### Next
 
-- Fill product-specific facts when `docs/product-agent-brief.md` or equivalent confirmed product context is available.
+- Fill product-specific facts in `docs/ai/product-memory.md` when confirmed product context is available.
+
+## 2026-07-04 - Remove obsolete product brief references
+
+### Context
+
+User requested removing references to the separate product brief path and keeping product guidance inside the project memory system.
+
+### Changes
+
+- Updated `AGENTS.md` to point product guidance to `docs/ai/product-memory.md`, `docs/ai/user-flows.md`, and `docs/ai/OPEN_QUESTIONS.md`.
+- Updated `docs/ai/product-memory.md`, `docs/ai/CURRENT.md`, `docs/ai/HANDOFF.md`, and `docs/ai/OPEN_QUESTIONS.md` to remove references to the obsolete product brief path.
+- Updated `.agents/skills/resume-project/SKILL.md` to rely on existing project memory when product facts are missing.
+
+### Decisions
+
+- `docs/ai/product-memory.md` is the durable product-memory source of truth unless future confirmed product facts are added elsewhere.
+
+### Validation
+
+- Ran `rg` for the obsolete product brief path and name across `AGENTS.md`, `docs/ai`, `.agents/skills`, `plans`, and `docs/adr`; no matches remained.
+- Not run: `pnpm run test`.
+- Not run: `pnpm run typecheck`.
+- Not run: `pnpm run lint`.
+
+### Next
+
+- Add confirmed product facts directly to `docs/ai/product-memory.md`.

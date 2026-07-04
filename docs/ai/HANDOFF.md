@@ -67,7 +67,7 @@ Expected changes after this setup:
 
 ## Things not to repeat
 
-- Do not assume `docs/product-agent-brief.md` exists; it was missing during initialization.
+- Do not assume product facts that are absent from `docs/ai/product-memory.md`.
 - Do not treat internal gateway `url` strings as real backend endpoints.
 - Do not treat in-memory subscription prices as production billing policy.
 - Do not assume `.agents/skills` is writable without checking sandbox permissions.

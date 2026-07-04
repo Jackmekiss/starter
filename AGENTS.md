@@ -2,7 +2,7 @@
 
 Repository guidance is intentionally minimal.
 Detailed frontend conventions live in local skills under `.agents/skills/`.
-Product guidance for Starter lives in `docs/product-agent-brief.md`.
+Product guidance for Starter lives in `docs/ai/product-memory.md`.
 
 Available skills:
 
@@ -18,7 +18,7 @@ Available skills:
 Use the matching skill when the task needs deeper guidance.
 Codex may also activate these skills automatically when the request matches their descriptions.
 
-Before making product, UX, copy, or feature-scope decisions, read `docs/product-agent-brief.md`.
+Before making product, UX, copy, or feature-scope decisions, read `docs/ai/product-memory.md`, `docs/ai/user-flows.md`, and `docs/ai/OPEN_QUESTIONS.md`.
 
 Always-on repository rules:
 

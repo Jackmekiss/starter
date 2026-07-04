@@ -2,7 +2,6 @@
 
 | Date | Question | Area | Impact | Possible owner | Status |
 |---|---|---|---|---|---|
-| 2026-07-04 | Where is the product brief referenced by `AGENTS.md` (`docs/product-agent-brief.md`), or should it be created? | Product | Product memory cannot confidently describe thesis, audience, UX, or non-goals. | Product owner | Open |
 | 2026-07-04 | What is the actual product category and post-login user outcome for Starter? | Product | Home screen and user-flow memory are currently skeletal. | Product owner | Open |
 | 2026-07-04 | Who are the target users and roles beyond account owner/free/premium subscriber? | Product/domain | Affects permissions, copy, onboarding, and domain naming. | Product owner | Open |
 | 2026-07-04 | Which auth backend/provider should replace the local in-memory/fake adapters? | Technical/API | Affects auth contracts, env config, persistence, and validation. | Engineering | Open |

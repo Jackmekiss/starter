@@ -4,7 +4,7 @@
 
 Observed: this repository is named `starter` and is an Expo/React Native starter application with authentication, onboarding, and subscription domain scaffolding.
 
-Unknown: the actual end-user product category, product promise, and product-specific value proposition. `AGENTS.md` references `docs/product-agent-brief.md`, but that file does not exist in the repository at initialization.
+Unknown: the actual end-user product category, product promise, and product-specific value proposition. No separate product brief is currently required; this file is the durable product-memory source of truth until confirmed product facts are added elsewhere.
 
 Files inspected for product context:
 

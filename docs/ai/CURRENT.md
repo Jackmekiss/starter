@@ -20,7 +20,7 @@ Done for the initial memory setup.
 
 ## Next 3 concrete actions
 
-1. Fill or create product-specific guidance for the missing `docs/product-agent-brief.md`, or update [product-memory.md](product-memory.md) with confirmed product facts.
+1. Update [product-memory.md](product-memory.md) with confirmed product facts when they are known.
 2. When starting feature work, read [INDEX.md](INDEX.md), [HANDOFF.md](HANDOFF.md), and any active `plans/*.md` before editing.
 3. Run relevant validation commands when source code changes; no app validation was needed for this docs-only setup.
 
@@ -51,7 +51,6 @@ None.
 
 ## Blockers / open questions
 
-- `docs/product-agent-brief.md` is referenced by `AGENTS.md` but missing.
 - Actual product category, target users, product promise, and post-login user experience are Unknown.
 - Production backend, database, auth provider, and RevenueCat configuration are Unknown.
 
