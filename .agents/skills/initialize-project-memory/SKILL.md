@@ -17,7 +17,7 @@ Use this skill when this starter becomes a new project and stale project-specifi
 
 1. Read `AGENTS.md`.
 2. Read `docs/ai/INDEX.md`, especially `Starter reset policy`.
-3. Read `docs/ai/starter-baseline.md`.
+3. Read reusable starter technical memory from `docs/ai/architecture-map.md`, `docs/ai/technical-memory.md`, and `docs/ai/testing-validation.md`.
 4. Inspect current branch with `git branch --show-current`.
 5. Inspect working tree with `git status --short`.
 6. Confirm no application source files need to change.
@@ -29,7 +29,7 @@ Use this skill when this starter becomes a new project and stale project-specifi
 9. Rewrite `docs/ai/CURRENT.md` and `docs/ai/HANDOFF.md`.
 10. Replace `docs/ai/WORKLOG.md` with the initialized worklog template.
 11. Reset project-specific decisions, failed attempts, and open questions from templates.
-12. Leave starter technical memory intact.
+12. Leave reusable technical memory intact.
 13. Verify no `src/` or `core/` files changed.
 14. Run `rg` for stale project-specific traces from the previous memory state.
 
@@ -38,7 +38,6 @@ Use this skill when this starter becomes a new project and stale project-specifi
 Keep:
 
 - `docs/ai/INDEX.md`
-- `docs/ai/starter-baseline.md`
 - `docs/ai/architecture-map.md`
 - `docs/ai/technical-memory.md`
 - `docs/ai/testing-validation.md`
@@ -70,7 +69,8 @@ Reset history:
 
 - Do not modify application source code.
 - Do not delete `docs/ai/_templates/`.
-- Do not delete starter technical memory.
+- Do not delete reusable starter technical memory.
+- Do not create standalone starter-only memory files in a concrete initialized project.
 - Do not invent product facts.
 - Use `Unknown` for anything not supplied by the user or proven by the repo.
 - Do not include secrets, env values, raw transcripts, or large source snippets.

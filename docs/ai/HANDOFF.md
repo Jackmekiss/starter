@@ -4,12 +4,11 @@
 
 1. [../../AGENTS.md](../../AGENTS.md)
 2. [INDEX.md](INDEX.md)
-3. [starter-baseline.md](starter-baseline.md)
-4. [product-memory.md](product-memory.md)
-5. [architecture-map.md](architecture-map.md)
-6. [technical-memory.md](technical-memory.md)
-7. [CURRENT.md](CURRENT.md)
-8. [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)
+3. [product-memory.md](product-memory.md)
+4. [architecture-map.md](architecture-map.md)
+5. [technical-memory.md](technical-memory.md)
+6. [CURRENT.md](CURRENT.md)
+7. [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)
 
 If debugging, also read [FAILED_ATTEMPTS.md](FAILED_ATTEMPTS.md). If user-facing behavior changes, also read [user-flows.md](user-flows.md) and [domain-glossary.md](domain-glossary.md). If data/API behavior changes, also read [data-model.md](data-model.md) and [api-contracts.md](api-contracts.md).
 
@@ -53,8 +52,8 @@ Expected changes after this setup:
 - New `plans/README.md`.
 - New project memory skills under `.agents/skills/`.
 - New starter reset templates under `docs/ai/_templates/`.
-- New starter baseline at `docs/ai/starter-baseline.md`.
 - Renamed code convention skills to `frontend-*`.
+- Standalone starter-only memory file removed; reusable starter knowledge lives in architecture, technical, testing, and skill docs.
 - Minimal `AGENTS.md` patch for project memory routing.
 - No application/source code changes.
 

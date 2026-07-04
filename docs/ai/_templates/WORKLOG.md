@@ -4,7 +4,7 @@
 
 ### Context
 
-Project `<Project Name>` was initialized from the Starter baseline.
+Project `<Project Name>` was initialized from Starter.
 
 ### Changes
 
@@ -13,7 +13,7 @@ Project `<Project Name>` was initialized from the Starter baseline.
 
 ### Decisions
 
-- Starter technical memory remains the baseline until project-specific facts supersede it.
+- Starter technical memory remains the default until project-specific facts supersede it.
 
 ### Validation
 

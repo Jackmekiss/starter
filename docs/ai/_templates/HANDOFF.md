@@ -6,12 +6,11 @@ Project: `<Project Name>`
 
 1. [../../AGENTS.md](../../AGENTS.md)
 2. [INDEX.md](INDEX.md)
-3. [starter-baseline.md](starter-baseline.md)
-4. [product-memory.md](product-memory.md)
-5. [architecture-map.md](architecture-map.md)
-6. [technical-memory.md](technical-memory.md)
-7. [CURRENT.md](CURRENT.md)
-8. [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)
+3. [product-memory.md](product-memory.md)
+4. [architecture-map.md](architecture-map.md)
+5. [technical-memory.md](technical-memory.md)
+6. [CURRENT.md](CURRENT.md)
+7. [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)
 
 ## Active plan
 
@@ -19,7 +18,7 @@ None.
 
 ## Situation summary
 
-Project memory was initialized from the Starter baseline. Product-specific facts are not confirmed yet unless later entries say otherwise.
+Project memory was initialized from Starter. Product-specific facts are not confirmed yet unless later entries say otherwise.
 
 ## Exact continuation point
 

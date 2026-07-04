@@ -14,7 +14,7 @@ Initialize project memory from Starter.
 
 ## Why this matters
 
-The repo has started from the Starter baseline and needs project-specific product, domain, data, API, and validation facts filled in as they become known.
+The repo has started from Starter and needs project-specific product, domain, data, API, and validation facts filled in as they become known.
 
 ## Current status
 
@@ -29,7 +29,6 @@ Initialized from starter.
 ## Relevant files
 
 - [INDEX.md](INDEX.md): memory entry point.
-- [starter-baseline.md](starter-baseline.md): durable starter facts.
 - [product-memory.md](product-memory.md): project product memory.
 - [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md): unresolved initialization questions.
 

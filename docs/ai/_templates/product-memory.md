@@ -32,7 +32,7 @@ Unknown. Add the durable product promise when confirmed.
 
 ## Known product constraints
 
-- This project started from the Starter app baseline.
+- This project started from the Starter app.
 - Unknown project-specific constraints.
 
 ## Monetization / billing assumptions

@@ -8,7 +8,7 @@ Last updated: 2026-07-04
 
 ## Current focus
 
-Project memory system initialized; code convention skills renamed as frontend-specific.
+Project memory system initialized; code convention skills renamed as frontend-specific; standalone starter-only memory file removed.
 
 ## Why this matters
 
@@ -30,7 +30,6 @@ Done for the initial memory setup.
 - [HANDOFF.md](HANDOFF.md): fresh-session continuation guide.
 - [WORKLOG.md](WORKLOG.md): append-only history.
 - [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md): unresolved product and technical questions.
-- [starter-baseline.md](starter-baseline.md): durable starter facts that survive project initialization.
 - [../../AGENTS.md](../../AGENTS.md): top-level agent routing and memory rules.
 - [../../.agents/skills/checkpoint/SKILL.md](../../.agents/skills/checkpoint/SKILL.md): procedure to update memory before stopping.
 
@@ -46,6 +45,7 @@ None.
 - Passed: starter reset policy and reset templates were added.
 - Passed: `initialize-project-memory` skill validates with `quick_validate.py`.
 - Passed: code convention skills were renamed to `frontend-*` and validated with `quick_validate.py`.
+- Passed: no removed starter-only memory filename or stale wording remains in `AGENTS.md`, `docs/ai`, `.agents/skills`, `plans`, or `docs/adr`.
 - Passed: targeted `git status --short` for `src`, `core`, package/config files, and `README.md` showed no changes after adding the starter initialization workflow.
 - Passed: strict secret-pattern scan over memory docs, plans, new skills, and `AGENTS.md` found no matches.
 - Not run: `pnpm run test`.

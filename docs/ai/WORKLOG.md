@@ -106,7 +106,6 @@ User clarified that this repository is a starter and that project-specific memor
 ### Changes
 
 - Added `.agents/skills/initialize-project-memory/SKILL.md`.
-- Added `docs/ai/starter-baseline.md`.
 - Added reset templates under `docs/ai/_templates/`.
 - Added a `Starter reset policy` section to `docs/ai/INDEX.md`.
 - Updated `AGENTS.md`, `CURRENT.md`, and `HANDOFF.md` to reference the initialization workflow.
@@ -159,3 +158,31 @@ User clarified that the code convention skills are for the Expo frontend and fro
 ### Next
 
 - Use `frontend-*` skills for Expo/frontend and frontend-core work only.
+
+## 2026-07-04 - Remove standalone starter-only memory file
+
+### Context
+
+User clarified that the starter should not keep a separate starter-only memory file.
+
+### Changes
+
+- Removed the standalone starter-only memory file.
+- Updated `docs/ai/INDEX.md` to state that reusable starter knowledge lives in architecture, technical, testing, and skill docs.
+- Updated `.agents/skills/initialize-project-memory/SKILL.md` to read reusable technical memory directly.
+- Removed separate starter-memory-file references from current state, handoff, and reset templates.
+
+### Decisions
+
+- Do not create a separate starter-only memory file.
+
+### Validation
+
+- Passed: `initialize-project-memory` validates with `quick_validate.py`.
+- Passed: reset templates no longer list a separate starter-only memory file as a file to read.
+- Passed: targeted `git status --short` for `src`, `core`, package/config files, and `README.md` showed no changes.
+- Passed: strict secret-pattern scan over memory docs, plans, skills, and `AGENTS.md` found no matches.
+
+### Next
+
+- Keep reusable starter knowledge in architecture, technical, testing, and skill docs.
