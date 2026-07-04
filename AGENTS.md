@@ -14,6 +14,7 @@ Available skills:
 - `checkpoint`: update current state, handoff, worklog, active plans, and relevant durable memory before stopping
 - `update-project-memory`: classify new durable context and update the most specific memory file
 - `create-plan`: create an executable `plans/<feature-slug>.md` for multi-step, risky, or multi-session work
+- `initialize-project-memory`: reset project-instance memory when this starter becomes a new project
 
 Use the matching skill when the task needs deeper guidance.
 Codex may also activate these skills automatically when the request matches their descriptions.
@@ -47,6 +48,7 @@ Always-on repository rules:
   - `docs/ai/api-contracts.md`
 - Before stopping, compacting context, or handing off, run the checkpoint procedure.
 - When durable context is discovered, update the correct project memory file.
+- When this starter becomes a new project, use `initialize project memory for <project name>`.
 - Keep memory files concise, versioned, and free of secrets.
 - Use `Unknown` rather than inventing missing facts.
 - Do not mix product memory with current task state.

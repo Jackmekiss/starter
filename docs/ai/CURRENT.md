@@ -20,8 +20,8 @@ Done for the initial memory setup.
 
 ## Next 3 concrete actions
 
-1. Update [product-memory.md](product-memory.md) with confirmed product facts when they are known.
-2. When starting feature work, read [INDEX.md](INDEX.md), [HANDOFF.md](HANDOFF.md), and any active `plans/*.md` before editing.
+1. Use `initialize project memory for <project name>` when deriving a concrete project from the starter.
+2. Update [product-memory.md](product-memory.md) with confirmed product facts when they are known.
 3. Run relevant validation commands when source code changes; no app validation was needed for this docs-only setup.
 
 ## Relevant files
@@ -30,6 +30,7 @@ Done for the initial memory setup.
 - [HANDOFF.md](HANDOFF.md): fresh-session continuation guide.
 - [WORKLOG.md](WORKLOG.md): append-only history.
 - [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md): unresolved product and technical questions.
+- [starter-baseline.md](starter-baseline.md): durable starter facts that survive project initialization.
 - [../../AGENTS.md](../../AGENTS.md): top-level agent routing and memory rules.
 - [../../.agents/skills/checkpoint/SKILL.md](../../.agents/skills/checkpoint/SKILL.md): procedure to update memory before stopping.
 
@@ -42,8 +43,10 @@ None.
 - Passed: required memory files exist under `docs/ai/`.
 - Passed: project memory skills exist under `.agents/skills/`.
 - Passed: `AGENTS.md` references the memory system.
+- Passed: starter reset policy and reset templates were added.
+- Passed: `initialize-project-memory` skill validates with `quick_validate.py`.
+- Passed: targeted `git status --short` for `src`, `core`, package/config files, and `README.md` showed no changes after adding the starter initialization workflow.
 - Passed: strict secret-pattern scan over memory docs, plans, new skills, and `AGENTS.md` found no matches.
-- Passed: targeted `git status --short` for `src`, `core`, package/config files, and `README.md` showed no changes.
 - Not run: `pnpm run test`.
 - Not run: `pnpm run typecheck`.
 - Not run: `pnpm run lint`.

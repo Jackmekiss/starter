@@ -96,3 +96,38 @@ User requested removing references to the separate product brief path and keepin
 ### Next
 
 - Add confirmed product facts directly to `docs/ai/product-memory.md`.
+
+## 2026-07-04 - Add starter memory initialization workflow
+
+### Context
+
+User clarified that this repository is a starter and that project-specific memory must be reinitialized for each new project derived from it.
+
+### Changes
+
+- Added `.agents/skills/initialize-project-memory/SKILL.md`.
+- Added `docs/ai/starter-baseline.md`.
+- Added reset templates under `docs/ai/_templates/`.
+- Added a `Starter reset policy` section to `docs/ai/INDEX.md`.
+- Updated `AGENTS.md`, `CURRENT.md`, and `HANDOFF.md` to reference the initialization workflow.
+
+### Decisions
+
+- Use `initialize project memory for <project name>` as the main trigger phrase.
+- Keep starter technical memory and reset project-instance memory from templates.
+
+### Validation
+
+- Passed: required reset templates exist under `docs/ai/_templates/`.
+- Passed: `.agents/skills/initialize-project-memory/SKILL.md` exists.
+- Passed: targeted `git status --short` for `src`, `core`, package/config files, and `README.md` showed no changes.
+- Passed: `docs/ai/INDEX.md` contains Keep / Reset / History groups under `Starter reset policy`.
+- Passed: strict secret-pattern scan over memory docs, plans, skills, and `AGENTS.md` found no matches.
+- Passed: `python3 /Users/martinseigneuret/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/initialize-project-memory`.
+- Not run: `pnpm run test`.
+- Not run: `pnpm run typecheck`.
+- Not run: `pnpm run lint`.
+
+### Next
+
+- Use `initialize project memory for <project name>` when deriving a concrete project from this starter.

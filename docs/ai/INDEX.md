@@ -42,8 +42,45 @@ Keep this folder concise. Prefer paths, short summaries, and cross-links over co
 | [DECISIONS.md](DECISIONS.md) | Durable decisions and rationale, or ADR index. | A decision should survive future sessions. |
 | [FAILED_ATTEMPTS.md](FAILED_ATTEMPTS.md) | Real failed approaches, gotchas, and traps. | A failed path or debugging trap is discovered. |
 | [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md) | Centralized unresolved questions. | Unknowns appear or are answered. |
+| [starter-baseline.md](starter-baseline.md) | Durable facts about the starter that survive project initialization. | Starter architecture, commands, scaffolding, or memory rules change. |
+| [_templates/](_templates/) | Reset templates used when this starter becomes a new project. | The initialization workflow or memory taxonomy changes. |
 | [../adr/README.md](../adr/README.md) | ADR process notes. | Formal architecture decision process changes. |
 | [../../plans/README.md](../../plans/README.md) | Plan creation and maintenance procedure. | Planning workflow changes. |
+
+## Starter reset policy
+
+Use `initialize project memory for <project name>` when a repo derived from this starter becomes a new project.
+
+Keep these files because they describe the starter baseline, reusable conventions, or reset machinery:
+
+- `docs/ai/INDEX.md`
+- `docs/ai/starter-baseline.md`
+- `docs/ai/architecture-map.md`
+- `docs/ai/technical-memory.md`
+- `docs/ai/testing-validation.md`
+- `docs/adr/README.md`
+- `plans/README.md`
+- `AGENTS.md`
+- `.agents/skills/**`
+
+Reset these files from `docs/ai/_templates/` because they describe a concrete project instance:
+
+- `docs/ai/product-memory.md`
+- `docs/ai/domain-glossary.md`
+- `docs/ai/user-flows.md`
+- `docs/ai/data-model.md`
+- `docs/ai/api-contracts.md`
+- `docs/ai/CURRENT.md`
+- `docs/ai/HANDOFF.md`
+- `docs/ai/OPEN_QUESTIONS.md`
+
+Reset history for a new project:
+
+- Replace `docs/ai/WORKLOG.md` with the initialized worklog template.
+- Replace `docs/ai/DECISIONS.md` with the initialized decisions template.
+- Replace `docs/ai/FAILED_ATTEMPTS.md` with the initialized failed-attempts template.
+- Remove or archive task-specific `plans/*.md`.
+- Remove or archive ADR files under `docs/adr/*.md`, except `docs/adr/README.md`.
 
 ## Maintenance rules
 

@@ -4,11 +4,12 @@
 
 1. [../../AGENTS.md](../../AGENTS.md)
 2. [INDEX.md](INDEX.md)
-3. [product-memory.md](product-memory.md)
-4. [architecture-map.md](architecture-map.md)
-5. [technical-memory.md](technical-memory.md)
-6. [CURRENT.md](CURRENT.md)
-7. [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)
+3. [starter-baseline.md](starter-baseline.md)
+4. [product-memory.md](product-memory.md)
+5. [architecture-map.md](architecture-map.md)
+6. [technical-memory.md](technical-memory.md)
+7. [CURRENT.md](CURRENT.md)
+8. [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)
 
 If debugging, also read [FAILED_ATTEMPTS.md](FAILED_ATTEMPTS.md). If user-facing behavior changes, also read [user-flows.md](user-flows.md) and [domain-glossary.md](domain-glossary.md). If data/API behavior changes, also read [data-model.md](data-model.md) and [api-contracts.md](api-contracts.md).
 
@@ -18,11 +19,11 @@ None.
 
 ## Situation summary
 
-The repository is an Expo/React Native starter app with frontend-first architecture. Durable domain code currently centers on auth and subscription bounded contexts under `core/`. UI routes exist for auth, onboarding, and tabs/home, but screens are placeholders. This session initialized the project memory system under `docs/ai/`, added ADR and plan guidance, added memory-maintenance skills, and patched `AGENTS.md` to route future sessions through memory.
+The repository is an Expo/React Native starter app with frontend-first architecture. Durable domain code currently centers on auth and subscription bounded contexts under `core/`. UI routes exist for auth, onboarding, and tabs/home, but screens are placeholders. The project memory system now includes starter reset templates and an `initialize-project-memory` skill for derived projects.
 
 ## Exact continuation point
 
-The initial memory system is installed. Next work should begin by reading the memory index and current state, then updating product memory once real product facts are available.
+The initial memory system is installed. If this repo is copied into a concrete product, run `initialize project memory for <project name>` before adding product-specific facts.
 
 ## Known constraints
 
@@ -51,6 +52,8 @@ Expected changes after this setup:
 - New `docs/adr/README.md`.
 - New `plans/README.md`.
 - New project memory skills under `.agents/skills/`.
+- New starter reset templates under `docs/ai/_templates/`.
+- New starter baseline at `docs/ai/starter-baseline.md`.
 - Minimal `AGENTS.md` patch for project memory routing.
 - No application/source code changes.
 
@@ -59,6 +62,8 @@ Expected changes after this setup:
 - Passed: required memory files exist under `docs/ai/`.
 - Passed: project memory skills exist under `.agents/skills/`.
 - Passed: `AGENTS.md` references the memory system.
+- Passed: starter reset policy and templates exist.
+- Passed: `initialize-project-memory` skill validates with `quick_validate.py`.
 - Passed: strict secret-pattern scan over memory docs, plans, new skills, and `AGENTS.md` found no matches.
 - Passed: targeted source/config status check showed no changes under `src`, `core`, package/config files, or `README.md`.
 - Not run: `pnpm run test`.
