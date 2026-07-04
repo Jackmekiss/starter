@@ -1,11 +1,11 @@
 ---
-name: ui-conventions
-description: "Use when creating or refactoring UI in this repository: screens, routes, components, navigation, screen data flow, styling, layout, forms, and JSX conventions. This skill covers the current UI stack and presentation rules. Do not use it for bounded-context design, use-case modeling, or naming-only reviews."
+name: frontend-ui-conventions
+description: "Use when creating or refactoring Expo/React Native frontend UI in this repository: screens, routes, components, navigation, screen data flow, NativeWind styling, layout, forms, and JSX conventions. This skill covers the client UI stack and presentation rules only. Do not use it for backend UI-independent work, backend APIs, bounded-context design, use-case modeling, or naming-only reviews."
 ---
 
-# UI Conventions
+# Frontend UI Conventions
 
-Use this skill when the task is primarily about screens, components, and UI composition.
+Use this skill when the task is primarily about Expo screens, React Native components, and frontend UI composition.
 
 ## Goals
 
@@ -39,3 +39,4 @@ Use this skill when the task is primarily about screens, components, and UI comp
 - Designing a new bounded context in `core/`.
 - Implementing or refactoring gateways, adapters, selectors, or APIs as the main task.
 - Pure naming, TypeScript, or review-checklist work.
+- Backend services, database schema, server routes, queues, or backend-only code.

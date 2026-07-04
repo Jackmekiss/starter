@@ -1,0 +1,5 @@
+# Failed Attempts
+
+| Date | Problem | Attempt | Result | Do not repeat | Better next step |
+|---|---|---|---|---|---|
+| 2026-07-04 | `.agents/skills` was read-only in the managed sandbox. | Ran `mkdir -p` for docs, plans, and new skill directories in one sandboxed command. | Docs/plans directories could be created, but `.agents/skills/*` directory creation failed with `Operation not permitted`. | Do not assume `.agents/skills` is writable just because it is inside the repository. | Check permissions and request elevated approval for `.agents/skills` writes when needed. |
