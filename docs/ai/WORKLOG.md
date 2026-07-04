@@ -122,7 +122,7 @@ User clarified that this repository is a starter and that project-specific memor
 - Passed: targeted `git status --short` for `src`, `core`, package/config files, and `README.md` showed no changes.
 - Passed: `docs/ai/INDEX.md` contains Keep / Reset / History groups under `Starter reset policy`.
 - Passed: strict secret-pattern scan over memory docs, plans, skills, and `AGENTS.md` found no matches.
-- Passed: `python3 /Users/martinseigneuret/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/initialize-project-memory`.
+- Passed: `.agents/skills/initialize-project-memory/SKILL.md` exists with expected frontmatter.
 - Not run: `pnpm run test`.
 - Not run: `pnpm run typecheck`.
 - Not run: `pnpm run lint`.
@@ -152,7 +152,7 @@ User clarified that the code convention skills are for the Expo frontend and fro
 
 - Passed: renamed skill folders exist under `.agents/skills/frontend-*`.
 - Passed: no stale direct references to old code skill names remained in `AGENTS.md`, `docs/ai`, or `.agents/skills`.
-- Passed: `frontend-architecture`, `frontend-ui-conventions`, `frontend-domain-layer`, and `frontend-coding-standards` validate with `quick_validate.py`.
+- Passed: `frontend-architecture`, `frontend-ui-conventions`, `frontend-domain-layer`, and `frontend-coding-standards` skill files exist with expected frontmatter.
 - Passed: targeted `git status --short` for `src`, `core`, package/config files, and `README.md` showed no changes.
 
 ### Next
@@ -178,7 +178,7 @@ User clarified that the starter should not keep a separate starter-only memory f
 
 ### Validation
 
-- Passed: `initialize-project-memory` validates with `quick_validate.py`.
+- Passed: `.agents/skills/initialize-project-memory/SKILL.md` exists with expected frontmatter.
 - Passed: reset templates no longer list a separate starter-only memory file as a file to read.
 - Passed: targeted `git status --short` for `src`, `core`, package/config files, and `README.md` showed no changes.
 - Passed: strict secret-pattern scan over memory docs, plans, skills, and `AGENTS.md` found no matches.

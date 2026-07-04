@@ -43,8 +43,8 @@ None.
 - Passed: project memory skills exist under `.agents/skills/`.
 - Passed: `AGENTS.md` references the memory system.
 - Passed: starter reset policy and reset templates were added.
-- Passed: `initialize-project-memory` skill validates with `quick_validate.py`.
-- Passed: code convention skills were renamed to `frontend-*` and validated with `quick_validate.py`.
+- Passed: `initialize-project-memory` skill file exists with expected frontmatter.
+- Passed: code convention skills were renamed to `frontend-*` and their skill files exist with expected frontmatter.
 - Passed: no removed starter-only memory filename or stale wording remains in `AGENTS.md`, `docs/ai`, `.agents/skills`, `plans`, or `docs/adr`.
 - Passed: targeted `git status --short` for `src`, `core`, package/config files, and `README.md` showed no changes after adding the starter initialization workflow.
 - Passed: strict secret-pattern scan over memory docs, plans, new skills, and `AGENTS.md` found no matches.

@@ -63,8 +63,8 @@ Expected changes after this setup:
 - Passed: project memory skills exist under `.agents/skills/`.
 - Passed: `AGENTS.md` references the memory system.
 - Passed: starter reset policy and templates exist.
-- Passed: `initialize-project-memory` skill validates with `quick_validate.py`.
-- Passed: `frontend-*` code convention skills validate with `quick_validate.py`.
+- Passed: `initialize-project-memory` skill file exists with expected frontmatter.
+- Passed: `frontend-*` code convention skill files exist with expected frontmatter.
 - Passed: strict secret-pattern scan over memory docs, plans, new skills, and `AGENTS.md` found no matches.
 - Passed: targeted source/config status check showed no changes under `src`, `core`, package/config files, or `README.md`.
 - Not run: `pnpm run test`.
