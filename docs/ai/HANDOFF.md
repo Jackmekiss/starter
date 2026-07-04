@@ -19,7 +19,7 @@ None.
 
 ## Situation summary
 
-The repository is an Expo/React Native starter app with frontend-first architecture. Durable domain code currently centers on auth and subscription bounded contexts under `core/`. UI routes exist for auth, onboarding, and tabs/home, but screens are placeholders. The project memory system now includes starter reset templates and an `initialize-project-memory` skill for derived projects.
+The repository is an Expo/React Native starter app with frontend-first architecture. Durable domain code currently centers on auth and subscription bounded contexts under frontend `core/`. UI routes exist for auth, onboarding, and tabs/home, but screens are placeholders. The project memory system includes starter reset templates and an `initialize-project-memory` skill for derived projects. Code convention skills are named `frontend-*` to avoid backend confusion in future monorepos.
 
 ## Exact continuation point
 
@@ -54,6 +54,7 @@ Expected changes after this setup:
 - New project memory skills under `.agents/skills/`.
 - New starter reset templates under `docs/ai/_templates/`.
 - New starter baseline at `docs/ai/starter-baseline.md`.
+- Renamed code convention skills to `frontend-*`.
 - Minimal `AGENTS.md` patch for project memory routing.
 - No application/source code changes.
 
@@ -64,6 +65,7 @@ Expected changes after this setup:
 - Passed: `AGENTS.md` references the memory system.
 - Passed: starter reset policy and templates exist.
 - Passed: `initialize-project-memory` skill validates with `quick_validate.py`.
+- Passed: `frontend-*` code convention skills validate with `quick_validate.py`.
 - Passed: strict secret-pattern scan over memory docs, plans, new skills, and `AGENTS.md` found no matches.
 - Passed: targeted source/config status check showed no changes under `src`, `core`, package/config files, or `README.md`.
 - Not run: `pnpm run test`.

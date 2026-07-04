@@ -16,7 +16,7 @@
 | `core/subscription/` | Subscription bounded context. | Owns premium entitlement domain, subscription use-cases, gateway, adapters, selectors, and RTK Query API options. |
 | `core/shared/` | Shared lower-level adapters/helpers. | Current discovered file: Supabase slugify helper. |
 | `core/init-redux-store.ts` | Root Redux store factory for bounded-context slices and RTK Query APIs. | Can mount auth and subscription APIs; runtime currently mounts auth API. |
-| `.agents/skills/` | Repo-specific agent workflow and convention skills. | Existing architecture, UI, domain, and coding standards skills; project memory skills added by this setup. |
+| `.agents/skills/` | Repo-specific agent workflow and convention skills. | `frontend-*` skills cover the Expo app and frontend business core only; project memory skills cover continuity. |
 | `docs/ai/` | Project memory system. | Stable and operational memory for humans and agents. |
 | `plans/` | Multi-session feature plans. | Use only when work is too large/risky for a single session. |
 

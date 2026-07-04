@@ -29,6 +29,7 @@ This repository is an Expo/React Native starter with frontend-first architecture
 - `core/` owns durable product truth, domain models, use-cases, gateways, adapters, selectors, and context APIs.
 - Screens should not contain durable domain logic.
 - UI state should not leak into domain models.
+- Repo skills named `frontend-*` apply to the Expo app and frontend business core only; they are not backend/server standards.
 
 ## Starter memory rules
 

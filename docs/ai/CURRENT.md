@@ -8,7 +8,7 @@ Last updated: 2026-07-04
 
 ## Current focus
 
-Project memory system initialized.
+Project memory system initialized; code convention skills renamed as frontend-specific.
 
 ## Why this matters
 
@@ -45,6 +45,7 @@ None.
 - Passed: `AGENTS.md` references the memory system.
 - Passed: starter reset policy and reset templates were added.
 - Passed: `initialize-project-memory` skill validates with `quick_validate.py`.
+- Passed: code convention skills were renamed to `frontend-*` and validated with `quick_validate.py`.
 - Passed: targeted `git status --short` for `src`, `core`, package/config files, and `README.md` showed no changes after adding the starter initialization workflow.
 - Passed: strict secret-pattern scan over memory docs, plans, new skills, and `AGENTS.md` found no matches.
 - Not run: `pnpm run test`.

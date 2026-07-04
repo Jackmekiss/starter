@@ -1,11 +1,11 @@
 ---
-name: coding-standards
-description: Use when reviewing or tightening code quality in this repository: naming, TypeScript boundaries, file splitting, refactoring discipline, review checklists, and final agent rules. Prefer this skill for review, cleanup, and standards-enforcement tasks. Do not use it as the primary skill for feature design unless the task is mainly about standards compliance.
+name: frontend-coding-standards
+description: "Use when reviewing or tightening Expo/frontend and frontend-core code quality in this repository: naming, TypeScript boundaries, file splitting, refactoring discipline, review checklists, and final agent rules for client-side code. Prefer this skill for frontend review, cleanup, and standards-enforcement tasks. Do not use it as backend coding standards or as the primary skill for feature design unless the task is mainly about frontend standards compliance."
 ---
 
-# Coding Standards
+# Frontend Coding Standards
 
-Use this skill when the task is mainly about repository-wide coding quality and consistency.
+Use this skill when the task is mainly about Expo/frontend or frontend-core code quality and consistency.
 
 ## Goals
 
@@ -34,3 +34,4 @@ Use this skill when the task is mainly about repository-wide coding quality and 
 - Choosing route, component, or domain ownership as the main task.
 - Styling or layout work.
 - Implementing business-layer flows without a standards or review angle.
+- Backend services, database schema, server routes, queues, or backend-only code.

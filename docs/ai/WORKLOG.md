@@ -131,3 +131,31 @@ User clarified that this repository is a starter and that project-specific memor
 ### Next
 
 - Use `initialize project memory for <project name>` when deriving a concrete project from this starter.
+
+## 2026-07-04 - Rename code skills as frontend-specific
+
+### Context
+
+User clarified that the code convention skills are for the Expo frontend and frontend business core, and should not be confused with backend skills in a future monorepo.
+
+### Changes
+
+- Renamed code skills to `frontend-architecture`, `frontend-ui-conventions`, `frontend-domain-layer`, and `frontend-coding-standards`.
+- Updated skill frontmatter and descriptions to specify Expo/frontend/client-side scope.
+- Updated `AGENTS.md` and memory references to use the new names.
+
+### Decisions
+
+- Use `frontend-*` as the namespace for Expo/frontend code skills.
+- Treat `core/` in these skills as frontend business core, not backend server code.
+
+### Validation
+
+- Passed: renamed skill folders exist under `.agents/skills/frontend-*`.
+- Passed: no stale direct references to old code skill names remained in `AGENTS.md`, `docs/ai`, or `.agents/skills`.
+- Passed: `frontend-architecture`, `frontend-ui-conventions`, `frontend-domain-layer`, and `frontend-coding-standards` validate with `quick_validate.py`.
+- Passed: targeted `git status --short` for `src`, `core`, package/config files, and `README.md` showed no changes.
+
+### Next
+
+- Use `frontend-*` skills for Expo/frontend and frontend-core work only.

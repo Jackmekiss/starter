@@ -69,6 +69,7 @@ Do not claim a command passes unless it was run in the current session or a reco
 ## Domain conventions
 
 - Each bounded context under `core/` owns domain entities, use-cases, gateways, adapters, selectors, runtime state, and API facade.
+- In this starter, `core/` means frontend business core for the Expo app, not backend server code.
 - Use-cases live one action per file under action-oriented folders.
 - Gateways define stable contracts and keep implementations replaceable.
 - API DTOs live in `core/<context>/apis/types.ts`.
