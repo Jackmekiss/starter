@@ -2,23 +2,22 @@
 
 ## App / package structure
 
-| Path                       | Responsibility                                                                                               | Notes                                                                                                             |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
-| `src/app/`                 | Expo Router routes, route groups, layouts, and screens.                                                      | Current route groups: `(auth)`, `(on-boarding)`, `(tabs)`, `(tabs)/(home)`. Screens are placeholders.             |
-| `src/app-runtime/`         | Runtime composition for providers, navigation, store, app mode, auth API wiring, and persistence transforms. | `src/app/_layout.tsx` exports runtime APIs for screens.                                                           |
-| `src/components/ui/`       | Reusable UI primitives.                                                                                      | Includes `Button`, `Icon`, `Input`, `Text`, `TextArea`, `BottomSheetModal`.                                       |
-| `src/components/ux/`       | UX-specific components that are not generic primitives.                                                      | Current example: `HapticTab`.                                                                                     |
-| `src/hooks/`               | App hooks and typed Redux hooks.                                                                             | Keep business logic in `core/` when it has durable meaning.                                                       |
-| `src/stores/`              | UI/runtime stores outside bounded contexts.                                                                  | Current Zustand `session-store` persists `isConnected`.                                                           |
-| `src/constants/`           | App constants and theme exports.                                                                             | Keep durable domain constants in `core/` when they are business concepts.                                         |
-| `src/lib/`                 | Small app-level helpers.                                                                                     | Avoid growing generic utility buckets.                                                                            |
-| `core/auth/`               | Authentication bounded context.                                                                              | Owns account/session domain, auth use-cases, auth gateway, adapters, selectors, and RTK Query API options.        |
-| `core/subscription/`       | Subscription bounded context.                                                                                | Owns premium entitlement domain, subscription use-cases, gateway, adapters, selectors, and RTK Query API options. |
-| `core/shared/`             | Transport-independent contracts and lower-level shared adapters.                                             | Owns `ApplicationError`, `Result`, and the Supabase slugify helper.                                               |
-| `core/init-redux-store.ts` | Root Redux store factory for bounded-context slices and RTK Query APIs.                                      | Can mount auth and subscription APIs; runtime currently mounts auth API.                                          |
-| `.agents/skills/`          | Repo-specific agent workflow and convention skills.                                                          | `frontend-*` skills cover the Expo app and frontend business core only; project memory skills cover continuity.   |
-| `docs/ai/`                 | Project memory system.                                                                                       | Stable and operational memory for humans and agents.                                                              |
-| `plans/`                   | Multi-session feature plans.                                                                                 | Use only when work is too large/risky for a single session.                                                       |
+| Path                       | Responsibility                                                                                                 | Notes                                                                                                             |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `src/app/`                 | Expo Router routes, route groups, layouts, and screens.                                                        | Current route groups: `(auth)`, `(on-boarding)`, `(tabs)`, `(tabs)/(home)`. Screens are placeholders.             |
+| `src/app-runtime/`         | Runtime composition for providers, navigation, store, app mode, auth API wiring, and secure session bootstrap. | `src/app/_layout.tsx` exports runtime APIs for screens.                                                           |
+| `src/components/ui/`       | Reusable UI primitives.                                                                                        | Includes `Button`, `Icon`, `Input`, `Text`, `TextArea`, `BottomSheetModal`.                                       |
+| `src/components/ux/`       | UX-specific components that are not generic primitives.                                                        | Current example: `HapticTab`.                                                                                     |
+| `src/hooks/`               | App hooks and typed Redux hooks.                                                                               | Keep business logic in `core/` when it has durable meaning.                                                       |
+| `src/constants/`           | App constants and theme exports.                                                                               | Keep durable domain constants in `core/` when they are business concepts.                                         |
+| `src/lib/`                 | Small app-level helpers.                                                                                       | Avoid growing generic utility buckets.                                                                            |
+| `core/auth/`               | Authentication bounded context.                                                                                | Owns account/session domain, auth use-cases, auth gateway, adapters, selectors, and RTK Query API options.        |
+| `core/subscription/`       | Subscription bounded context.                                                                                  | Owns premium entitlement domain, subscription use-cases, gateway, adapters, selectors, and RTK Query API options. |
+| `core/shared/`             | Transport-independent contracts and lower-level shared adapters.                                               | Owns `ApplicationError`, `Result`, and the Supabase slugify helper.                                               |
+| `core/init-redux-store.ts` | Root Redux store factory for bounded-context slices and RTK Query APIs.                                        | Can mount auth and subscription APIs; runtime currently mounts auth API.                                          |
+| `.agents/skills/`          | Repo-specific agent workflow and convention skills.                                                            | `frontend-*` skills cover the Expo app and frontend business core only; project memory skills cover continuity.   |
+| `docs/ai/`                 | Project memory system.                                                                                         | Stable and operational memory for humans and agents.                                                              |
+| `plans/`                   | Multi-session feature plans.                                                                                   | Use only when work is too large/risky for a single session.                                                       |
 
 ## Frontend/backend boundaries
 
@@ -54,14 +53,19 @@
 
 - Redux Toolkit slices store durable bounded-context state.
 - RTK Query powers use-case APIs and async action orchestration.
-- Redux Persist stores root state in AsyncStorage with a transform that keeps only fulfilled RTK Query cache entries.
-- Zustand persists the `isConnected` UI session flag before full account retrieval completes.
+- Redux Persist stores only the explicitly allowed, non-sensitive subscription-offering catalog in AsyncStorage.
+- Auth state and RTK Query caches are never persisted in AsyncStorage.
+- Redux `auth.session` is the single runtime source of authentication truth.
+- Expo SecureStore persists only the validated session required across launches.
 - Selectors live under bounded contexts and use `createSelector` for derived objects/arrays/read models.
 
 ## Auth / session approach
 
-- Auth domain state stores durable `user`, `session`, `account`, and connection `status`; transient auth request failures stay in RTK Query.
-- Route selection combines persisted `isConnected`, auth status, account, and onboarding status.
+- Auth domain state stores runtime `user`, `session`, `account`, and connection `status`; transient auth request failures stay in RTK Query.
+- `SessionStorage` isolates durable credential persistence from the domain and runtime store.
+- `PersistGate` waits for secure-session hydration and account retrieval before mounting route selection.
+- Route selection derives connection directly from `auth.session` and onboarding from `auth.account`.
+- Successful logout and account deletion clear SecureStore and reset the complete Redux tree, including RTK Query caches.
 - `EXPO_PUBLIC_APP_MODE=fake` selects `FakeAuthBaseQuery`; all other modes use `InMemoryAuthBaseQuery`.
 - No production auth backend/provider configuration was discovered.
 
@@ -73,7 +77,7 @@ Unknown / none discovered.
 
 - RevenueCat subscription boundaries exist through `RevenueCatSubscriptionRuntime` and `RevenueCatSubscriptionBaseQuery`.
 - Supabase dependency exists in `package.json`, and a shared Supabase slugify helper exists, but no configured Supabase client, schema, or migrations were discovered.
-- Expo SecureStore plugin is configured in `app.json`.
+- Expo SecureStore is configured and used by `SecureSessionStorage`; unsupported platforms keep the session in process memory instead of unencrypted persistent storage.
 
 ## Deployment / runtime assumptions
 

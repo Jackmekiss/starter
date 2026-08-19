@@ -46,7 +46,7 @@ The current app uses RTK Query endpoint builders over local gateway contracts. G
 | ---------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | RevenueCat       | `core/subscription/adapters/revenuecat/revenue-cat-subscription-runtime.ts` | Native subscription SDK bridge for offerings, purchase, restore, status, and management. | Interface and adapter exist; concrete SDK implementation/config Unknown. |
 | Supabase         | `package.json`, `core/shared/adapters/supabase/slugify.ts`                  | Dependency and helper present.                                                           | No configured client/schema discovered.                                  |
-| Expo SecureStore | `app.json` plugin                                                           | Native secure storage support.                                                           | Configured plugin; direct usage not discovered in source.                |
+| Expo SecureStore | `core/auth/adapters/secure-store/secure-session-storage.ts`                 | Encrypted native persistence for validated authentication sessions.                      | Active through the runtime `SessionStorage` boundary.                    |
 
 ## Webhooks
 

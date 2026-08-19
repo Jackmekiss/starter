@@ -8,48 +8,49 @@ Last updated: 2026-08-19
 
 ## Current focus
 
-Reusable architecture patterns from `rva-app` are synchronized, including typed application-error contracts across `auth` and `subscription`.
+Secure auth-session persistence and deterministic startup routing are implemented.
 
 ## Why this matters
 
-The starter must remain aligned with patterns proven in the evolved application while keeping product-specific RVA behavior out of the reusable template.
+The starter must never place credentials in unencrypted persistence or route from duplicated connection state.
 
 ## Current status
 
-Complete. Skills, reference implementations, behavior specs, and durable memory are aligned.
+Complete and validated locally. Changes are uncommitted on `master`.
 
 ## Next 3 concrete actions
 
-1. Review and commit the completed migration when desired.
-2. Optionally fix the unrelated global formatting/lint debt listed below.
-3. Use the typed error pattern when adding the next bounded context.
+1. Review and commit the secure-auth bootstrap migration when desired.
+2. Define production startup retry/error UX when a real auth backend is added.
+3. Optionally fix the unrelated global formatting/lint debt.
 
 ## Relevant files
 
-- [../../plans/sync-rva-patterns.md](../../plans/sync-rva-patterns.md): active migration plan.
+- [../../plans/secure-auth-bootstrap.md](../../plans/secure-auth-bootstrap.md): active implementation plan.
 - [architecture-map.md](architecture-map.md): reusable architecture boundaries.
 - [technical-memory.md](technical-memory.md): engineering conventions.
 - [api-contracts.md](api-contracts.md): current gateway and error contracts.
 
 ## Active plan
 
-None. [Synchronize Reusable RVA Patterns](../../plans/sync-rva-patterns.md) is complete.
+None. [Secure Auth Bootstrap](../../plans/secure-auth-bootstrap.md) is complete.
 
 ## Last validation commands and results
 
 - Passed: `pnpm run test` (16 files, 24 tests).
 - Passed: `pnpm run typecheck`.
-- Passed: targeted Oxfmt, Oxlint, and ESLint for changed source files.
-- Passed: targeted Oxfmt check for all changed and new files.
+- Passed: targeted Oxfmt, Oxlint, and ESLint for every changed source file.
+- Passed: targeted Oxfmt for changed source, memory, plan, and package files.
 - Passed: `git diff --check`.
-- Failed on pre-existing unrelated files: `pnpm run check` formatting phase.
-- Failed on pre-existing unrelated files: `pnpm run lint` (`BottomSheetModal.tsx` type-only import and `Button.tsx` accessibility warning).
+- Global `pnpm run check` stops on 11 pre-existing unrelated formatting issues before lint.
 
 ## Blockers / open questions
 
-- Concrete production backend, auth provider, RevenueCat configuration, and translation runtime remain Unknown and behind replaceable contracts.
+- Production auth backend/provider and startup retry/error UX remain Unknown.
+- RevenueCat configuration and translation runtime remain Unknown behind replaceable contracts.
 
 ## Do-not-forget notes
 
-- Preserve the starter's `frontend-*` skill names and use-case testing reference while importing newer RVA guidance.
-- Copy architecture, not RVA-specific error codes, generated API types, translations, or business contexts.
+- `auth.session` is the only runtime connection truth.
+- Never add auth or RTK Query slices to the AsyncStorage persistence allowlist.
+- Legacy `persist:root` and `session` AsyncStorage keys are removed during bootstrap.

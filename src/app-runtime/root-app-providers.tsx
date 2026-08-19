@@ -6,7 +6,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
-import { persistor, store } from "@/app-runtime/app-runtime";
+import { bootstrapAuth } from "@/app-runtime/runtime/auth-bootstrap";
+import { persistor, store } from "@/app-runtime/runtime/store-runtime";
 
 /**
  * Props for the RootAppProviders component.
@@ -22,7 +23,11 @@ export function RootAppProviders({ children }: RootAppProvidersProps) {
       <SafeAreaProvider>
         <GestureHandlerRootView>
           <BottomSheetModalProvider>
-            <PersistGate loading={null} persistor={persistor}>
+            <PersistGate
+              loading={null}
+              onBeforeLift={bootstrapAuth}
+              persistor={persistor}
+            >
               <ThemeProvider value={DefaultTheme}>{children}</ThemeProvider>
             </PersistGate>
           </BottomSheetModalProvider>

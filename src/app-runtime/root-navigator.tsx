@@ -1,29 +1,24 @@
 import { Stack } from "expo-router";
 
-import { useRetrieveAccountQuery } from "@/app-runtime/app-runtime";
 import { useAppReadiness } from "@/hooks/app-shell/useAppReadiness";
 import { useSelector } from "@/hooks/redux-hooks";
-import useSessionStore from "@/stores/session-store";
 
 /**
  * Chooses the active route group from session and onboarding state.
  */
 export function RootNavigator() {
-  const { isConnected } = useSessionStore();
+  const session = useSelector((state) => state.auth.session);
   const account = useSelector((state) => state.auth.account);
-  const authStatus = useSelector((state) => state.auth.status);
-  const { isFetching: isRetrievingAccount } = useRetrieveAccountQuery();
+  const isConnected = session !== null;
 
-  useAppReadiness(isRetrievingAccount);
+  useAppReadiness();
 
   const shouldCompleteOnboarding =
-    isConnected &&
-    authStatus === "success" &&
-    account?.onboardingStatus !== "completed";
+    isConnected && account !== null && account.onboardingStatus !== "completed";
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={!isConnected && !shouldCompleteOnboarding}>
+      <Stack.Protected guard={!isConnected}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
       <Stack.Protected guard={isConnected && !shouldCompleteOnboarding}>

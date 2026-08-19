@@ -49,6 +49,13 @@ export const authSlice = createSlice({
       session: action.payload.session,
       account: action.payload.account,
     }),
+    restoreSession: (state, action) => ({
+      ...state,
+      status: action.payload ? "success" : "idle",
+      user: null,
+      session: action.payload,
+      account: null,
+    }),
     clearAuth: (state) => ({
       ...state,
       status: "idle",
@@ -59,4 +66,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setAuth, clearAuth, setAccount } = authSlice.actions;
+export const { setAuth, restoreSession, clearAuth, setAccount } =
+  authSlice.actions;

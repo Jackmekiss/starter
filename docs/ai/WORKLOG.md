@@ -224,3 +224,40 @@ The user asked to bring patterns that evolved in `rva-app` back into `starter`, 
 
 - Review and commit the migration.
 - Use the same complete-context error migration for future bounded contexts.
+
+## 2026-08-19 - Secure auth persistence and startup routing
+
+### Context
+
+The audit found that access/refresh tokens and RTK Query mutations were persisted in AsyncStorage, while a second Zustand `isConnected` value could diverge from Redux during startup.
+
+### Changes
+
+- Added a typed `SessionStorage` gateway, SecureStore adapter, in-memory test adapter, and auth-gateway persistence decorator.
+- Restricted root Redux persistence to the non-sensitive subscription-offering catalog and removed RTK Query cache persistence.
+- Changed the persistence namespace to `root-v2` and deleted the legacy `persist:root` and `session` AsyncStorage keys during bootstrap.
+- Made `clearAuth` reset the complete Redux tree, including API caches.
+- Removed the Zustand session store and dependency.
+- Added deterministic `PersistGate` bootstrap: restore secure session, retrieve account, then mount navigation.
+- Updated auth specs to verify session persistence and cleanup.
+- Updated architecture, data, API, flow, glossary, technical, decision, validation, current-state, and handoff memory.
+
+### Decisions
+
+- Redux `auth.session` is the only runtime authentication source of truth.
+- SecureStore is a persistence boundary, not another runtime store.
+- Unsupported platforms use process memory rather than unencrypted credential persistence.
+
+### Validation
+
+- Passed: `pnpm run test` (16 files, 24 tests).
+- Passed: `pnpm run typecheck`.
+- Passed: targeted Oxfmt, Oxlint, and ESLint for all changed source files.
+- Passed: targeted Oxfmt for changed source, memory, plan, and package files.
+- Passed: `git diff --check`.
+- Global `pnpm run check` stops on 11 pre-existing unrelated formatting issues.
+
+### Next
+
+- Review and commit/push the migration when requested.
+- Define startup retry/error UX when wiring a production auth backend.

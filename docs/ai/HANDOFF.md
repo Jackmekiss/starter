@@ -8,32 +8,32 @@
 4. [architecture-map.md](architecture-map.md)
 5. [technical-memory.md](technical-memory.md)
 6. [CURRENT.md](CURRENT.md)
-7. [../../plans/sync-rva-patterns.md](../../plans/sync-rva-patterns.md)
+7. [../../plans/secure-auth-bootstrap.md](../../plans/secure-auth-bootstrap.md)
 
 ## Active plan
 
-None. [Synchronize Reusable RVA Patterns](../../plans/sync-rva-patterns.md) is complete.
+None. [Secure Auth Bootstrap](../../plans/secure-auth-bootstrap.md) is complete.
 
 ## Situation summary
 
-The repository is an Expo/React Native starter app with frontend-first architecture. Reusable patterns that matured in `rva-app` are synchronized into frontend-scoped skills. `auth` and `subscription` now provide complete typed-error reference implementations using shared `ApplicationError` and `Result` contracts.
+The secure-auth bootstrap migration is complete. Tokens now persist behind `SessionStorage` with Expo SecureStore, Redux auth is the only runtime session truth, RTK Query caches are not persisted, and navigation mounts only after session hydration and account retrieval.
 
 ## Exact continuation point
 
-Review the final working-tree diff and commit it when desired. For new fallible contexts, follow `frontend-domain-layer/references/error-management.md` and migrate the entire context rather than mixing contracts.
+Review the working-tree diff and commit/push only when requested. The next product decision is the startup retry/error experience for a real auth backend.
 
 ## Known constraints
 
-- Preserve `frontend-*` skill naming and existing starter-only memory/testing improvements.
-- Do not copy RVA product codes, translation keys, generated clients, or backend assumptions.
-- Do not introduce a translation dependency solely for the example error resolvers.
+- Do not persist auth, session credentials, subscription entitlement, or RTK Query state in AsyncStorage.
+- Unsupported SecureStore platforms intentionally keep sessions only in process memory.
+- Do not launch Expo unless explicitly requested.
 - Do not launch Expo unless explicitly requested.
 
 ## Last known good state
 
 - Branch at migration start: `master`.
 - Both `starter` and `rva-app` working trees were clean before inspection.
-- Targeted validation, tests, and typecheck pass; global formatting/lint debt is unrelated and documented below.
+- Tests, typecheck, targeted format/lint, and `git diff --check` pass.
 
 ## Branch
 
@@ -41,7 +41,7 @@ Review the final working-tree diff and commit it when desired. For new fallible 
 
 ## Working tree summary
 
-Expected changes include the completed plan, synchronized skills, shared error contracts, complete `auth` and `subscription` migrations, specs, a CSS module declaration needed by typecheck, and memory updates.
+Expected uncommitted changes include the SecureStore session boundary/adapters, deterministic bootstrap, Redux persistence restrictions, removal of Zustand/API-cache persistence, focused auth spec assertions, package lock updates, the completed plan, and memory updates.
 
 ## Tests / checks last run
 
@@ -50,14 +50,14 @@ Expected changes include the completed plan, synchronized skills, shared error c
 - Passed: targeted Oxfmt, Oxlint, and ESLint for changed source files.
 - Passed: targeted Oxfmt check for all changed and new files.
 - Passed: `git diff --check`.
-- Global `pnpm run check` stops on pre-existing format issues in untouched files.
-- Global `pnpm run lint` stops on pre-existing findings in `src/components/ui/BottomSheetModal.tsx` and `src/components/ui/Button.tsx`.
+- Global `pnpm run check` stops in the formatting phase on 11 pre-existing unrelated files.
 
 ## Things not to repeat
 
-- Do not reintroduce user-facing messages into domain errors or durable slices.
-- Do not leave one bounded context with both legacy success unions and typed failures.
+- Do not restore the persisted Zustand `isConnected` flag.
+- Do not re-enable persisted RTK Query transforms for auth data.
+- Keep the `root-v2` persistence key or add an explicit migration before changing its schema.
 
 ## Recommended first command
 
-`git status --short && git diff --stat`
+`git diff --check && git status --short`

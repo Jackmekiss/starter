@@ -87,6 +87,14 @@ Do not claim a command passes unless it was run in the current session or a reco
 - Presentation adapters resolve typed errors into safe message keys/copy with caller-provided fallback wording.
 - Unknown: global logging, reporting, or crash/error monitoring strategy.
 
+## Session persistence conventions
+
+- Redux `auth.session` is the only runtime authentication source of truth.
+- Persist native credentials through `SessionStorage` and `SecureSessionStorage`; never through AsyncStorage or a persisted RTK Query cache.
+- Root Redux persistence requires an explicit allowlist of non-sensitive slices.
+- Successful logout and account deletion reset all Redux slices/caches and clear secure session storage.
+- Application routing must wait for session hydration and initial account retrieval; do not use persisted connection booleans or fixed readiness delays.
+
 ## Logging conventions
 
 Unknown. No explicit logging convention was discovered. ESLint allows `console` in `scripts/**/*` only.

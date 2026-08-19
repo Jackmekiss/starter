@@ -37,3 +37,21 @@ export interface AuthUser {
    */
   email: string;
 }
+
+/** Narrows unknown persisted data to a structurally valid auth session. */
+export function isSession(value: unknown): value is Session {
+  if (!isRecord(value)) return false;
+
+  return (
+    typeof value.userId === "string" &&
+    typeof value.accessToken === "string" &&
+    (value.refreshToken === undefined ||
+      typeof value.refreshToken === "string") &&
+    (value.expiresAt === undefined || typeof value.expiresAt === "number")
+  );
+}
+
+/** Narrows an unknown value to a property-addressable record. */
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}

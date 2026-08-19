@@ -75,7 +75,7 @@ Unknown. No product brief or roadmap was present during initialization.
 
 ## Permissions / roles assumptions
 
-- Route access is based on persisted connection state, auth status, account presence, and onboarding status.
+- Route access derives from the Redux auth session and account onboarding status after secure-session bootstrap completes.
 - Unknown: role-based access control, admin permissions, organization permissions, or feature permissions.
 
 ## Open product questions

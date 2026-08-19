@@ -14,34 +14,38 @@ Reach the correct route group based on current auth and onboarding state.
 
 ### Happy path
 
-1. Root layout wires global providers, splash handling, status bar, toast, and the root navigator.
-2. Auth account retrieval starts through `useRetrieveAccountQuery`.
-3. `useAppReadiness` syncs persisted `isConnected` with the retrieved account and hides the splash screen after readiness.
-4. Root navigator chooses `(auth)`, `(on-boarding)`, or `(tabs)` based on connection, auth status, and account onboarding status.
+1. Redux Persist restores only explicitly allowed non-sensitive state.
+2. `bootstrapAuth` removes legacy AsyncStorage auth keys and retrieves the validated session through `SessionStorage`.
+3. Redux receives the restored session as its single authentication source of truth.
+4. When a session exists, account retrieval completes before `PersistGate` mounts navigation.
+5. Root navigator chooses `(auth)`, `(on-boarding)`, or `(tabs)` from the Redux session and account.
+6. `useAppReadiness` hides the splash after the guarded bootstrap completes.
 
 ### Edge cases
 
-- Connected user with incomplete onboarding is routed to `(on-boarding)`.
-- Connected user with completed onboarding is routed to `(tabs)`.
-- Missing account after retrieval clears the persisted connection flag.
+- A session with an incomplete account is routed to `(on-boarding)`.
+- A session with a completed account is routed to `(tabs)`.
+- A missing account after successful retrieval clears Redux auth state and SecureStore.
+- A transient account retrieval failure preserves the secure session for a later retry.
 
 ### Error / empty / loading states
 
-- Loading is represented by account retrieval and splash delay.
+- Loading remains behind the splash until secure-session hydration and initial account retrieval finish.
 - Error UI is Unknown; route screens are placeholders.
 
 ### Relevant files
 
 - `src/app/_layout.tsx`
 - `src/app-runtime/root-navigator.tsx`
+- `src/app-runtime/runtime/auth-bootstrap.ts`
 - `src/hooks/app-shell/useAppReadiness.ts`
-- `src/stores/session-store.ts`
+- `core/auth/gateways/session-storage.ts`
 - `core/auth/use-cases/account-retrieval/retrieve-account.ts`
 
 ### Open questions
 
 - What user-facing loading or error UI should appear while account retrieval runs?
-- Should `isConnected` remain separate from auth session state long term?
+- What user-facing retry state should a production app show after transient startup account retrieval failure?
 
 ## Flow: Authentication and registration
 
