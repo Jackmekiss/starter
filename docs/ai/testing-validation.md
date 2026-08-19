@@ -48,6 +48,7 @@ For source/UI changes:
 - Verify loading, empty, and error states for any changed screen.
 - Confirm auth/session persistence still routes correctly after reload.
 - Switch the device between French, English, and an unsupported language; verify translated copy and the French fallback.
+- Submit the login form with invalid fields and mapped backend failures; verify loading, focusable controls, and accessible localized error copy.
 - For subscription work, verify offering retrieval, purchase/restore failure, premium selector behavior, and management unavailable states.
 
 For docs-only changes:
@@ -66,12 +67,12 @@ Unknown / none discovered.
 
 - Use-case specs live next to the use-case under `core/<bounded-context>/use-cases/<action>/*.spec.ts`.
 - Specs dispatch RTK Query endpoints and assert durable context state through `store.getState()`.
-- Use in-memory adapters as test gateways.
+- Use in-memory adapters for domain behavior and concrete fake/HTTP adapters when verifying adapter mapping through a use-case.
 - Keep specs self-contained.
 - Builders live under `core/<bounded-context>/domain/builders/`.
 - Prefer explicit expectations over snapshots.
 - For fallible use-cases, assert the exact value rejected by `.unwrap()` and confirm failure does not apply success-side durable state updates.
-- Inject deterministic typed adapter failures through in-memory fixture setters; do not add mapper-only tests.
+- Inject deterministic typed adapter failures through adapter setters or injected transports; exercise mappers through use-cases instead of mapper-only specs.
 
 ## When to add tests
 

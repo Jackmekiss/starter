@@ -40,6 +40,29 @@ The current app uses RTK Query endpoint builders over local gateway contracts. G
 - Technical errors use transport-independent categories; business codes belong to one bounded context.
 - Raw HTTP status, backend codes, SDK exceptions, and messages must remain inside concrete adapter mappers.
 
+## Sample HTTP auth adapter contract
+
+`HttpAuthBaseQuery` is an executable Starter integration example, not evidence of an existing production backend. It is selected with `EXPO_PUBLIC_APP_MODE=http` and configured by `EXPO_PUBLIC_AUTH_API_URL`.
+
+| Method   | Remote path                    | Result            | Authentication |
+| -------- | ------------------------------ | ----------------- | -------------- |
+| `POST`   | `/auth/register`               | `AuthContext`     | Public         |
+| `POST`   | `/auth/login`                  | `AuthContext`     | Public         |
+| `POST`   | `/auth/login/google`           | `AuthContext`     | Public         |
+| `POST`   | `/auth/login/apple`            | `AuthContext`     | Public         |
+| `POST`   | `/auth/password/request-reset` | Empty success     | Public         |
+| `POST`   | `/auth/password/reset`         | Empty success     | Public         |
+| `GET`    | `/auth/account`                | `Account \| null` | Bearer session |
+| `PATCH`  | `/auth/account`                | `Account`         | Bearer session |
+| `DELETE` | `/auth/account`                | Empty success     | Bearer session |
+| `POST`   | `/auth/logout`                 | Empty success     | Bearer session |
+
+- Successful JSON is decoded into domain-owned `AuthContext`, `Account`, `AuthUser`, and `Session` values; malformed success payloads become `unexpected` errors.
+- Error JSON may contain a documented snake-case `code`; recognized backend codes map to stable `AuthErrorCode` values inside `core/auth/adapters/http/`.
+- Raw backend `message` fields are ignored.
+- HTTP 408/504, 429, 5xx, 401, and 403 map to transport-independent technical categories, with login 401 mapped to `INVALID_CREDENTIALS`.
+- Protected requests obtain the latest bearer token from the injected Redux-backed `AuthSessionProvider`.
+
 ## External APIs / services
 
 | Service          | Boundary                                                                    | Purpose                                                                                  | Status                                                                   |

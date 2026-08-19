@@ -11,75 +11,99 @@ import type {
   UpdateAccountPayload,
 } from "@core/auth/apis/types";
 import type { Account } from "@core/auth/domain/account";
+import type { AuthError } from "@core/auth/domain/auth-error";
 import type { AuthResult } from "@core/auth/domain/auth-result";
 
 /** Fake auth gateway that adds latency to the in-memory adapter. */
 export class FakeAuthBaseQuery extends AuthBaseQuery {
   private readonly inMemoryBaseQuery = new InMemoryAuthBaseQuery();
 
+  private currentError?: AuthError;
+
+  /** Configures deterministic latency while keeping production demo defaults. */
+  constructor(private readonly latencyMilliseconds = 3000) {
+    super();
+  }
+
+  /** Injects one failure consistently across every fake auth operation. */
+  set error(value: AuthError | undefined) {
+    this.currentError = value;
+  }
+
   /** Retrieves the simulated account. */
-  async retrieveAccount(): Promise<AuthResult<Account | null>> {
-    await sleep(3000);
-    return this.inMemoryBaseQuery.retrieveAccount();
+  retrieveAccount(): Promise<AuthResult<Account | null>> {
+    return this.executeOperation(() =>
+      this.inMemoryBaseQuery.retrieveAccount(),
+    );
   }
 
   /** Applies simulated account changes. */
-  async updateAccount(
-    payload: UpdateAccountPayload,
-  ): Promise<AuthResult<Account>> {
-    await sleep(3000);
-    return this.inMemoryBaseQuery.updateAccount(payload);
+  updateAccount(payload: UpdateAccountPayload): Promise<AuthResult<Account>> {
+    return this.executeOperation(() =>
+      this.inMemoryBaseQuery.updateAccount(payload),
+    );
   }
 
   /** Creates a simulated registered session. */
-  async register(payload: RegisterPayload): Promise<AuthResult<AuthContext>> {
-    await sleep(3000);
-    return this.inMemoryBaseQuery.register(payload);
+  register(payload: RegisterPayload): Promise<AuthResult<AuthContext>> {
+    return this.executeOperation(() =>
+      this.inMemoryBaseQuery.register(payload),
+    );
   }
 
   /** Authenticates against the simulated account. */
-  async login(payload: LoginPayload): Promise<AuthResult<AuthContext>> {
-    await sleep(3000);
-    return this.inMemoryBaseQuery.login(payload);
+  login(payload: LoginPayload): Promise<AuthResult<AuthContext>> {
+    return this.executeOperation(() => this.inMemoryBaseQuery.login(payload));
   }
 
   /** Simulates Google sign-in. */
-  async loginWithGoogle(): Promise<AuthResult<AuthContext>> {
-    await sleep(3000);
-    return this.inMemoryBaseQuery.loginWithGoogle();
+  loginWithGoogle(): Promise<AuthResult<AuthContext>> {
+    return this.executeOperation(() =>
+      this.inMemoryBaseQuery.loginWithGoogle(),
+    );
   }
 
   /** Simulates Apple sign-in. */
-  async loginWithApple(): Promise<AuthResult<AuthContext>> {
-    await sleep(3000);
-    return this.inMemoryBaseQuery.loginWithApple();
+  loginWithApple(): Promise<AuthResult<AuthContext>> {
+    return this.executeOperation(() => this.inMemoryBaseQuery.loginWithApple());
   }
 
   /** Simulates requesting a password reset. */
-  async requestPasswordReset(
+  requestPasswordReset(
     payload: RequestPasswordResetPayload,
   ): Promise<AuthResult<void>> {
-    await sleep(3000);
-    return this.inMemoryBaseQuery.requestPasswordReset(payload);
+    return this.executeOperation(() =>
+      this.inMemoryBaseQuery.requestPasswordReset(payload),
+    );
   }
 
   /** Simulates completing a password reset. */
-  async resetPassword(
-    payload: ResetPasswordPayload,
-  ): Promise<AuthResult<void>> {
-    await sleep(3000);
-    return this.inMemoryBaseQuery.resetPassword(payload);
+  resetPassword(payload: ResetPasswordPayload): Promise<AuthResult<void>> {
+    return this.executeOperation(() =>
+      this.inMemoryBaseQuery.resetPassword(payload),
+    );
   }
 
   /** Simulates logout. */
-  async logout(): Promise<AuthResult<void>> {
-    await sleep(3000);
-    return this.inMemoryBaseQuery.logout();
+  logout(): Promise<AuthResult<void>> {
+    return this.executeOperation(() => this.inMemoryBaseQuery.logout());
   }
 
   /** Simulates permanent account deletion. */
-  async deleteAccount(): Promise<AuthResult<void>> {
-    await sleep(3000);
-    return this.inMemoryBaseQuery.deleteAccount();
+  deleteAccount(): Promise<AuthResult<void>> {
+    return this.executeOperation(() => this.inMemoryBaseQuery.deleteAccount());
+  }
+
+  /** Applies fake latency and the injected failure before running an operation. */
+  private async executeOperation<Value>(
+    operation: () => Promise<AuthResult<Value>>,
+  ): Promise<AuthResult<Value>> {
+    await sleep(this.latencyMilliseconds);
+
+    if (this.currentError) {
+      return { ok: false, error: this.currentError };
+    }
+
+    return operation();
   }
 }

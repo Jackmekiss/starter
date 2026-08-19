@@ -94,6 +94,9 @@ Do not claim a command passes unless it was run in the current session or a reco
 - `.unwrap()` resolves success values and rejects with the exact typed context error.
 - Transient request failures stay in RTK Query instead of durable Redux slices.
 - Presentation adapters resolve typed errors into safe message keys/copy with caller-provided fallback wording.
+- Login UI catches `.unwrap()` failures, delegates them to `resolveAuthErrorMessage`, and stores only localized copy in the form root error.
+- HTTP auth adapters map documented backend codes first, then HTTP/transport categories, and validate successful response bodies.
+- Fake adapters expose one deterministic error setter that applies before every operation.
 - Unknown: global logging, reporting, or crash/error monitoring strategy.
 
 ## Session persistence conventions
@@ -122,6 +125,8 @@ Unknown. No explicit logging convention was discovered. ESLint allows `console` 
 - `.env*` files are ignored by git.
 - Public runtime mode reads `EXPO_PUBLIC_APP_MODE`.
 - `EXPO_PUBLIC_APP_MODE=fake` selects the fake auth adapter; other values use in-memory auth.
+- `EXPO_PUBLIC_APP_MODE=http` selects the sample HTTP auth adapter.
+- `EXPO_PUBLIC_AUTH_API_URL` configures its backend origin; an absent origin returns a typed unavailable error.
 - Do not store raw env values in memory files.
 - Unknown: production env variables, Supabase config, RevenueCat config, CI config, and release config.
 

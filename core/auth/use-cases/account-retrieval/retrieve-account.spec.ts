@@ -1,18 +1,21 @@
 import { createApi } from "@reduxjs/toolkit/query";
 import { beforeEach, describe, expect, it } from "vitest";
 
+import { HttpAuthBaseQuery } from "@core/auth/adapters/http/http-auth-base-query";
 import { InMemoryAuthBaseQuery } from "@core/auth/adapters/in-memory/in-memory-auth-base-query";
 import { createAuthApiOptions } from "@core/auth/apis/auth-api";
 import { accountBuilder } from "@core/auth/domain/builders/account-builder";
+import { sessionBuilder } from "@core/auth/domain/builders/session-builder";
 import { createStore } from "@core/init-redux-store";
 
 import type { Account } from "@core/auth/domain/account";
+import type { AuthBaseQuery } from "@core/auth/gateways/auth-base-query";
 import type { ReduxStore } from "@core/init-redux-store";
 
 /**
  * Creates the auth API used by account retrieval behavior specs.
  */
-function createAuthApi(authBaseQuery: InMemoryAuthBaseQuery) {
+function createAuthApi(authBaseQuery: AuthBaseQuery) {
   return createApi(createAuthApiOptions(authBaseQuery.handle()));
 }
 
@@ -56,6 +59,30 @@ describe("Account Retrieval", () => {
     });
 
     expectAccount(null);
+  });
+
+  it("should read the current session for a protected HTTP request", async () => {
+    const account = accountBuilder().withId("remote-account-id").build();
+    const session = sessionBuilder().withUserId(account.id).build();
+    let authorizationHeader: string | null = null;
+    const httpAuthBaseQuery = new HttpAuthBaseQuery({
+      baseUrl: "https://auth.example.test",
+      sessionProvider: { getSession: () => session },
+      fetcher: async (_, init) => {
+        authorizationHeader = new Headers(init.headers).get("Authorization");
+        return new Response(JSON.stringify(account), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      },
+    });
+    authApi = createAuthApi(httpAuthBaseQuery);
+    store = createStore({ authApi }, {});
+
+    await retrieveAccount();
+
+    expect(authorizationHeader).toBe(`Bearer ${session.accessToken}`);
+    expectAccount(account);
   });
 
   /**

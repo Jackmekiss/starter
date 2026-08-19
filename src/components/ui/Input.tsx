@@ -1,16 +1,20 @@
+import { forwardRef } from "react";
 import { Platform, TextInput } from "react-native";
 
 import { cn } from "@/lib/cn";
 
+import type { ComponentProps } from "react";
+
+/** Props accepted by the shared single-line input. */
+type InputProps = ComponentProps<typeof TextInput>;
+
 /**
  * Single-line text input styled with the shared form control treatment.
  */
-function Input({
-  className,
-  ...props
-}: React.ComponentProps<typeof TextInput>) {
-  return (
+const Input = forwardRef<TextInput, InputProps>(
+  ({ className, ...props }, ref) => (
     <TextInput
+      ref={ref}
       className={cn(
         "dark:bg-input/30 border-input bg-background text-foreground flex h-10 w-full min-w-0 flex-row items-center rounded-md border px-3 py-1 text-base leading-5 shadow-sm shadow-black/5 sm:h-9",
         props.editable === false &&
@@ -32,7 +36,9 @@ function Input({
       )}
       {...props}
     />
-  );
-}
+  ),
+);
+
+Input.displayName = "Input";
 
 export { Input };

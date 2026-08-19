@@ -1,7 +1,9 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 import { appMode } from "@/app-runtime/runtime/app-mode";
+import { authSessionProvider } from "@/app-runtime/runtime/auth-session-provider";
 import { FakeAuthBaseQuery } from "@core/auth/adapters/fake/fake-auth-base-query";
+import { HttpAuthBaseQuery } from "@core/auth/adapters/http/http-auth-base-query";
 import { InMemoryAuthBaseQuery } from "@core/auth/adapters/in-memory/in-memory-auth-base-query";
 import { createAuthApiOptions } from "@core/auth/apis/auth-api";
 
@@ -11,6 +13,13 @@ import type { AuthBaseQuery } from "@core/auth/gateways/auth-base-query";
  * Creates the auth gateway implementation for the current app runtime mode.
  */
 function createAuthBaseQuery(): AuthBaseQuery {
+  if (appMode === "http") {
+    return new HttpAuthBaseQuery({
+      baseUrl: process.env.EXPO_PUBLIC_AUTH_API_URL ?? "",
+      sessionProvider: authSessionProvider,
+    });
+  }
+
   if (appMode === "fake") {
     return new FakeAuthBaseQuery();
   }

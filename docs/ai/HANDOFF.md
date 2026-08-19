@@ -8,19 +8,19 @@
 4. [architecture-map.md](architecture-map.md)
 5. [technical-memory.md](technical-memory.md)
 6. [CURRENT.md](CURRENT.md)
-7. [../../plans/add-i18n-localization.md](../../plans/add-i18n-localization.md)
+7. [../../plans/complete-auth-error-vertical-slice.md](../../plans/complete-auth-error-vertical-slice.md)
 
 ## Active plan
 
-None. [Add I18n Localization](../../plans/add-i18n-localization.md) is complete.
+None. [Complete Auth Error Vertical Slice](../../plans/complete-auth-error-vertical-slice.md) is complete.
 
 ## Situation summary
 
-Starter now has typed French/English i18next catalogs, phone-language resolution with a French fallback, a root localization provider, and a translated auth entry screen.
+Starter now has a complete login error example across HTTP/fake adapters, typed RTK Query rejection, presentation resolution, and accessible translated form copy.
 
 ## Exact continuation point
 
-Review the localization diff, then commit/push only when requested.
+Review the working-tree diff, then commit/push only when requested.
 
 ## Known constraints
 
@@ -42,22 +42,22 @@ Review the localization diff, then commit/push only when requested.
 
 ## Working tree summary
 
-Expected uncommitted changes add localization dependencies, Expo plugin configuration, runtime/provider/hook files, French and English catalogs, translated auth placeholder copy, and aligned plans/memory.
+Expected uncommitted changes implement the completed vertical-slice plan; `18a7b84` is the clean baseline.
 
 ## Tests / checks last run
 
-- Passed: `pnpm run test` (16 files, 24 tests).
+- Passed: `pnpm run test` (16 files, 28 tests).
 - Passed: `pnpm run typecheck`.
 - Passed: targeted Oxfmt, Oxlint, and ESLint for changed source files.
-- Passed: `npx expo config --type public`.
-- Passed: catalog parity check, targeted formatting, and `git diff --check`.
+- Passed: catalog parity check (24 keys per locale).
+- Passed: targeted formatting check and `git diff --check`.
 - Global `pnpm run check` stops in the formatting phase on 10 pre-existing unrelated files.
 
 ## Things not to repeat
 
-- Do not copy RVA's tenant-specific generated translation resources into the neutral starter.
-- Do not hard-code user-facing strings that belong in the bundled catalogs.
-- Do not upgrade Expo native modules beyond SDK 56-compatible versions.
+- Do not display raw backend messages or inspect HTTP failures in UI/use-cases.
+- Do not pass bearer tokens through use-case or gateway request parameters.
+- Do not treat the sample HTTP contract as a discovered production backend.
 
 ## Recommended first command
 

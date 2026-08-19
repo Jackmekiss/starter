@@ -60,12 +60,12 @@ Create or access an account.
 
 ### Happy path
 
-1. The auth entry screen renders French or English welcome copy from the phone language, falling back to French.
-2. A future auth form calls the relevant RTK Query hook.
-3. Auth use-cases dispatch loading state.
-4. The auth gateway returns an `AuthResult`.
-5. On success, auth state stores user, session, and account.
-6. Root navigation sends the user to onboarding or the main tab group.
+1. The auth entry screen renders French or English login copy from the phone language, falling back to French.
+2. The login form validates email and password locally, then calls `useLoginMutation`.
+3. The login use-case reaches the selected in-memory, fake, or HTTP auth adapter through RTK Query.
+4. The gateway returns an `AuthResult`; HTTP/backend details have already been mapped to `AuthError`.
+5. On success, auth state stores user, session, and account and routing continues.
+6. On failure, `.unwrap()` rejects with `AuthError`, the presentation resolver selects safe translated copy, and the form renders it as an accessible root error.
 
 ### Edge cases
 
@@ -76,8 +76,8 @@ Create or access an account.
 ### Error / empty / loading states
 
 - Auth status supports `idle`, `loading`, `success`, and `error`.
-- Auth errors have stable codes and user-facing messages.
-- The auth entry route shows localized placeholder welcome copy; concrete forms and request states remain Unknown.
+- Auth errors have stable codes without raw backend messages.
+- The login form disables controls while submitting and renders localized field and submission errors.
 
 ### Relevant files
 
@@ -89,6 +89,9 @@ Create or access an account.
 - `core/auth/use-cases/google-login/login-with-google.ts`
 - `core/auth/use-cases/apple-login/login-with-apple.ts`
 - `core/auth/domain/slice.ts`
+- `core/auth/adapters/http/http-auth-base-query.ts`
+- `core/auth/adapters/presentation/auth-error-message.ts`
+- `src/components/auth/login-form.tsx`
 - `src/localization/localization-provider.tsx`
 - `src/translations/en.json`
 - `src/translations/fr.json`

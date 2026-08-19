@@ -1,8 +1,7 @@
 import { isContextApplicationError } from "@core/shared/domain/application-error";
 import { isAuthError } from "@core/auth/domain/auth-error";
 
-/** Resolves one application message key through the active UI locale. */
-export type AuthMessageResolver = (key: string) => string;
+import type { TFunction } from "i18next";
 
 /** Presentation context needed when a technical error has flow-specific copy. */
 export interface ResolveAuthErrorMessageOptions {
@@ -15,7 +14,7 @@ export interface ResolveAuthErrorMessageOptions {
 /** Resolves an authentication rejection into safe localized copy. */
 export function resolveAuthErrorMessage(
   error: unknown,
-  resolveMessage: AuthMessageResolver,
+  resolveMessage: TFunction,
   options: ResolveAuthErrorMessageOptions,
 ): string {
   if (!isAuthError(error)) return options.fallbackMessage;
@@ -44,7 +43,7 @@ export function resolveAuthErrorMessage(
 /** Maps stable auth codes while preserving flow-specific meaning. */
 function resolveAuthBusinessErrorMessage(
   code: string,
-  resolveMessage: AuthMessageResolver,
+  resolveMessage: TFunction,
   options: ResolveAuthErrorMessageOptions,
 ): string {
   switch (code) {

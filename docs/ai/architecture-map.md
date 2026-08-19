@@ -34,14 +34,14 @@
 - Frontend-first architecture inspired by Clean Architecture, Domain-Driven Design, and bounded contexts.
 - Use-cases are explicit RTK Query endpoint builders under `core/<context>/use-cases/<action>/`.
 - Context API options are assembled in `core/<context>/apis/*-api.ts`.
-- Runtime adapters are selected in `src/app-runtime/runtime/*`.
+- Runtime adapters are selected in `src/app-runtime/runtime/*`; auth supports in-memory, fake, and opt-in HTTP implementations.
 - In-memory adapters are valid local infrastructure while real backend/provider integrations are absent.
 - Durable collections keyed by id should use `createEntityAdapter`; subscription offerings already do.
 - Fallible operations use shared `Result<Value, Failure>` and `ApplicationError<Code>` primitives under `core/shared/domain/`.
 - Each bounded context owns stable business error codes, maps infrastructure failures in adapters, and exposes typed RTK Query error channels.
 - Transient request failures remain in RTK Query; durable slices only store failures when the failure itself is product truth shared across flows.
 - Authenticated concrete adapters should read credentials from an injected current-session provider rather than accept transport credentials through use-cases or business gateways.
-- Adapter files are grouped by named concern such as `errors/`, `fake/`, `in-memory/`, `presentation/`, `selectors/`, or a concrete transport.
+- Adapter files are grouped by named concern such as `errors/`, `fake/`, `http/`, `in-memory/`, `presentation/`, `selectors/`, or another concrete transport.
 
 ## Dependency direction rules
 
@@ -71,8 +71,9 @@
 - Account retrieval starts only after a rehydrated session exists, and the splash remains visible during its initial load.
 - Route selection derives connection directly from `auth.session` and onboarding from `auth.account`.
 - Successful logout and account deletion clear `auth.session`; the next serialized persistence write removes SecureStore credentials.
-- `EXPO_PUBLIC_APP_MODE=fake` selects `FakeAuthBaseQuery`; all other modes use `InMemoryAuthBaseQuery`.
-- No production auth backend/provider configuration was discovered.
+- `EXPO_PUBLIC_APP_MODE=fake` selects `FakeAuthBaseQuery`; `http` selects `HttpAuthBaseQuery`; all other modes use `InMemoryAuthBaseQuery`.
+- The HTTP adapter reads the current Redux session through an injected `AuthSessionProvider` immediately before protected requests.
+- `EXPO_PUBLIC_AUTH_API_URL` configures the sample HTTP origin; the production backend/provider remains unspecified.
 
 ## Background jobs / queues
 
@@ -81,6 +82,7 @@ Unknown / none discovered.
 ## Integrations
 
 - Expo Localization provides the phone language; i18next and react-i18next provide typed French/English UI translation.
+- The optional auth HTTP adapter uses the platform `fetch` API, validates successful JSON, and maps remote failures before the gateway boundary.
 - RevenueCat subscription boundaries exist through `RevenueCatSubscriptionRuntime` and `RevenueCatSubscriptionBaseQuery`.
 - Supabase dependency exists in `package.json`, and a shared Supabase slugify helper exists, but no configured Supabase client, schema, or migrations were discovered.
 - Expo SecureStore is configured and used by `secureSessionStorage`; unsupported platforms keep the Redux runtime session but never persist credentials in AsyncStorage.

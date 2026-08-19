@@ -16,6 +16,18 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    pnpm expo start
    ```
 
+## Authentication data sources
+
+Starter uses its in-memory auth adapter by default. Set `EXPO_PUBLIC_APP_MODE=fake` to use the latency-enabled fake adapter.
+
+The complete remote-error example uses the HTTP adapter:
+
+```bash
+EXPO_PUBLIC_APP_MODE=http EXPO_PUBLIC_AUTH_API_URL=https://api.example.com pnpm expo start
+```
+
+The sample REST contract and backend error-code mapping live under `core/auth/adapters/http/`. Adapt that concrete adapter to the selected production backend without exposing HTTP statuses, backend codes, or raw messages to use-cases and screens.
+
 In the output, you'll find options to open the app in a
 
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)

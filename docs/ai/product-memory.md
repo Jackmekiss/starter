@@ -61,8 +61,8 @@ Unknown. No product brief or roadmap was present during initialization.
 
 ## Known product constraints
 
-- The visible UI routes are placeholders and do not yet implement concrete auth, onboarding, home, or subscription screens.
-- Runtime data sources default to in-memory local adapters unless `EXPO_PUBLIC_APP_MODE` is `fake`.
+- The login route has a concrete localized email/password form; onboarding, home, and subscription screens remain placeholders.
+- Runtime auth defaults to the in-memory adapter, supports latency-enabled fake mode, and exposes an opt-in sample HTTP mode for backend integration.
 - Subscription pricing in in-memory fixtures appears to be sample data and should not be treated as real billing policy.
 - No database schema, migrations, or production backend contracts were discovered.
 

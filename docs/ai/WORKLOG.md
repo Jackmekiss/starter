@@ -332,3 +332,39 @@ The user requested an i18n foundation in Starter with a translations directory, 
 ### Follow-up
 
 - Renamed the app-facing localization hook from `useI18n` to `useTranslation` and updated its consumer and documentation.
+
+## 2026-08-19 - Complete authentication error vertical slice
+
+### Context
+
+The error audit identified that typed errors and presentation resolvers stopped before the UI, no concrete HTTP mapper existed, and fake failures were not injectable uniformly.
+
+### Changes
+
+- Added a configurable HTTP auth adapter with response decoding, backend-code mapping, HTTP/transport mapping, timeouts, and bearer-session injection.
+- Connected protected HTTP requests to the latest Redux session through a read-only runtime provider without duplicating credentials.
+- Made one fake error setter apply before every fake auth operation.
+- Added a localized `react-hook-form` login form consuming `useLoginMutation().unwrap()` and `resolveAuthErrorMessage`.
+- Added accessible field and root errors, loading behavior, and French/English copy.
+- Added vertical use-case specs for backend codes, HTTP failures, fake failures, unchanged durable state, and protected bearer headers.
+- Documented the opt-in sample HTTP contract and runtime configuration.
+
+### Decisions
+
+- Keep in-memory auth as the default and select the HTTP example only with explicit runtime configuration.
+- Keep remote identifiers and messages inside the HTTP adapter.
+- Read protected-request credentials from Redux at request time through an injected provider.
+
+### Validation
+
+- Passed: `pnpm run test` (16 files, 28 tests).
+- Passed: `pnpm run typecheck`.
+- Passed: targeted Oxfmt, Oxlint, and ESLint.
+- Passed: catalog parity check (24 keys per locale).
+- Passed: targeted formatting check and `git diff --check`.
+- Global `pnpm run check` stops in the formatting phase on 10 pre-existing unrelated files.
+
+### Next
+
+- Review the diff and commit/push only when requested.
+- Adapt the sample HTTP contract when the production auth backend is selected.
