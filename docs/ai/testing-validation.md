@@ -47,6 +47,7 @@ For source/UI changes:
 - Check startup route selection for unauthenticated, authenticated incomplete onboarding, and authenticated completed onboarding states.
 - Verify loading, empty, and error states for any changed screen.
 - Confirm auth/session persistence still routes correctly after reload.
+- Switch the device between French, English, and an unsupported language; verify translated copy and the French fallback.
 - For subscription work, verify offering retrieval, purchase/restore failure, premium selector behavior, and management unavailable states.
 
 For docs-only changes:

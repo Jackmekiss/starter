@@ -9,6 +9,8 @@
 | `src/components/ui/`       | Reusable UI primitives.                                                                                              | Includes `Button`, `Icon`, `Input`, `Text`, `TextArea`, `BottomSheetModal`.                                       |
 | `src/components/ux/`       | UX-specific components that are not generic primitives.                                                              | Current example: `HapticTab`.                                                                                     |
 | `src/hooks/`               | App hooks and typed Redux hooks.                                                                                     | Keep business logic in `core/` when it has durable meaning.                                                       |
+| `src/localization/`        | i18next initialization, supported locale resolution, and the application localization provider.                      | Bundled catalogs live separately under `src/translations/`.                                                       |
+| `src/translations/`        | Bundled French and English application copy.                                                                         | French is the typed source catalog and fallback locale.                                                           |
 | `src/constants/`           | App constants and theme exports.                                                                                     | Keep durable domain constants in `core/` when they are business concepts.                                         |
 | `src/lib/`                 | Small app-level helpers.                                                                                             | Avoid growing generic utility buckets.                                                                            |
 | `core/auth/`               | Authentication bounded context.                                                                                      | Owns account/session domain, auth use-cases, auth gateway, adapters, selectors, and RTK Query API options.        |
@@ -78,6 +80,7 @@ Unknown / none discovered.
 
 ## Integrations
 
+- Expo Localization provides the phone language; i18next and react-i18next provide typed French/English UI translation.
 - RevenueCat subscription boundaries exist through `RevenueCatSubscriptionRuntime` and `RevenueCatSubscriptionBaseQuery`.
 - Supabase dependency exists in `package.json`, and a shared Supabase slugify helper exists, but no configured Supabase client, schema, or migrations were discovered.
 - Expo SecureStore is configured and used by `secureSessionStorage`; unsupported platforms keep the Redux runtime session but never persist credentials in AsyncStorage.

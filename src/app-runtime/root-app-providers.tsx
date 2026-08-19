@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
 import { persistor, store } from "@/app-runtime/runtime/store-runtime";
+import { LocalizationProvider } from "@/localization/localization-provider";
 
 /**
  * Props for the RootAppProviders component.
@@ -23,7 +24,9 @@ export function RootAppProviders({ children }: RootAppProvidersProps) {
         <GestureHandlerRootView>
           <BottomSheetModalProvider>
             <PersistGate loading={null} persistor={persistor}>
-              <ThemeProvider value={DefaultTheme}>{children}</ThemeProvider>
+              <LocalizationProvider>
+                <ThemeProvider value={DefaultTheme}>{children}</ThemeProvider>
+              </LocalizationProvider>
             </PersistGate>
           </BottomSheetModalProvider>
         </GestureHandlerRootView>

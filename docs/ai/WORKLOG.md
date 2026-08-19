@@ -294,3 +294,41 @@ The user clarified that Starter should use the actual secure-token implementatio
 ### Next
 
 - Review and commit/push the alignment when requested.
+
+## 2026-08-19 - Add French and English i18n localization
+
+### Context
+
+The user requested an i18n foundation in Starter with a translations directory, French and English resources, and an application-facing i18n hook.
+
+### Changes
+
+- Added SDK-compatible `expo-localization`, `i18next`, and `react-i18next` dependencies.
+- Added bundled catalogs under `src/translations/en.json` and `src/translations/fr.json`.
+- Added typed i18next initialization, supported-locale resolution, root provider wiring, and `useI18n`.
+- Added all keys currently consumed by auth and subscription presentation error resolvers.
+- Replaced the empty auth entry view with localized neutral welcome copy.
+- Updated architecture, technical, flow, validation, decision, current-state, handoff, and plan memory.
+
+### Decisions
+
+- French is the fallback and typed source catalog.
+- Translation keys remain flat and hierarchical with `__` separators.
+- Tenant-generated translation behavior from RVA stays out of the neutral Starter.
+
+### Validation
+
+- Passed: `pnpm run typecheck`.
+- Passed: `pnpm run test` (16 files, 24 tests).
+- Passed: targeted Oxfmt, Oxlint, and ESLint.
+- Passed: `npx expo config --type public`; `expo-localization` is registered for SDK 56.
+- Passed: catalog parity check (14 keys per locale), targeted formatting, and `git diff --check`.
+- Global `pnpm run check` stops in the formatting phase on 10 pre-existing unrelated files.
+
+### Next
+
+- Review the diff and commit/push only when requested.
+
+### Follow-up
+
+- Renamed the app-facing localization hook from `useI18n` to `useTranslation` and updated its consumer and documentation.

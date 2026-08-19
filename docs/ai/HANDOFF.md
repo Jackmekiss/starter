@@ -8,19 +8,19 @@
 4. [architecture-map.md](architecture-map.md)
 5. [technical-memory.md](technical-memory.md)
 6. [CURRENT.md](CURRENT.md)
-7. [../../plans/align-secure-session-with-rva.md](../../plans/align-secure-session-with-rva.md)
+7. [../../plans/add-i18n-localization.md](../../plans/add-i18n-localization.md)
 
 ## Active plan
 
-None. [Align Secure Session With RVA](../../plans/align-secure-session-with-rva.md) is complete.
+None. [Add I18n Localization](../../plans/add-i18n-localization.md) is complete.
 
 ## Situation summary
 
-Starter now uses RVA's Redux Persist secure-session storage algorithm: SecureStore extraction/injection, recursive credential sanitization, serialized writes, and fulfilled-query persistence.
+Starter now has typed French/English i18next catalogs, phone-language resolution with a French fallback, a root localization provider, and a translated auth entry screen.
 
 ## Exact continuation point
 
-Review the working-tree diff, then commit/push only when requested.
+Review the localization diff, then commit/push only when requested.
 
 ## Known constraints
 
@@ -28,12 +28,13 @@ Review the working-tree diff, then commit/push only when requested.
 - Preserve serialized SecureStore writes and `WHEN_UNLOCKED_THIS_DEVICE_ONLY`.
 - Keep the package version compatible with Starter's Expo SDK 56.
 - Do not launch Expo unless explicitly requested.
+- Keep all bundled keys synchronized between `src/translations/en.json` and `src/translations/fr.json`.
 
 ## Last known good state
 
 - Branch at migration start: `master`.
-- Starter was clean at `03ff09d`; RVA was read-only and remained untouched.
-- Tests, typecheck, targeted format/lint, RVA comparison, and `git diff --check` pass.
+- Starter was clean at `45d3a5d`; RVA was read-only and remained untouched.
+- Tests, typecheck, targeted format/lint, and Expo public config pass.
 
 ## Branch
 
@@ -41,22 +42,22 @@ Review the working-tree diff, then commit/push only when requested.
 
 ## Working tree summary
 
-Expected uncommitted changes replace the Starter-specific session gateway/decorator/bootstrap with RVA's runtime `secure-session-storage.ts`, restore fulfilled-query persistence, adjust account startup loading, and align plans/memory.
+Expected uncommitted changes add localization dependencies, Expo plugin configuration, runtime/provider/hook files, French and English catalogs, translated auth placeholder copy, and aligned plans/memory.
 
 ## Tests / checks last run
 
 - Passed: `pnpm run test` (16 files, 24 tests).
 - Passed: `pnpm run typecheck`.
 - Passed: targeted Oxfmt, Oxlint, and ESLint for changed source files.
-- Passed: targeted Oxfmt check for all changed and new files.
-- Passed: `git diff --check`.
+- Passed: `npx expo config --type public`.
+- Passed: catalog parity check, targeted formatting, and `git diff --check`.
 - Global `pnpm run check` stops in the formatting phase on 10 pre-existing unrelated files.
 
 ## Things not to repeat
 
-- Do not reintroduce the superseded `SessionStorage` gateway, auth decorator, or explicit `auth-bootstrap.ts` flow.
-- Do not copy RVA's product-specific Zustand navigation state or CoreAPI token-refresh hook into the neutral starter.
-- Do not upgrade `expo-secure-store` to RVA's SDK 57 build without upgrading the Starter Expo SDK.
+- Do not copy RVA's tenant-specific generated translation resources into the neutral starter.
+- Do not hard-code user-facing strings that belong in the bundled catalogs.
+- Do not upgrade Expo native modules beyond SDK 56-compatible versions.
 
 ## Recommended first command
 

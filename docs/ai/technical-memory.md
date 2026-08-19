@@ -66,6 +66,15 @@ Do not claim a command passes unless it was run in the current session or a reco
 - Parent layouts own external spacing; reusable children own internal spacing.
 - Avoid arbitrary Tailwind values inside shared primitives; promote repeated values to tokens/config.
 
+## Localization conventions
+
+- Bundled catalogs live in `src/translations/en.json` and `src/translations/fr.json`.
+- Use `useTranslation` from `src/hooks/localization/useTranslation.ts` in presentation code.
+- Use flat hierarchical keys separated by `__`; use snake_case inside each compound segment.
+- French is the fallback and typed source catalog; unsupported phone languages resolve to French.
+- Keep every key consumed by presentation error resolvers in both bundled catalogs.
+- `LocalizationProvider` belongs in the root runtime provider composition, not in domain code.
+
 ## Domain conventions
 
 - Each bounded context under `core/` owns domain entities, use-cases, gateways, adapters, selectors, runtime state, and API facade.

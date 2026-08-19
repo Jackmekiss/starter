@@ -60,11 +60,12 @@ Create or access an account.
 
 ### Happy path
 
-1. A future auth screen calls the relevant RTK Query hook.
-2. Auth use-cases dispatch loading state.
-3. The auth gateway returns an `AuthResult`.
-4. On success, auth state stores user, session, and account.
-5. Root navigation sends the user to onboarding or the main tab group.
+1. The auth entry screen renders French or English welcome copy from the phone language, falling back to French.
+2. A future auth form calls the relevant RTK Query hook.
+3. Auth use-cases dispatch loading state.
+4. The auth gateway returns an `AuthResult`.
+5. On success, auth state stores user, session, and account.
+6. Root navigation sends the user to onboarding or the main tab group.
 
 ### Edge cases
 
@@ -76,7 +77,7 @@ Create or access an account.
 
 - Auth status supports `idle`, `loading`, `success`, and `error`.
 - Auth errors have stable codes and user-facing messages.
-- Concrete UI states are Unknown; current auth screen renders an empty view.
+- The auth entry route shows localized placeholder welcome copy; concrete forms and request states remain Unknown.
 
 ### Relevant files
 
@@ -88,6 +89,9 @@ Create or access an account.
 - `core/auth/use-cases/google-login/login-with-google.ts`
 - `core/auth/use-cases/apple-login/login-with-apple.ts`
 - `core/auth/domain/slice.ts`
+- `src/localization/localization-provider.tsx`
+- `src/translations/en.json`
+- `src/translations/fr.json`
 
 ### Open questions
 

@@ -1,0 +1,16 @@
+{
+  "auth__welcome__title": "Bienvenue",
+  "auth__welcome__description": "Connectez-vous pour continuer.",
+  "common__error__network": "Vérifiez votre connexion Internet et réessayez.",
+  "common__error__timeout": "La requête a pris trop de temps. Réessayez.",
+  "common__error__rate_limited": "Trop de tentatives. Réessayez plus tard.",
+  "common__error__unavailable": "Ce service est temporairement indisponible.",
+  "auth__login__error__invalid_credentials": "L’adresse e-mail ou le mot de passe est incorrect.",
+  "auth__login__error__email_not_confirmed": "Confirmez votre adresse e-mail avant de vous connecter.",
+  "auth__registration__error__email_taken": "Un compte utilise déjà cette adresse e-mail.",
+  "auth__registration__error__weak_password": "Choisissez un mot de passe plus robuste.",
+  "auth__password_reset__error__expired": "Ce lien de réinitialisation du mot de passe a expiré.",
+  "auth__password_reset__error__invalid": "Ce lien de réinitialisation du mot de passe est invalide.",
+  "auth__oauth__error__cancelled": "La connexion a été annulée.",
+  "subscription__restore__error__no_active_purchase": "Aucun achat actif à restaurer n’a été trouvé."
+}
