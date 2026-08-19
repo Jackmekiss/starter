@@ -14,19 +14,19 @@ Reach the correct route group based on current auth and onboarding state.
 
 ### Happy path
 
-1. Redux Persist restores only explicitly allowed non-sensitive state.
-2. `bootstrapAuth` removes legacy AsyncStorage auth keys and retrieves the validated session through `SessionStorage`.
-3. Redux receives the restored session as its single authentication source of truth.
-4. When a session exists, account retrieval completes before `PersistGate` mounts navigation.
+1. Redux Persist reads its serialized root through `secureSessionStorage`.
+2. The adapter loads and validates the native SecureStore session, then injects it into the sanitized auth slice.
+3. `PersistGate` mounts navigation after rehydration.
+4. When the Redux session exists, account retrieval starts with a forced mount refetch.
 5. Root navigator chooses `(auth)`, `(on-boarding)`, or `(tabs)` from the Redux session and account.
-6. `useAppReadiness` hides the splash after the guarded bootstrap completes.
+6. `useAppReadiness` hides the splash after the initial account retrieval stops loading.
 
 ### Edge cases
 
 - A session with an incomplete account is routed to `(on-boarding)`.
 - A session with a completed account is routed to `(tabs)`.
-- A missing account after successful retrieval clears Redux auth state and SecureStore.
-- A transient account retrieval failure preserves the secure session for a later retry.
+- A missing or failed account response currently leaves route behavior to the existing auth/account state; dedicated production retry UX remains Unknown.
+- Malformed secure sessions are rejected during Redux rehydration.
 
 ### Error / empty / loading states
 
@@ -37,9 +37,9 @@ Reach the correct route group based on current auth and onboarding state.
 
 - `src/app/_layout.tsx`
 - `src/app-runtime/root-navigator.tsx`
-- `src/app-runtime/runtime/auth-bootstrap.ts`
+- `src/app-runtime/runtime/secure-session-storage.ts`
+- `src/app-runtime/runtime/store-runtime.ts`
 - `src/hooks/app-shell/useAppReadiness.ts`
-- `core/auth/gateways/session-storage.ts`
 - `core/auth/use-cases/account-retrieval/retrieve-account.ts`
 
 ### Open questions

@@ -261,3 +261,36 @@ The audit found that access/refresh tokens and RTK Query mutations were persiste
 
 - Review and commit/push the migration when requested.
 - Define startup retry/error UX when wiring a production auth backend.
+
+## 2026-08-19 - Align secure session persistence with RVA
+
+### Context
+
+The user clarified that Starter should use the actual secure-token implementation from `rva-app`, not a separate architecture with similar behavior.
+
+### Changes
+
+- Ported RVA's `secure-session-storage.ts` algorithm into Starter, adapting only the auth slice name and application storage key.
+- Added `WHEN_UNLOCKED_THIS_DEVICE_ONLY`, serialized SecureStore writes, session shape validation, and recursive removal of sensitive fields from AsyncStorage/RTK Query state.
+- Restored RVA's fulfilled-query persistence transform and root Redux Persist wiring.
+- Removed the Starter-specific `SessionStorage` gateway, SecureStore domain adapter, auth gateway decorator, and explicit bootstrap runtime.
+- Kept Starter's Redux-derived route guards while starting account retrieval only after session rehydration.
+- Confirmed the same `expo-secure-store` package is already installed/configured with the SDK 56-compatible version.
+
+### Decisions
+
+- Track RVA's secure Redux Persist implementation as the reusable starter reference.
+- Adapt context/application names only; do not copy RVA product flows or install an Expo SDK 57 module into Expo SDK 56.
+
+### Validation
+
+- Passed: mechanical RVA comparison; only adapted names and Starter Oxfmt wrapping differ.
+- Passed: `pnpm run test` (16 files, 24 tests).
+- Passed: `pnpm run typecheck`.
+- Passed: targeted Oxfmt, Oxlint, and ESLint for changed source files.
+- Passed: `git diff --check`.
+- Global `pnpm run check` stops on 10 pre-existing unrelated formatting issues.
+
+### Next
+
+- Review and commit/push the alignment when requested.

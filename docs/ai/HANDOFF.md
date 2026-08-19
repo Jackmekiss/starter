@@ -8,32 +8,32 @@
 4. [architecture-map.md](architecture-map.md)
 5. [technical-memory.md](technical-memory.md)
 6. [CURRENT.md](CURRENT.md)
-7. [../../plans/secure-auth-bootstrap.md](../../plans/secure-auth-bootstrap.md)
+7. [../../plans/align-secure-session-with-rva.md](../../plans/align-secure-session-with-rva.md)
 
 ## Active plan
 
-None. [Secure Auth Bootstrap](../../plans/secure-auth-bootstrap.md) is complete.
+None. [Align Secure Session With RVA](../../plans/align-secure-session-with-rva.md) is complete.
 
 ## Situation summary
 
-The secure-auth bootstrap migration is complete. Tokens now persist behind `SessionStorage` with Expo SecureStore, Redux auth is the only runtime session truth, RTK Query caches are not persisted, and navigation mounts only after session hydration and account retrieval.
+Starter now uses RVA's Redux Persist secure-session storage algorithm: SecureStore extraction/injection, recursive credential sanitization, serialized writes, and fulfilled-query persistence.
 
 ## Exact continuation point
 
-Review the working-tree diff and commit/push only when requested. The next product decision is the startup retry/error experience for a real auth backend.
+Review the working-tree diff, then commit/push only when requested.
 
 ## Known constraints
 
-- Do not persist auth, session credentials, subscription entitlement, or RTK Query state in AsyncStorage.
-- Unsupported SecureStore platforms intentionally keep sessions only in process memory.
-- Do not launch Expo unless explicitly requested.
+- Never allow `accessToken` or `refreshToken` to survive the recursive AsyncStorage sanitizer.
+- Preserve serialized SecureStore writes and `WHEN_UNLOCKED_THIS_DEVICE_ONLY`.
+- Keep the package version compatible with Starter's Expo SDK 56.
 - Do not launch Expo unless explicitly requested.
 
 ## Last known good state
 
 - Branch at migration start: `master`.
-- Both `starter` and `rva-app` working trees were clean before inspection.
-- Tests, typecheck, targeted format/lint, and `git diff --check` pass.
+- Starter was clean at `03ff09d`; RVA was read-only and remained untouched.
+- Tests, typecheck, targeted format/lint, RVA comparison, and `git diff --check` pass.
 
 ## Branch
 
@@ -41,7 +41,7 @@ Review the working-tree diff and commit/push only when requested. The next produ
 
 ## Working tree summary
 
-Expected uncommitted changes include the SecureStore session boundary/adapters, deterministic bootstrap, Redux persistence restrictions, removal of Zustand/API-cache persistence, focused auth spec assertions, package lock updates, the completed plan, and memory updates.
+Expected uncommitted changes replace the Starter-specific session gateway/decorator/bootstrap with RVA's runtime `secure-session-storage.ts`, restore fulfilled-query persistence, adjust account startup loading, and align plans/memory.
 
 ## Tests / checks last run
 
@@ -50,13 +50,13 @@ Expected uncommitted changes include the SecureStore session boundary/adapters, 
 - Passed: targeted Oxfmt, Oxlint, and ESLint for changed source files.
 - Passed: targeted Oxfmt check for all changed and new files.
 - Passed: `git diff --check`.
-- Global `pnpm run check` stops in the formatting phase on 11 pre-existing unrelated files.
+- Global `pnpm run check` stops in the formatting phase on 10 pre-existing unrelated files.
 
 ## Things not to repeat
 
-- Do not restore the persisted Zustand `isConnected` flag.
-- Do not re-enable persisted RTK Query transforms for auth data.
-- Keep the `root-v2` persistence key or add an explicit migration before changing its schema.
+- Do not reintroduce the superseded `SessionStorage` gateway, auth decorator, or explicit `auth-bootstrap.ts` flow.
+- Do not copy RVA's product-specific Zustand navigation state or CoreAPI token-refresh hook into the neutral starter.
+- Do not upgrade `expo-secure-store` to RVA's SDK 57 build without upgrading the Starter Expo SDK.
 
 ## Recommended first command
 

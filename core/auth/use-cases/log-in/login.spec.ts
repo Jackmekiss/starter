@@ -2,8 +2,6 @@ import { createApi } from "@reduxjs/toolkit/query";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { InMemoryAuthBaseQuery } from "@core/auth/adapters/in-memory/in-memory-auth-base-query";
-import { InMemorySessionStorage } from "@core/auth/adapters/in-memory/in-memory-session-storage";
-import { SessionPersistingAuthBaseQuery } from "@core/auth/adapters/session-storage/session-persisting-auth-base-query";
 import { createAuthApiOptions } from "@core/auth/apis/auth-api";
 import { accountBuilder } from "@core/auth/domain/builders/account-builder";
 import { authUserBuilder } from "@core/auth/domain/builders/auth-user-builder";
@@ -18,22 +16,18 @@ import type { ReduxStore } from "@core/init-redux-store";
 /**
  * Creates the auth API used by log-in behavior specs.
  */
-function createAuthApi(authBaseQuery: SessionPersistingAuthBaseQuery) {
+function createAuthApi(authBaseQuery: InMemoryAuthBaseQuery) {
   return createApi(createAuthApiOptions(authBaseQuery.handle()));
 }
 
 describe("Log In", () => {
   let store: ReduxStore;
   let authBaseQuery: InMemoryAuthBaseQuery;
-  let sessionStorage: InMemorySessionStorage;
   let authApi: ReturnType<typeof createAuthApi>;
 
   beforeEach(() => {
     authBaseQuery = new InMemoryAuthBaseQuery();
-    sessionStorage = new InMemorySessionStorage();
-    authApi = createAuthApi(
-      new SessionPersistingAuthBaseQuery(authBaseQuery, sessionStorage),
-    );
+    authApi = createAuthApi(authBaseQuery);
     store = createStore({ authApi }, {});
   });
 
@@ -58,7 +52,6 @@ describe("Log In", () => {
       session,
       user,
     });
-    expect(sessionStorage.session).toEqual(session);
   });
 
   it("should reject with auth error without changing durable state", async () => {

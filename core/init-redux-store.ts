@@ -9,7 +9,7 @@ import {
   REHYDRATE,
 } from "redux-persist";
 
-import { authSlice, clearAuth } from "@core/auth/domain/slice";
+import { authSlice } from "@core/auth/domain/slice";
 import {
   subscriptionOfferingSlice,
   subscriptionSlice,
@@ -56,7 +56,7 @@ export interface Dependencies {}
  * Creates the root reducer from enabled APIs and domain slices.
  */
 function createReducers(apis: Partial<Apis>) {
-  const combinedReducer = combineReducers({
+  return combineReducers({
     ...(apis.authApi && {
       [apis.authApi.reducerPath]: apis.authApi.reducer,
     }),
@@ -67,11 +67,6 @@ function createReducers(apis: Partial<Apis>) {
     [subscriptionSlice.name]: subscriptionSlice.reducer,
     [subscriptionOfferingSlice.name]: subscriptionOfferingSlice.reducer,
   });
-
-  return (
-    state: Parameters<typeof combinedReducer>[0],
-    action: Parameters<typeof combinedReducer>[1],
-  ) => combinedReducer(clearAuth.match(action) ? undefined : state, action);
 }
 
 /**
@@ -94,9 +89,6 @@ export interface PersistConfig {
    * Persistence backend responsible for reading and writing serialized state.
    */
   storage: ReduxPersistConfig<RootState>["storage"];
-
-  /** Explicit root-state keys allowed to survive application restarts. */
-  whitelist: string[];
 }
 
 /**

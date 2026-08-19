@@ -4,8 +4,10 @@ import { useEffect } from "react";
 /**
  * Dismisses the splash after persisted state and auth bootstrap have completed.
  */
-export function useAppReadiness() {
+export function useAppReadiness(isRetrievingAccount: boolean) {
   useEffect(() => {
-    SplashScreen.hideAsync();
-  }, []);
+    if (!isRetrievingAccount) {
+      SplashScreen.hideAsync();
+    }
+  }, [isRetrievingAccount]);
 }

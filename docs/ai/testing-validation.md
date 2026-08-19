@@ -71,7 +71,6 @@ Unknown / none discovered.
 - Prefer explicit expectations over snapshots.
 - For fallible use-cases, assert the exact value rejected by `.unwrap()` and confirm failure does not apply success-side durable state updates.
 - Inject deterministic typed adapter failures through in-memory fixture setters; do not add mapper-only tests.
-- Auth login/logout/deletion specs wrap the auth gateway with `InMemorySessionStorage` to verify secure-session lifecycle behavior without importing native SecureStore into Node tests.
 
 ## When to add tests
 

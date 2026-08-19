@@ -90,10 +90,12 @@ Do not claim a command passes unless it was run in the current session or a reco
 ## Session persistence conventions
 
 - Redux `auth.session` is the only runtime authentication source of truth.
-- Persist native credentials through `SessionStorage` and `SecureSessionStorage`; never through AsyncStorage or a persisted RTK Query cache.
-- Root Redux persistence requires an explicit allowlist of non-sensitive slices.
-- Successful logout and account deletion reset all Redux slices/caches and clear secure session storage.
-- Application routing must wait for session hydration and initial account retrieval; do not use persisted connection booleans or fixed readiness delays.
+- Use the RVA-aligned `secureSessionStorage` Redux Persist adapter in `src/app-runtime/runtime/secure-session-storage.ts`.
+- Keep `accessToken` and `refreshToken` only in Expo SecureStore, with `WHEN_UNLOCKED_THIS_DEVICE_ONLY`.
+- Recursively sanitize sensitive session fields from every AsyncStorage slice and persisted RTK Query result.
+- Serialize SecureStore writes so token rotation cannot be overwritten by an older pending persistence write.
+- Use the fulfilled-query persistence transform from `persisted-api-cache.ts`; secure-session sanitization remains responsible for removing credentials.
+- Application routing must read connection from Redux and keep the splash visible during the initial connected-account query.
 
 ## Logging conventions
 

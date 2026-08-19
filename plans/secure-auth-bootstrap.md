@@ -1,5 +1,7 @@
 # Secure Auth Bootstrap
 
+Status: Superseded by [Align Secure Session With RVA](align-secure-session-with-rva.md).
+
 ## Purpose
 
 Remove insecure token persistence and make authentication startup deterministic.
