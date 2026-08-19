@@ -1,6 +1,6 @@
 ---
 name: frontend-ui-conventions
-description: "Use when creating or refactoring Expo/React Native frontend UI in this repository: screens, routes, components, navigation, screen data flow, NativeWind styling, layout, forms, and JSX conventions. This skill covers the client UI stack and presentation rules only. Do not use it for backend UI-independent work, backend APIs, bounded-context design, use-case modeling, or naming-only reviews."
+description: "Use when creating or refactoring Expo/React Native frontend UI in this repository: screens, routes, components, navigation, screen data flow, NativeWind styling, layout, forms, JSX conventions, RTK Query error consumption, and localized domain-error presentation. This skill covers the client UI stack and presentation rules only. Do not use it for backend UI-independent work, backend APIs, bounded-context design, use-case modeling, or naming-only reviews."
 ---
 
 # Frontend UI Conventions
@@ -22,6 +22,7 @@ Use this skill when the task is primarily about Expo screens, React Native compo
 3. Read [styling.md](references/styling.md) for primitives and styling rules.
 4. Read [layout.md](references/layout.md) for spacing, extraction, and component ownership rules.
 5. Read [forms.md](references/forms.md) when the task touches forms or dense JSX trees.
+6. Read [error-presentation.md](references/error-presentation.md) whenever the UI consumes an RTK Query failure, displays a submission error, or maps a domain error to translated copy.
 
 ## Decision rules
 
@@ -31,6 +32,7 @@ Use this skill when the task is primarily about Expo screens, React Native compo
 - A generic UI component renders; it does not become a mini feature controller.
 - A screen feature section may read simple selectors, navigate locally, and format local display data.
 - Prefer parent-owned fetching and autonomous sections over screen models plus props drilling.
+- Consume typed context errors through the bounded context's primary presentation adapter.
 - Avoid prop drilling generically: screens place sections; screen feature sections own the simple reads, selectors, and handlers used only by that section; generic UI primitives stay prop-driven.
 - Reuse `components/ui/` primitives before introducing new local systems.
 

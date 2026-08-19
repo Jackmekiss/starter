@@ -1,13 +1,14 @@
-import { setSubscription, setSubscriptionError } from "@core/subscription/domain/slice";
+import { setSubscription } from "@core/subscription/domain/slice";
 
-import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import type { SubscriptionActionResult } from "@core/subscription/apis/types";
+import type { SubscriptionBaseQueryFn } from "@core/subscription/gateways/subscription-base-query";
+import type { EndpointBuilder } from "@reduxjs/toolkit/query";
 
 /**
  * Builds the endpoint that restores previous premium purchases.
  */
 export function restoreSubscriptionPurchasesBuilder(
-  build: EndpointBuilder<BaseQueryFn, never, "subscriptionApi">,
+  build: EndpointBuilder<SubscriptionBaseQueryFn, never, "subscriptionApi">,
 ) {
   return {
     restoreSubscriptionPurchases: build.mutation<
@@ -19,12 +20,11 @@ export function restoreSubscriptionPurchasesBuilder(
         method: "POST",
       }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        const { data } = await queryFulfilled;
-
-        if (data.success) {
+        try {
+          const { data } = await queryFulfilled;
           dispatch(setSubscription(data.subscription));
-        } else {
-          dispatch(setSubscriptionError(data.errorMessage));
+        } catch {
+          // RTK Query owns the transient request failure.
         }
       },
     }),

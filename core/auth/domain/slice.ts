@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import type { AuthError } from "@core/auth/apis/types";
 import type { Account } from "@core/auth/domain/account";
 import type { AuthUser, Session } from "@core/auth/domain/auth";
 
@@ -11,7 +10,7 @@ export interface AuthState {
   /**
    * Current lifecycle state of the latest auth-related request.
    */
-  status: "idle" | "loading" | "success" | "error";
+  status: "idle" | "success";
 
   /**
    * Authenticated identity currently known by the app.
@@ -27,16 +26,6 @@ export interface AuthState {
    * Account profile attached to the authenticated identity.
    */
   account: Account | null;
-
-  /**
-   * Most recent authentication error shown by auth flows.
-   */
-  error: AuthError | null;
-
-  /**
-   * Flag consumed by app runtime to coordinate logout side effects.
-   */
-  logoutRequested: boolean;
 }
 
 const initialAuthState: AuthState = {
@@ -44,20 +33,12 @@ const initialAuthState: AuthState = {
   user: null,
   session: null,
   account: null,
-  error: null,
-  logoutRequested: false,
 };
 
 export const authSlice = createSlice({
   name: "auth",
   initialState: initialAuthState,
   reducers: {
-    setLoading: (state) => ({
-      ...state,
-      status: "loading",
-      error: null,
-      logoutRequested: false,
-    }),
     setAccount: (state, action) => ({
       ...state,
       account: action.payload,
@@ -67,18 +48,6 @@ export const authSlice = createSlice({
       user: action.payload.user,
       session: action.payload.session,
       account: action.payload.account,
-      error: null,
-      logoutRequested: false,
-    }),
-    setError: (state, action) => ({
-      ...state,
-      error: action.payload,
-      status: "error",
-      logoutRequested: false,
-    }),
-    markLogoutRequested: (state) => ({
-      ...state,
-      logoutRequested: true,
     }),
     clearAuth: (state) => ({
       ...state,
@@ -86,17 +55,8 @@ export const authSlice = createSlice({
       user: null,
       session: null,
       account: null,
-      error: null,
-      logoutRequested: false,
     }),
   },
 });
 
-export const {
-  setAuth,
-  setError,
-  clearAuth,
-  setLoading,
-  setAccount,
-  markLogoutRequested,
-} = authSlice.actions;
+export const { setAuth, clearAuth, setAccount } = authSlice.actions;

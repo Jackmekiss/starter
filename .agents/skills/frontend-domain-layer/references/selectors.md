@@ -14,6 +14,11 @@ Rules:
 - keep selectors close to the bounded context
 - do not centralize unrelated selectors in one giant file
 - if logic becomes business-decision logic, move it to a use-case
+- require state or selector inputs for selector behavior
+- do not use selectors as a destination for arbitrary parsing or formatting moved out of UI
+- keep block-local display formatting with the owning UI
+
+A selector may shape a stable, shared read model from application state. A function that transforms a form value or presentation string without reading state is not a selector.
 
 ## Memoization
 

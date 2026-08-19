@@ -10,17 +10,20 @@ import { resetPasswordBuilder } from "@core/auth/use-cases/password-reset-comple
 import { requestPasswordResetBuilder } from "@core/auth/use-cases/password-reset-request/request-password-reset";
 import { registerBuilder } from "@core/auth/use-cases/registration/register";
 
-import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
+import type { AuthBaseQueryFn } from "@core/auth/gateways/auth-base-query";
+import type { EndpointBuilder } from "@reduxjs/toolkit/query";
 
 /**
  * Builds RTK Query endpoint options for all authentication use-cases.
  */
-export function createAuthApiOptions(baseQuery: BaseQueryFn) {
+export function createAuthApiOptions(baseQuery: AuthBaseQueryFn) {
   return {
     baseQuery,
     reducerPath: "authApi",
     tagTypes: ["Auth"],
-    endpoints: (builder: EndpointBuilder<BaseQueryFn, "Auth", "authApi">) => ({
+    endpoints: (
+      builder: EndpointBuilder<AuthBaseQueryFn, "Auth", "authApi">,
+    ) => ({
       ...retrieveAccountBuilder(builder),
       ...updateAccountBuilder(builder),
       ...completeOnboardingBuilder(builder),

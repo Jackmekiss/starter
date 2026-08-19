@@ -32,9 +32,7 @@ describe("Password Reset Completion", () => {
       recoveryUrl: "starter://reset-password",
     });
 
-    expect(result).toEqual({
-      success: true,
-    });
+    expect(result).toBeUndefined();
     expect(store.getState().auth.status).toBe("idle");
   });
 

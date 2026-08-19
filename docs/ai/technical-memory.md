@@ -2,24 +2,24 @@
 
 ## Commands
 
-| Purpose | Command | Source | Status |
-|---|---|---|---|
-| Package manager | `pnpm@11.7.0` | `package.json` | Discovered |
-| Install | `pnpm install` | `README.md`, package manager metadata | Discovered |
-| Dev server | `pnpm run start` | `package.json` | Discovered |
-| Expo start | `pnpm expo start` | `README.md` | Discovered |
-| Android run | `pnpm run android` | `package.json` | Discovered |
-| iOS run | `pnpm run ios` | `package.json` | Discovered |
-| Web run | `pnpm run web` | `package.json` | Discovered |
-| Build | Unknown | No build script found | Not available |
-| Typecheck | `pnpm run typecheck` | `package.json` | Discovered |
-| Lint | `pnpm run lint` | `package.json` | Discovered |
-| Lint fix | `pnpm run lint:fix` | `package.json` | Discovered |
-| Format | `pnpm run format` | `package.json` | Discovered |
-| Format check | `pnpm run format:check` | `package.json` | Discovered |
-| Unit / use-case tests | `pnpm run test` | `package.json`, `vitest.config.ts` | Discovered |
-| Broad check | `pnpm run check` | `package.json` | Discovered |
-| Migration | Unknown | No database migration tooling discovered | Not available |
+| Purpose               | Command                 | Source                                   | Status        |
+| --------------------- | ----------------------- | ---------------------------------------- | ------------- |
+| Package manager       | `pnpm@11.7.0`           | `package.json`                           | Discovered    |
+| Install               | `pnpm install`          | `README.md`, package manager metadata    | Discovered    |
+| Dev server            | `pnpm run start`        | `package.json`                           | Discovered    |
+| Expo start            | `pnpm expo start`       | `README.md`                              | Discovered    |
+| Android run           | `pnpm run android`      | `package.json`                           | Discovered    |
+| iOS run               | `pnpm run ios`          | `package.json`                           | Discovered    |
+| Web run               | `pnpm run web`          | `package.json`                           | Discovered    |
+| Build                 | Unknown                 | No build script found                    | Not available |
+| Typecheck             | `pnpm run typecheck`    | `package.json`                           | Discovered    |
+| Lint                  | `pnpm run lint`         | `package.json`                           | Discovered    |
+| Lint fix              | `pnpm run lint:fix`     | `package.json`                           | Discovered    |
+| Format                | `pnpm run format`       | `package.json`                           | Discovered    |
+| Format check          | `pnpm run format:check` | `package.json`                           | Discovered    |
+| Unit / use-case tests | `pnpm run test`         | `package.json`, `vitest.config.ts`       | Discovered    |
+| Broad check           | `pnpm run check`        | `package.json`                           | Discovered    |
+| Migration             | Unknown                 | No database migration tooling discovered | Not available |
 
 Do not claim a command passes unless it was run in the current session or a recorded worklog entry says so.
 
@@ -78,9 +78,13 @@ Do not claim a command passes unless it was run in the current session or a reco
 
 ## Error handling conventions
 
-- Auth failures use `AuthError` with stable `code` plus user-facing `message`.
-- Subscription actions return a success/failure union with `errorMessage` on failure.
-- RevenueCat adapter normalizes unavailable and failed actions into user-facing failure results.
+- Shared technical failures and the generic `Result` container live in `core/shared/domain/`.
+- Each bounded context owns a stable error-code union, type guard, and `ContextResult<Value>` alias.
+- Every fallible gateway method returns its context result; base queries convert it to RTK Query `{ data }` or `{ error }`.
+- Concrete adapters preserve typed context errors, map infrastructure failures, and never expose raw exception messages.
+- `.unwrap()` resolves success values and rejects with the exact typed context error.
+- Transient request failures stay in RTK Query instead of durable Redux slices.
+- Presentation adapters resolve typed errors into safe message keys/copy with caller-provided fallback wording.
 - Unknown: global logging, reporting, or crash/error monitoring strategy.
 
 ## Logging conventions

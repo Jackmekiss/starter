@@ -18,8 +18,9 @@ Use this skill when the task is about Expo/frontend structure, ownership, or arc
 
 1. Read [philosophy.md](references/philosophy.md) to align on the repository's architectural mindset.
 2. Read [repo-structure.md](references/repo-structure.md) to decide ownership between `app/`, `components/`, and `core/`.
-3. Read [feature-workflow.md](references/feature-workflow.md) when creating or refactoring a feature end to end.
-4. Produce a concrete placement decision: target layer, target bounded context, and what must stay out of scope for that layer.
+3. Read [ownership.md](references/ownership.md) when placing behavior that could plausibly belong to the domain, a use-case, an adapter, a selector, or the UI.
+4. Read [feature-workflow.md](references/feature-workflow.md) when creating or refactoring a feature end to end.
+5. Produce a concrete placement decision: target layer, target bounded context, and what must stay out of scope for that layer.
 
 ## Decision rules
 

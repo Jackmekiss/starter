@@ -9,6 +9,9 @@ Gateways should:
 - remain stable even if implementations change
 - expose contracts only
 - avoid owning API payload and result DTOs when those types are part of the bounded context public API
+- keep transport credentials out of business operation parameters
+
+When concrete adapters require a current session, inject a dedicated provider into those adapters instead of extending every business gateway method with credentials. See [authenticated-adapters.md](authenticated-adapters.md).
 
 ## DTO placement
 

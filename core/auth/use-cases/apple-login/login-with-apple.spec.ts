@@ -50,23 +50,17 @@ describe("Apple Login", () => {
     });
   });
 
-  it("should store auth error when Apple login fails", async () => {
+  it("should reject with auth error without changing durable state", async () => {
     authBaseQuery.account = null;
     authBaseQuery.authUser = null;
 
-    await loginWithApple();
-
-    expect(store.getState().auth).toEqual({
-      account: null,
-      error: {
-        code: "INVALID_CREDENTIALS",
-        message: "Account not found.",
-      },
-      logoutRequested: false,
-      session: null,
-      status: "error",
-      user: null,
+    await expect(loginWithApple()).rejects.toEqual({
+      kind: "business",
+      code: "INVALID_CREDENTIALS",
+      retryable: false,
     });
+
+    expect(store.getState().auth.status).toBe("idle");
   });
 
   /**
@@ -90,8 +84,6 @@ describe("Apple Login", () => {
   }) {
     expect(store.getState().auth).toEqual({
       account,
-      error: null,
-      logoutRequested: false,
       session,
       status: "success",
       user,

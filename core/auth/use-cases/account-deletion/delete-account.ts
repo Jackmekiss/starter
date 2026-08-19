@@ -1,12 +1,13 @@
-import { clearAuth, markLogoutRequested } from "@core/auth/domain/slice";
+import { clearAuth } from "@core/auth/domain/slice";
 
-import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
+import type { AuthBaseQueryFn } from "@core/auth/gateways/auth-base-query";
+import type { EndpointBuilder } from "@reduxjs/toolkit/query";
 
 /**
  * Builds the endpoint that deletes the current account and clears auth state.
  */
 export function deleteAccountBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
+  build: EndpointBuilder<AuthBaseQueryFn, "Auth", "authApi">,
 ) {
   return {
     deleteAccount: build.mutation<void, void>({
@@ -15,10 +16,12 @@ export function deleteAccountBuilder(
         method: "POST",
       }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        dispatch(markLogoutRequested());
-        await queryFulfilled;
-
-        dispatch(clearAuth());
+        try {
+          await queryFulfilled;
+          dispatch(clearAuth());
+        } catch {
+          // RTK Query owns the transient request failure.
+        }
       },
     }),
   };

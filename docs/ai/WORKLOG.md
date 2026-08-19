@@ -186,3 +186,41 @@ User clarified that the starter should not keep a separate starter-only memory f
 ### Next
 
 - Keep reusable starter knowledge in architecture, technical, testing, and skill docs.
+
+## 2026-08-19 - Synchronize reusable RVA architecture patterns
+
+### Context
+
+The user asked to bring patterns that evolved in `rva-app` back into `starter`, using error management as the simplest example.
+
+### Changes
+
+- Compared both repositories' local architecture, domain, UI, and coding skills.
+- Added reusable guidance for responsibility ownership, named adapter concerns, authenticated adapters, error presentation/review, i18n naming, icon styling, form-value ownership, and accessibility.
+- Added shared `ApplicationError` and `Result` primitives.
+- Migrated all fallible `auth` and `subscription` gateway operations to bounded-context result contracts.
+- Removed legacy success/failure unions, raw user-facing adapter messages, and transient error storage from durable slices.
+- Added safe presentation resolvers and updated use-case specs to assert exact `.unwrap()` rejections and unchanged durable state on failure.
+- Added the stylesheet module declaration required for the existing global CSS import to typecheck.
+
+### Decisions
+
+- Use stable context-owned business codes plus shared transport-independent technical categories.
+- Map infrastructure failures in concrete adapters and propagate typed errors through RTK Query.
+- Keep transient request failures in RTK Query unless a failure itself is durable product truth.
+- Synchronize architecture from RVA without copying product-specific contexts, backend codes, or translations.
+
+### Validation
+
+- Passed: `pnpm run test` (16 files, 24 tests).
+- Passed: `pnpm run typecheck`.
+- Passed: targeted Oxfmt, Oxlint, and ESLint for changed source files.
+- Passed: targeted Oxfmt check for all changed and new files.
+- Passed: `git diff --check`.
+- Global `pnpm run check` stopped on pre-existing format issues in untouched files.
+- Global `pnpm run lint` stopped on pre-existing findings in `src/components/ui/BottomSheetModal.tsx` and `src/components/ui/Button.tsx`.
+
+### Next
+
+- Review and commit the migration.
+- Use the same complete-context error migration for future bounded contexts.

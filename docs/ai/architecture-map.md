@@ -2,23 +2,23 @@
 
 ## App / package structure
 
-| Path | Responsibility | Notes |
-|---|---|---|
-| `src/app/` | Expo Router routes, route groups, layouts, and screens. | Current route groups: `(auth)`, `(on-boarding)`, `(tabs)`, `(tabs)/(home)`. Screens are placeholders. |
-| `src/app-runtime/` | Runtime composition for providers, navigation, store, app mode, auth API wiring, and persistence transforms. | `src/app/_layout.tsx` exports runtime APIs for screens. |
-| `src/components/ui/` | Reusable UI primitives. | Includes `Button`, `Icon`, `Input`, `Text`, `TextArea`, `BottomSheetModal`. |
-| `src/components/ux/` | UX-specific components that are not generic primitives. | Current example: `HapticTab`. |
-| `src/hooks/` | App hooks and typed Redux hooks. | Keep business logic in `core/` when it has durable meaning. |
-| `src/stores/` | UI/runtime stores outside bounded contexts. | Current Zustand `session-store` persists `isConnected`. |
-| `src/constants/` | App constants and theme exports. | Keep durable domain constants in `core/` when they are business concepts. |
-| `src/lib/` | Small app-level helpers. | Avoid growing generic utility buckets. |
-| `core/auth/` | Authentication bounded context. | Owns account/session domain, auth use-cases, auth gateway, adapters, selectors, and RTK Query API options. |
-| `core/subscription/` | Subscription bounded context. | Owns premium entitlement domain, subscription use-cases, gateway, adapters, selectors, and RTK Query API options. |
-| `core/shared/` | Shared lower-level adapters/helpers. | Current discovered file: Supabase slugify helper. |
-| `core/init-redux-store.ts` | Root Redux store factory for bounded-context slices and RTK Query APIs. | Can mount auth and subscription APIs; runtime currently mounts auth API. |
-| `.agents/skills/` | Repo-specific agent workflow and convention skills. | `frontend-*` skills cover the Expo app and frontend business core only; project memory skills cover continuity. |
-| `docs/ai/` | Project memory system. | Stable and operational memory for humans and agents. |
-| `plans/` | Multi-session feature plans. | Use only when work is too large/risky for a single session. |
+| Path                       | Responsibility                                                                                               | Notes                                                                                                             |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `src/app/`                 | Expo Router routes, route groups, layouts, and screens.                                                      | Current route groups: `(auth)`, `(on-boarding)`, `(tabs)`, `(tabs)/(home)`. Screens are placeholders.             |
+| `src/app-runtime/`         | Runtime composition for providers, navigation, store, app mode, auth API wiring, and persistence transforms. | `src/app/_layout.tsx` exports runtime APIs for screens.                                                           |
+| `src/components/ui/`       | Reusable UI primitives.                                                                                      | Includes `Button`, `Icon`, `Input`, `Text`, `TextArea`, `BottomSheetModal`.                                       |
+| `src/components/ux/`       | UX-specific components that are not generic primitives.                                                      | Current example: `HapticTab`.                                                                                     |
+| `src/hooks/`               | App hooks and typed Redux hooks.                                                                             | Keep business logic in `core/` when it has durable meaning.                                                       |
+| `src/stores/`              | UI/runtime stores outside bounded contexts.                                                                  | Current Zustand `session-store` persists `isConnected`.                                                           |
+| `src/constants/`           | App constants and theme exports.                                                                             | Keep durable domain constants in `core/` when they are business concepts.                                         |
+| `src/lib/`                 | Small app-level helpers.                                                                                     | Avoid growing generic utility buckets.                                                                            |
+| `core/auth/`               | Authentication bounded context.                                                                              | Owns account/session domain, auth use-cases, auth gateway, adapters, selectors, and RTK Query API options.        |
+| `core/subscription/`       | Subscription bounded context.                                                                                | Owns premium entitlement domain, subscription use-cases, gateway, adapters, selectors, and RTK Query API options. |
+| `core/shared/`             | Transport-independent contracts and lower-level shared adapters.                                             | Owns `ApplicationError`, `Result`, and the Supabase slugify helper.                                               |
+| `core/init-redux-store.ts` | Root Redux store factory for bounded-context slices and RTK Query APIs.                                      | Can mount auth and subscription APIs; runtime currently mounts auth API.                                          |
+| `.agents/skills/`          | Repo-specific agent workflow and convention skills.                                                          | `frontend-*` skills cover the Expo app and frontend business core only; project memory skills cover continuity.   |
+| `docs/ai/`                 | Project memory system.                                                                                       | Stable and operational memory for humans and agents.                                                              |
+| `plans/`                   | Multi-session feature plans.                                                                                 | Use only when work is too large/risky for a single session.                                                       |
 
 ## Frontend/backend boundaries
 
@@ -36,6 +36,11 @@
 - Runtime adapters are selected in `src/app-runtime/runtime/*`.
 - In-memory adapters are valid local infrastructure while real backend/provider integrations are absent.
 - Durable collections keyed by id should use `createEntityAdapter`; subscription offerings already do.
+- Fallible operations use shared `Result<Value, Failure>` and `ApplicationError<Code>` primitives under `core/shared/domain/`.
+- Each bounded context owns stable business error codes, maps infrastructure failures in adapters, and exposes typed RTK Query error channels.
+- Transient request failures remain in RTK Query; durable slices only store failures when the failure itself is product truth shared across flows.
+- Authenticated concrete adapters should read credentials from an injected current-session provider rather than accept transport credentials through use-cases or business gateways.
+- Adapter files are grouped by named concern such as `errors/`, `fake/`, `in-memory/`, `presentation/`, `selectors/`, or a concrete transport.
 
 ## Dependency direction rules
 
@@ -55,7 +60,7 @@
 
 ## Auth / session approach
 
-- Auth domain state stores `user`, `session`, `account`, `status`, `error`, and `logoutRequested`.
+- Auth domain state stores durable `user`, `session`, `account`, and connection `status`; transient auth request failures stay in RTK Query.
 - Route selection combines persisted `isConnected`, auth status, account, and onboarding status.
 - `EXPO_PUBLIC_APP_MODE=fake` selects `FakeAuthBaseQuery`; all other modes use `InMemoryAuthBaseQuery`.
 - No production auth backend/provider configuration was discovered.

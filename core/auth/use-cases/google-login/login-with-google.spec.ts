@@ -50,23 +50,17 @@ describe("Google Login", () => {
     });
   });
 
-  it("should store auth error when Google login fails", async () => {
+  it("should reject with auth error without changing durable state", async () => {
     authBaseQuery.account = null;
     authBaseQuery.authUser = null;
 
-    await loginWithGoogle();
-
-    expect(store.getState().auth).toEqual({
-      account: null,
-      error: {
-        code: "INVALID_CREDENTIALS",
-        message: "Account not found.",
-      },
-      logoutRequested: false,
-      session: null,
-      status: "error",
-      user: null,
+    await expect(loginWithGoogle()).rejects.toEqual({
+      kind: "business",
+      code: "INVALID_CREDENTIALS",
+      retryable: false,
     });
+
+    expect(store.getState().auth.status).toBe("idle");
   });
 
   /**
@@ -90,8 +84,6 @@ describe("Google Login", () => {
   }) {
     expect(store.getState().auth).toEqual({
       account,
-      error: null,
-      logoutRequested: false,
       session,
       status: "success",
       user,

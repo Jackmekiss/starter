@@ -1,6 +1,8 @@
 import { createSelector } from "@reduxjs/toolkit";
-import type { RootState } from "@core/init-redux-store";
+
 import { subscriptionOfferingAdapter } from "@core/subscription/domain/slice";
+
+import type { RootState } from "@core/init-redux-store";
 import type { Subscription } from "@core/subscription/domain/subscription";
 
 export const subscriptionOfferingSelectors =
@@ -15,15 +17,6 @@ export function selectCurrentSubscription(
   state: RootState,
 ): Subscription | null {
   return state.subscription.subscription;
-}
-
-/**
- * Returns the latest subscription action error message for UI display.
- */
-export function selectSubscriptionErrorMessage(
-  state: RootState,
-): string | null {
-  return state.subscription.errorMessage;
 }
 
 export const selectSubscriptionOfferings =

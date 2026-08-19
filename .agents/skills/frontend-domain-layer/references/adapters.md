@@ -10,6 +10,20 @@ Typical implementations include:
 - remote API adapters
 - sync adapters
 
+## Folder structure
+
+Do not place TypeScript files directly in `core/<context>/adapters/`. Every adapter must belong to a named concern folder:
+
+- `core-api/` for backend implementations and backend-specific mappers
+- `errors/` for adapter-independent context-error preservation and fallback
+- `fake/` for latency or demo adapters
+- `in-memory/` for local data-source implementations
+- `i18next/` or another named presentation concern for domain-error-to-copy adapters
+- `selectors/` for Redux read adapters
+- another explicit infrastructure name when none of these apply
+
+Keep files directly inside the selected concern folder unless that concern has multiple distinct business areas that justify another level.
+
 Why this matters:
 
 - UI can be built before the backend exists
@@ -17,5 +31,7 @@ Why this matters:
 - data sources can be replaced later without rewriting screens
 
 Important: in frontend-first projects, in-memory adapters are valid and encouraged early.
+
+For protected infrastructure operations, inject a minimal current-session provider into the concrete adapter and read it at operation time. Keep credentials out of use-cases and business gateway parameters. See [authenticated-adapters.md](authenticated-adapters.md).
 
 Rule of thumb: adapters are replaceable infrastructure.

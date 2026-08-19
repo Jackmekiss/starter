@@ -81,3 +81,21 @@ Each bounded context owns:
 - its API facade
 
 Prefer bounded contexts over generic buckets such as `helpers`, `misc`, or global business folders.
+
+## Adapter structure
+
+Keep `core/<context>/adapters/` as an organization boundary, not as a file bucket. Do not place TypeScript files directly in `adapters/`.
+
+Group every adapter file under the concern it implements, for example:
+
+```txt
+adapters/
+  core-api/
+  errors/
+  fake/
+  i18next/
+  in-memory/
+  selectors/
+```
+
+Files may live directly inside those named concern folders. Add another nesting level only when that concern itself contains distinct business areas.

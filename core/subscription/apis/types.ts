@@ -11,16 +11,10 @@ export interface PurchaseSubscriptionPayload {
   plan: SubscriptionPlan;
 }
 
-/**
- * Result for subscription actions that can change premium entitlement.
- */
-export type SubscriptionActionResult =
-  | {
-      success: true;
-      subscription: Subscription;
-      plan: SubscriptionPlan;
-    }
-  | {
-      success: false;
-      errorMessage: string;
-    };
+/** Successful subscription action that can change premium entitlement. */
+export interface SubscriptionActionResult {
+  /** Premium entitlement resolved by the billing adapter. */
+  subscription: Subscription;
+  /** Billing interval associated with the action. */
+  plan: SubscriptionPlan;
+}

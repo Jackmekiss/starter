@@ -47,6 +47,17 @@ describe("Account Retrieval", () => {
     expectAccount(null);
   });
 
+  it("should expose a technical failure without changing the account", async () => {
+    authBaseQuery.error = { kind: "network", retryable: true };
+
+    await expect(retrieveAccount()).rejects.toEqual({
+      kind: "network",
+      retryable: true,
+    });
+
+    expectAccount(null);
+  });
+
   /**
    * Dispatches the account retrieval use-case.
    */

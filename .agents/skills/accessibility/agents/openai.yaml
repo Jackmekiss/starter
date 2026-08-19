@@ -1,0 +1,4 @@
+interface:
+  display_name: "Accessibility"
+  short_description: "Improve accessibility without visual changes"
+  default_prompt: "Use $accessibility to audit and improve semantic accessibility without changing the visual layout."

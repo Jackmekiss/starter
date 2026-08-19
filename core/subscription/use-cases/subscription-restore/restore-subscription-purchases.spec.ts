@@ -44,7 +44,7 @@ describe("Subscription Restore", () => {
     expectSubscription(subscription);
   });
 
-  it("should store subscription restore error", async () => {
+  it("should reject without changing durable subscription state", async () => {
     subscriptionBaseQuery.subscription = subscriptionBuilder()
       .withTier("free")
       .withStatus("inactive")
@@ -53,9 +53,13 @@ describe("Subscription Restore", () => {
       .withoutCurrentPeriodEnd()
       .build();
 
-    await restoreSubscriptionPurchases();
+    await expect(restoreSubscriptionPurchases()).rejects.toEqual({
+      kind: "not-found",
+      code: "NO_ACTIVE_PURCHASE",
+      retryable: false,
+    });
 
-    expectSubscriptionError("No active premium purchase was found.");
+    expect(store.getState().subscription.subscription).toBeNull();
   });
 
   /**
@@ -75,17 +79,6 @@ describe("Subscription Restore", () => {
   function expectSubscription(subscriptionExpected: Subscription) {
     expect(store.getState().subscription.subscription).toEqual(
       subscriptionExpected,
-    );
-    expect(store.getState().subscription.errorMessage).toBeNull();
-  }
-
-  /**
-   * Expects failed restore error to be stored in subscription state.
-   */
-  function expectSubscriptionError(errorMessageExpected: string) {
-    expect(store.getState().subscription.subscription).toBeNull();
-    expect(store.getState().subscription.errorMessage).toBe(
-      errorMessageExpected,
     );
   }
 });

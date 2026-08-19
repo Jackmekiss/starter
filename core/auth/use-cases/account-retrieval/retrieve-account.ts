@@ -1,25 +1,28 @@
 import { setAccount } from "@core/auth/domain/slice";
 
-import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
 import type { Account } from "@core/auth/domain/account";
+import type { AuthBaseQueryFn } from "@core/auth/gateways/auth-base-query";
+import type { EndpointBuilder } from "@reduxjs/toolkit/query";
 
 /**
  * Builds the endpoint that retrieves and stores the current account profile.
  */
 export function retrieveAccountBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
+  build: EndpointBuilder<AuthBaseQueryFn, "Auth", "authApi">,
 ) {
   return {
     retrieveAccount: build.query<Account | null, void>({
-      query: (params) => ({
+      query: () => ({
         url: "/retrieve",
         method: "GET",
-        params,
       }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        const { data } = await queryFulfilled;
-
-        dispatch(setAccount(data));
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setAccount(data));
+        } catch {
+          // RTK Query owns the transient request failure.
+        }
       },
     }),
   };

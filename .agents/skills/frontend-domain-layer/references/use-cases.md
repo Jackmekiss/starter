@@ -18,6 +18,11 @@ Each important business action should be modeled as a named use-case, for exampl
 - keep each use-case focused
 - a use-case should do one clear thing
 - a use-case should be easy to call from screens
+- keep decisions that depend on the initiating application flow in the use-case
+- keep before-and-after comparisons and selection of required updates in the use-case
+- construct the command for the action in the use-case, then let adapters map it to infrastructure
+
+These responsibilities remain use-case behavior even when every input and output uses domain types. Keep intrinsic invariants in the domain instead.
 
 ## Structure convention
 

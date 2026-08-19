@@ -10,13 +10,12 @@ import useSessionStore from "@/stores/session-store";
 export function useAppReadiness(isRetrievingAccount: boolean) {
   const [isReady, setIsReady] = useState(false);
   const account = useSelector((state) => state.auth.account);
-  const authStatus = useSelector((state) => state.auth.status);
   const { setIsConnected } = useSessionStore();
 
   useEffect(() => {
     if (account) {
       setIsConnected(true);
-    } else if (!isRetrievingAccount && authStatus !== "loading") {
+    } else if (!isRetrievingAccount) {
       setIsConnected(false);
     }
 
@@ -27,7 +26,7 @@ export function useAppReadiness(isRetrievingAccount: boolean) {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [account, authStatus, isRetrievingAccount, setIsConnected]);
+  }, [account, isRetrievingAccount, setIsConnected]);
 
   useEffect(() => {
     if (isReady) {

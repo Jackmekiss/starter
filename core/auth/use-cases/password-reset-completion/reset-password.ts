@@ -1,19 +1,19 @@
-import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
-import type { AuthActionResult, ResetPasswordPayload } from "@core/auth/apis/types";
+import type { ResetPasswordPayload } from "@core/auth/apis/types";
+import type { AuthBaseQueryFn } from "@core/auth/gateways/auth-base-query";
+import type { EndpointBuilder } from "@reduxjs/toolkit/query";
 
 /**
  * Builds the endpoint that completes a password reset challenge.
  */
 export function resetPasswordBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
+  build: EndpointBuilder<AuthBaseQueryFn, "Auth", "authApi">,
 ) {
   return {
-    resetPassword: build.mutation<AuthActionResult, ResetPasswordPayload>({
+    resetPassword: build.mutation<void, ResetPasswordPayload>({
       query: (payload) => ({
         url: "/password/reset",
         method: "POST",
         body: payload,
-        params: undefined,
       }),
     }),
   };

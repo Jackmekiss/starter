@@ -1,3 +1,4 @@
+import { mapSubscriptionAdapterError } from "@core/subscription/adapters/errors/subscription-error-mapper";
 import { SubscriptionBaseQuery } from "@core/subscription/gateways/subscription-base-query";
 
 import type {
@@ -5,11 +6,11 @@ import type {
   SubscriptionActionResult,
 } from "@core/subscription/apis/types";
 import type { Subscription } from "@core/subscription/domain/subscription";
+import type { SubscriptionError } from "@core/subscription/domain/subscription-error";
 import type { SubscriptionOffering } from "@core/subscription/domain/subscription-offering";
+import type { SubscriptionResult } from "@core/subscription/domain/subscription-result";
 
-/**
- * Builds the local premium subscription granted by the starter purchase flow.
- */
+/** Builds the local premium entitlement granted by a purchase. */
 function createPremiumSubscription(
   plan: PurchaseSubscriptionPayload["plan"],
 ): Subscription {
@@ -27,20 +28,10 @@ function createPremiumSubscription(
   };
 }
 
-/**
- * Creates a consistent failed billing action result for local subscription flows.
- */
-function createFailureResult(message: string): SubscriptionActionResult {
-  return {
-    success: false,
-    errorMessage: message,
-  };
-}
-
-/**
- * In-memory subscription gateway for local premium status and purchase flows.
- */
+/** In-memory subscription gateway for local premium flows. */
 export class InMemorySubscriptionBaseQuery extends SubscriptionBaseQuery {
+  private currentError?: SubscriptionError;
+
   private currentSubscriptionOfferings: SubscriptionOffering[] = [
     {
       id: "premium-annual",
@@ -68,75 +59,95 @@ export class InMemorySubscriptionBaseQuery extends SubscriptionBaseQuery {
     cancelAtPeriodEnd: false,
   };
 
-  /**
-   * Sets the locally returned subscription offerings.
-   */
+  /** Sets the locally returned offerings. */
   set subscriptionOfferings(value: SubscriptionOffering[]) {
     this.currentSubscriptionOfferings = value;
   }
 
-  /**
-   * Sets the locally stored subscription entitlement.
-   */
+  /** Sets the locally stored entitlement. */
   set subscription(value: Subscription) {
     this.currentSubscription = value;
   }
 
-  /**
-   * Returns the default paywall offerings bundled with the starter app.
-   */
-  async retrieveSubscriptionOfferings(): Promise<SubscriptionOffering[]> {
-    return this.currentSubscriptionOfferings;
+  /** Sets a deterministic adapter failure for use-case behavior specs. */
+  set error(value: SubscriptionError | undefined) {
+    this.currentError = value;
   }
 
-  /**
-   * Activates a local premium subscription for the selected plan.
-   */
-  async purchaseSubscription(
+  /** Returns the bundled paywall offerings. */
+  retrieveSubscriptionOfferings(): Promise<
+    SubscriptionResult<SubscriptionOffering[]>
+  > {
+    return this.executeOperation(() => this.currentSubscriptionOfferings);
+  }
+
+  /** Activates a local premium subscription. */
+  purchaseSubscription(
     payload: PurchaseSubscriptionPayload,
-  ): Promise<SubscriptionActionResult> {
-    this.currentSubscription = createPremiumSubscription(payload.plan);
-
-    return {
-      success: true,
-      subscription: this.currentSubscription,
-      plan: payload.plan,
-    };
+  ): Promise<SubscriptionResult<SubscriptionActionResult>> {
+    return this.executeOperation(() => {
+      this.currentSubscription = createPremiumSubscription(payload.plan);
+      return { subscription: this.currentSubscription, plan: payload.plan };
+    });
   }
 
-  /**
-   * Restores the current local premium subscription when one exists.
-   */
-  async restoreSubscriptionPurchases(): Promise<SubscriptionActionResult> {
+  /** Restores the current local premium subscription. */
+  restoreSubscriptionPurchases(): Promise<
+    SubscriptionResult<SubscriptionActionResult>
+  > {
     if (
       this.currentSubscription.tier !== "premium" ||
       !this.currentSubscription.plan
     ) {
-      return createFailureResult("No active premium purchase was found.");
+      return Promise.resolve({
+        ok: false,
+        error: {
+          kind: "not-found",
+          code: "NO_ACTIVE_PURCHASE",
+          retryable: false,
+        },
+      });
     }
 
-    return {
-      success: true,
-      subscription: this.currentSubscription,
-      plan: this.currentSubscription.plan,
-    };
+    return Promise.resolve({
+      ok: true,
+      value: {
+        subscription: this.currentSubscription,
+        plan: this.currentSubscription.plan,
+      },
+    });
   }
 
-  /**
-   * Reports successful management access using the current local subscription.
-   */
-  async openSubscriptionManagement(): Promise<SubscriptionActionResult> {
-    return {
-      success: true,
-      subscription: this.currentSubscription,
-      plan: this.currentSubscription.plan ?? "annual",
-    };
+  /** Reports successful management access for the current entitlement. */
+  openSubscriptionManagement(): Promise<
+    SubscriptionResult<SubscriptionActionResult>
+  > {
+    return Promise.resolve({
+      ok: true,
+      value: {
+        subscription: this.currentSubscription,
+        plan: this.currentSubscription.plan ?? "annual",
+      },
+    });
   }
 
-  /**
-   * Returns the current local subscription snapshot for app startup checks.
-   */
-  async retrieveSubscriptionStatus(): Promise<Subscription | null> {
-    return this.currentSubscription;
+  /** Returns the current local entitlement. */
+  retrieveSubscriptionStatus(): Promise<
+    SubscriptionResult<Subscription | null>
+  > {
+    return this.executeOperation(() => this.currentSubscription);
+  }
+
+  /** Executes a local operation without leaking implementation failures. */
+  private async executeOperation<Value>(
+    operation: () => Value | Promise<Value>,
+  ): Promise<SubscriptionResult<Value>> {
+    if (this.currentError) return { ok: false, error: this.currentError };
+
+    try {
+      return { ok: true, value: await operation() };
+    } catch (error) {
+      return { ok: false, error: mapSubscriptionAdapterError(error) };
+    }
   }
 }

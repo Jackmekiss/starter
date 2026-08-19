@@ -1,10 +1,10 @@
 import { produce } from "immer";
 
+import { mapAuthAdapterError } from "@core/auth/adapters/errors/auth-error-mapper";
 import { AuthBaseQuery } from "@core/auth/gateways/auth-base-query";
 
 import type {
-  AuthActionResult,
-  AuthResult,
+  AuthContext,
   LoginPayload,
   RegisterPayload,
   RequestPasswordResetPayload,
@@ -12,29 +12,22 @@ import type {
   UpdateAccountPayload,
 } from "@core/auth/apis/types";
 import type { Account } from "@core/auth/domain/account";
+import type { AuthError } from "@core/auth/domain/auth-error";
+import type { AuthResult } from "@core/auth/domain/auth-result";
 import type { AuthUser, Session } from "@core/auth/domain/auth";
 
-/**
- * Preserves the current onboarding status unless an account update changes it.
- */
+/** Preserves onboarding status unless an account update changes it. */
 function resolveNextOnboardingStatus(
   currentStatus: Account["onboardingStatus"],
   payload: UpdateAccountPayload,
 ) {
-  if (payload.onboardingStatus !== undefined) {
-    return payload.onboardingStatus;
-  }
-
-  return currentStatus;
+  return payload.onboardingStatus ?? currentStatus;
 }
 
-/**
- * In-memory auth gateway used by local development and starter flows.
- */
+/** In-memory auth gateway used by local development and starter flows. */
 export class InMemoryAuthBaseQuery extends AuthBaseQuery {
-  /**
-   * Backing account snapshot returned by account-related use-cases.
-   */
+  private currentError?: AuthError;
+
   private currentAccount: Account | null = {
     id: "1",
     email: "test@test.com",
@@ -45,17 +38,11 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
     createdAt: new Date().toISOString(),
   };
 
-  /**
-   * Backing authenticated identity returned by login use-cases.
-   */
   private currentAuthUser: AuthUser | null = {
     id: "1",
     email: "test@test.com",
   };
 
-  /**
-   * Backing session snapshot returned by successful auth use-cases.
-   */
   private currentSession: Session = {
     userId: "1",
     accessToken: "accessToken",
@@ -63,168 +50,155 @@ export class InMemoryAuthBaseQuery extends AuthBaseQuery {
     expiresAt: new Date().getTime() + 1000 * 60 * 60 * 24 * 30,
   };
 
-  /**
-   * Replaces the account fixture used by the in-memory adapter.
-   */
+  /** Replaces the account fixture used by the adapter. */
   set account(value: Account | null) {
     this.currentAccount = value;
   }
 
-  /**
-   * Replaces the auth user fixture used by the in-memory adapter.
-   */
+  /** Replaces the auth-user fixture used by the adapter. */
   set authUser(value: AuthUser | null) {
     this.currentAuthUser = value;
   }
 
-  /**
-   * Replaces the session fixture used by the in-memory adapter.
-   */
+  /** Replaces the session fixture used by the adapter. */
   set session(value: Session) {
     this.currentSession = value;
   }
 
-  /**
-   * Returns the current local account snapshot without network persistence.
-   */
-  async retrieveAccount(): Promise<Account | null> {
-    return this.currentAccount;
+  /** Sets a deterministic adapter failure for use-case behavior specs. */
+  set error(value: AuthError | undefined) {
+    this.currentError = value;
   }
 
-  /**
-   * Mutates the local account snapshot with editable profile fields.
-   */
-  async updateAccount(payload: UpdateAccountPayload): Promise<Account> {
-    if (!this.currentAccount) {
-      throw new Error("Account not found.");
-    }
-
-    this.currentAccount = produce(this.currentAccount, (draft) => {
-      if (payload.avatarUri !== undefined) draft.avatarUri = payload.avatarUri;
-      if (payload.firstName !== undefined) draft.firstName = payload.firstName;
-      if (payload.lastName !== undefined) draft.lastName = payload.lastName;
-
-      draft.onboardingStatus = resolveNextOnboardingStatus(
-        draft.onboardingStatus,
-        payload,
-      );
-    });
-
-    return this.currentAccount;
+  /** Returns the current local account. */
+  retrieveAccount(): Promise<AuthResult<Account | null>> {
+    return this.executeOperation(() => this.currentAccount);
   }
 
-  /**
-   * Replaces the local auth state with a newly registered starter account.
-   */
-  async register(payload: RegisterPayload): Promise<AuthResult> {
-    this.currentAccount = {
-      id: "1",
-      email: payload.email,
-      avatarUri: null,
-      firstName: payload.firstName,
-      lastName: payload.lastName,
-      onboardingStatus: "pending",
-      createdAt: new Date().toISOString(),
-    };
-    this.currentAuthUser = {
-      id: "1",
-      email: payload.email,
-    };
-
-    return {
-      success: true,
-      user: this.currentAuthUser,
-      session: this.currentSession,
-      account: this.currentAccount,
-    };
-  }
-
-  /**
-   * Resolves the local auth session when the memory store still has a user.
-   */
-  async login(_: LoginPayload): Promise<AuthResult> {
-    if (!this.currentAuthUser || !this.currentAccount) {
-      return {
-        success: false,
+  /** Updates the current local account. */
+  updateAccount(payload: UpdateAccountPayload): Promise<AuthResult<Account>> {
+    const { currentAccount } = this;
+    if (!currentAccount) {
+      return Promise.resolve({
+        ok: false,
         error: {
-          code: "INVALID_CREDENTIALS",
-          message: "Account not found.",
+          kind: "not-found",
+          code: "ACCOUNT_NOT_FOUND",
+          retryable: false,
         },
+      });
+    }
+
+    return this.executeOperation(() => {
+      this.currentAccount = produce(currentAccount, (draft) => {
+        if (payload.avatarUri !== undefined)
+          draft.avatarUri = payload.avatarUri;
+        if (payload.firstName !== undefined)
+          draft.firstName = payload.firstName;
+        if (payload.lastName !== undefined) draft.lastName = payload.lastName;
+        draft.onboardingStatus = resolveNextOnboardingStatus(
+          draft.onboardingStatus,
+          payload,
+        );
+      });
+
+      return this.currentAccount;
+    });
+  }
+
+  /** Replaces local auth state with a registered account. */
+  register(payload: RegisterPayload): Promise<AuthResult<AuthContext>> {
+    return this.executeOperation(() => {
+      this.currentAccount = {
+        id: "1",
+        email: payload.email,
+        avatarUri: null,
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+        onboardingStatus: "pending",
+        createdAt: new Date().toISOString(),
       };
-    }
+      this.currentAuthUser = { id: "1", email: payload.email };
 
-    return {
-      success: true,
-      user: this.currentAuthUser,
-      session: this.currentSession,
-      account: this.currentAccount,
-    };
-  }
-
-  /**
-   * Reuses the stored local user to mimic a successful Google sign-in.
-   */
-  async loginWithGoogle(): Promise<AuthResult> {
-    if (!this.currentAuthUser) {
-      return this.login({
-        email: "",
-        password: "password",
-      });
-    }
-
-    return this.login({
-      email: this.currentAuthUser.email,
-      password: "password",
+      return this.createAuthContext(this.currentAuthUser, this.currentAccount);
     });
   }
 
-  /**
-   * Reuses the stored local user to mimic a successful Apple sign-in.
-   */
-  async loginWithApple(): Promise<AuthResult> {
-    if (!this.currentAuthUser) {
-      return this.login({
-        email: "",
-        password: "password",
+  /** Resolves the local auth session when a user and account exist. */
+  login(_: LoginPayload): Promise<AuthResult<AuthContext>> {
+    if (!this.currentAuthUser || !this.currentAccount) {
+      return Promise.resolve({
+        ok: false,
+        error: {
+          kind: "business",
+          code: "INVALID_CREDENTIALS",
+          retryable: false,
+        },
       });
     }
 
-    return this.login({
-      email: this.currentAuthUser.email,
-      password: "password",
+    return Promise.resolve({
+      ok: true,
+      value: this.createAuthContext(this.currentAuthUser, this.currentAccount),
     });
   }
 
-  /**
-   * Acknowledges password reset requests without sending external email.
-   */
-  async requestPasswordReset(
+  /** Reuses the local user to mimic Google sign-in. */
+  loginWithGoogle(): Promise<AuthResult<AuthContext>> {
+    return this.login({
+      email: this.currentAuthUser?.email ?? "",
+      password: "",
+    });
+  }
+
+  /** Reuses the local user to mimic Apple sign-in. */
+  loginWithApple(): Promise<AuthResult<AuthContext>> {
+    return this.login({
+      email: this.currentAuthUser?.email ?? "",
+      password: "",
+    });
+  }
+
+  /** Acknowledges a password-reset request. */
+  requestPasswordReset(
     _: RequestPasswordResetPayload,
-  ): Promise<AuthActionResult> {
-    return {
-      success: true,
-    };
+  ): Promise<AuthResult<void>> {
+    return Promise.resolve({ ok: true, value: undefined });
   }
 
-  /**
-   * Acknowledges password reset completion without changing local credentials.
-   */
-  async resetPassword(_: ResetPasswordPayload): Promise<AuthActionResult> {
-    return {
-      success: true,
-    };
+  /** Acknowledges password-reset completion. */
+  resetPassword(_: ResetPasswordPayload): Promise<AuthResult<void>> {
+    return Promise.resolve({ ok: true, value: undefined });
   }
 
-  /**
-   * Keeps local auth data intact because starter logout has no persisted session.
-   */
-  async logout(): Promise<void> {}
+  /** Completes local logout without deleting fixtures. */
+  logout(): Promise<AuthResult<void>> {
+    return Promise.resolve({ ok: true, value: undefined });
+  }
 
-  /**
-   * Clears the local account and auth user to mimic permanent account removal.
-   */
-  async deleteAccount(): Promise<void> {
-    this.currentAccount = null;
-    this.currentAuthUser = null;
+  /** Clears the local account and identity. */
+  deleteAccount(): Promise<AuthResult<void>> {
+    return this.executeOperation(() => {
+      this.currentAccount = null;
+      this.currentAuthUser = null;
+    });
+  }
+
+  /** Creates the authenticated context returned by sign-in operations. */
+  private createAuthContext(user: AuthUser, account: Account): AuthContext {
+    return { user, session: this.currentSession, account };
+  }
+
+  /** Executes a local operation without leaking implementation failures. */
+  private async executeOperation<Value>(
+    operation: () => Value | Promise<Value>,
+  ): Promise<AuthResult<Value>> {
+    if (this.currentError) return { ok: false, error: this.currentError };
+
+    try {
+      return { ok: true, value: await operation() };
+    } catch (error) {
+      return { ok: false, error: mapAuthAdapterError(error) };
+    }
   }
 }

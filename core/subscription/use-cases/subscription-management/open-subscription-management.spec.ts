@@ -60,6 +60,5 @@ describe("Subscription Management", () => {
     expect(store.getState().subscription.subscription).toEqual(
       subscriptionExpected,
     );
-    expect(store.getState().subscription.errorMessage).toBeNull();
   }
 });

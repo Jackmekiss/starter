@@ -8,23 +8,17 @@ export const subscriptionOfferingAdapter =
   createEntityAdapter<SubscriptionOffering>();
 
 /**
- * Durable subscription state used to gate premium behavior and errors.
+ * Durable subscription state used to gate premium behavior.
  */
 export interface SubscriptionState {
   /**
    * Current premium entitlement known by the app.
    */
   subscription: Subscription | null;
-
-  /**
-   * Latest billing error message surfaced to subscription flows.
-   */
-  errorMessage: string | null;
 }
 
 const initialSubscriptionState: SubscriptionState = {
   subscription: null,
-  errorMessage: null,
 };
 
 const initialSubscriptionOfferingState: EntityState<
@@ -39,16 +33,10 @@ export const subscriptionSlice = createSlice({
     setSubscription: (state, action) => ({
       ...state,
       subscription: action.payload,
-      errorMessage: null,
-    }),
-    setSubscriptionError: (state, action) => ({
-      ...state,
-      errorMessage: action.payload,
     }),
     clearSubscription: (state) => ({
       ...state,
       subscription: null,
-      errorMessage: null,
     }),
   },
 });
@@ -61,8 +49,7 @@ export const subscriptionOfferingSlice = createSlice({
   },
 });
 
-export const { setSubscription, setSubscriptionError, clearSubscription } =
-  subscriptionSlice.actions;
+export const { setSubscription, clearSubscription } = subscriptionSlice.actions;
 
 export const { updateSubscriptionOfferings } =
   subscriptionOfferingSlice.actions;

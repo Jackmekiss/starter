@@ -1,73 +1,84 @@
-import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 import type {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
 } from "@core/subscription/apis/types";
 import type { Subscription } from "@core/subscription/domain/subscription";
+import type { SubscriptionError } from "@core/subscription/domain/subscription-error";
 import type { SubscriptionOffering } from "@core/subscription/domain/subscription-offering";
+import type { SubscriptionResult } from "@core/subscription/domain/subscription-result";
+import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 
-/**
- * Internal request contract accepted by the subscription RTK Query adapter.
- */
-type SubscriptionRequest =
-  | { url: "/offerings/retrieve"; method: "GET"; body?: undefined }
+/** Internal request contract accepted by subscription RTK Query endpoints. */
+export type SubscriptionRequest =
+  | { url: "/offerings/retrieve"; method: "GET" }
   | { url: "/purchase"; method: "POST"; body: PurchaseSubscriptionPayload }
-  | { url: "/restore"; method: "POST"; body?: undefined }
-  | { url: "/manage"; method: "POST"; body?: undefined }
-  | { url: "/status/retrieve"; method: "GET"; body?: undefined };
+  | { url: "/restore"; method: "POST" }
+  | { url: "/manage"; method: "POST" }
+  | { url: "/status/retrieve"; method: "GET" };
 
-/**
- * Gateway contract used by subscription endpoints to swap billing adapters.
- */
+/** Typed base-query contract shared by subscription use-cases. */
+export type SubscriptionBaseQueryFn = BaseQueryFn<
+  SubscriptionRequest,
+  unknown,
+  SubscriptionError
+>;
+
+/** Gateway contract used by subscription endpoints to swap billing adapters. */
 export abstract class SubscriptionBaseQuery {
-  public handle = (): BaseQueryFn<SubscriptionRequest> => async (request) => {
-    if (request.url === "/offerings/retrieve") {
-      return { data: await this.retrieveSubscriptionOfferings() };
+  /** Converts typed adapter results into RTK Query data or error channels. */
+  handle(): SubscriptionBaseQueryFn {
+    return async (request) => {
+      const result = await this.routeRequest(request);
+      if (!result.ok) return { error: result.error };
+      return { data: result.value };
+    };
+  }
+
+  /** Routes one internal request to its domain-oriented operation. */
+  private routeRequest(
+    request: SubscriptionRequest,
+  ): Promise<SubscriptionResult<unknown>> {
+    switch (request.url) {
+      case "/offerings/retrieve":
+        return this.retrieveSubscriptionOfferings();
+      case "/purchase":
+        return this.purchaseSubscription(request.body);
+      case "/restore":
+        return this.restoreSubscriptionPurchases();
+      case "/manage":
+        return this.openSubscriptionManagement();
+      case "/status/retrieve":
+        return this.retrieveSubscriptionStatus();
+      default:
+        return Promise.resolve({
+          ok: false,
+          error: { kind: "unexpected", retryable: false },
+        });
     }
+  }
 
-    if (request.url === "/purchase") {
-      return { data: await this.purchaseSubscription(request.body) };
-    }
+  /** Retrieves purchasable offerings for the paywall. */
+  abstract retrieveSubscriptionOfferings(): Promise<
+    SubscriptionResult<SubscriptionOffering[]>
+  >;
 
-    if (request.url === "/restore") {
-      return { data: await this.restoreSubscriptionPurchases() };
-    }
-
-    if (request.url === "/manage") {
-      return { data: await this.openSubscriptionManagement() };
-    }
-
-    if (request.url === "/status/retrieve") {
-      return { data: await this.retrieveSubscriptionStatus() };
-    }
-
-    return { data: { success: false, errorMessage: "Unknown action." } };
-  };
-
-  /**
-   * Retrieves the purchasable subscription offerings for the paywall.
-   */
-  abstract retrieveSubscriptionOfferings(): Promise<SubscriptionOffering[]>;
-
-  /**
-   * Purchases the selected subscription plan through the active billing adapter.
-   */
+  /** Purchases the selected subscription plan. */
   abstract purchaseSubscription(
     payload: PurchaseSubscriptionPayload,
-  ): Promise<SubscriptionActionResult>;
+  ): Promise<SubscriptionResult<SubscriptionActionResult>>;
 
-  /**
-   * Restores previous platform purchases for the current user.
-   */
-  abstract restoreSubscriptionPurchases(): Promise<SubscriptionActionResult>;
+  /** Restores previous platform purchases. */
+  abstract restoreSubscriptionPurchases(): Promise<
+    SubscriptionResult<SubscriptionActionResult>
+  >;
 
-  /**
-   * Opens the platform flow where the user can manage an existing subscription.
-   */
-  abstract openSubscriptionManagement(): Promise<SubscriptionActionResult>;
+  /** Opens platform subscription management. */
+  abstract openSubscriptionManagement(): Promise<
+    SubscriptionResult<SubscriptionActionResult>
+  >;
 
-  /**
-   * Retrieves the current subscription state used during app startup.
-   */
-  abstract retrieveSubscriptionStatus(): Promise<Subscription | null>;
+  /** Retrieves the current subscription entitlement. */
+  abstract retrieveSubscriptionStatus(): Promise<
+    SubscriptionResult<Subscription | null>
+  >;
 }

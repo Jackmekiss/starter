@@ -36,10 +36,6 @@ describe("Subscription Purchase", () => {
       plan: "monthly",
     });
 
-    if (!result.success) {
-      throw new Error("Expected subscription purchase to succeed.");
-    }
-
     expect(result.plan).toBe("monthly");
     expect(result.subscription).toMatchObject({
       cancelAtPeriodEnd: false,
@@ -68,6 +64,5 @@ describe("Subscription Purchase", () => {
     expect(store.getState().subscription.subscription).toEqual(
       subscriptionExpected,
     );
-    expect(store.getState().subscription.errorMessage).toBeNull();
   }
 });

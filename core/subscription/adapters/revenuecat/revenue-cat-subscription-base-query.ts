@@ -1,125 +1,121 @@
+import { mapSubscriptionAdapterError } from "@core/subscription/adapters/errors/subscription-error-mapper";
 import { SubscriptionBaseQuery } from "@core/subscription/gateways/subscription-base-query";
 
+import type { RevenueCatSubscriptionRuntime } from "@core/subscription/adapters/revenuecat/revenue-cat-subscription-runtime";
 import type {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
 } from "@core/subscription/apis/types";
 import type { Subscription } from "@core/subscription/domain/subscription";
-import type { RevenueCatSubscriptionRuntime } from "@core/subscription/adapters/revenuecat/revenue-cat-subscription-runtime";
+import type { SubscriptionOffering } from "@core/subscription/domain/subscription-offering";
+import type { SubscriptionResult } from "@core/subscription/domain/subscription-result";
 
-/**
- * Creates a consistent unavailable result when RevenueCat cannot complete an action.
- */
-function unavailableResult(message: string): SubscriptionActionResult {
-  return {
-    success: false,
-    errorMessage: message,
-  };
-}
-
-/**
- * RevenueCat-backed gateway for premium offerings, purchases, and restore flows.
- */
+/** RevenueCat-backed gateway for premium subscription operations. */
 export class RevenueCatSubscriptionBaseQuery extends SubscriptionBaseQuery {
-  /**
-   * Receives the platform RevenueCat runtime used by every billing action.
-   */
+  /** Receives the platform billing runtime. */
   constructor(private readonly runtime: RevenueCatSubscriptionRuntime) {
     super();
   }
 
-  /**
-   * Loads RevenueCat offerings only when the native runtime is configured.
-   */
-  async retrieveSubscriptionOfferings() {
-    if (!this.runtime.isConfigured()) {
-      return [];
-    }
-
-    return this.runtime.retrieveOfferings();
+  /** Loads offerings when RevenueCat is configured. */
+  retrieveSubscriptionOfferings(): Promise<
+    SubscriptionResult<SubscriptionOffering[]>
+  > {
+    if (!this.runtime.isConfigured()) return this.unavailableResult();
+    return this.executeOperation(() => this.runtime.retrieveOfferings());
   }
 
-  /**
-   * Purchases the selected premium plan through RevenueCat and normalizes errors.
-   */
-  async purchaseSubscription(
+  /** Purchases the selected premium plan. */
+  purchaseSubscription(
     payload: PurchaseSubscriptionPayload,
-  ): Promise<SubscriptionActionResult> {
-    if (!this.runtime.isConfigured()) {
-      return unavailableResult("Subscriptions are not available right now.");
-    }
+  ): Promise<SubscriptionResult<SubscriptionActionResult>> {
+    if (!this.runtime.isConfigured()) return this.unavailableResult();
 
-    try {
+    return this.executeOperation(async () => {
       const result = await this.runtime.purchasePlan(payload.plan);
-
-      return {
-        success: true,
-        subscription: result.subscription,
-        plan: result.plan,
-      };
-    } catch {
-      return unavailableResult("Unable to complete your purchase right now.");
-    }
+      return { subscription: result.subscription, plan: result.plan };
+    });
   }
 
-  /**
-   * Restores RevenueCat purchases and accepts only active premium entitlements.
-   */
-  async restoreSubscriptionPurchases(): Promise<SubscriptionActionResult> {
-    if (!this.runtime.isConfigured()) {
-      return unavailableResult("Subscriptions are not available right now.");
-    }
+  /** Restores RevenueCat purchases when an active entitlement exists. */
+  async restoreSubscriptionPurchases(): Promise<
+    SubscriptionResult<SubscriptionActionResult>
+  > {
+    if (!this.runtime.isConfigured()) return this.unavailableResult();
 
-    try {
-      const subscription = await this.runtime.restorePurchases();
+    const result = await this.executeOperation(() =>
+      this.runtime.restorePurchases(),
+    );
+    if (!result.ok) return result;
 
-      if (!subscription || subscription.tier !== "premium") {
-        return unavailableResult("No active premium purchase was found.");
-      }
-
+    const subscription = result.value;
+    if (!subscription || subscription.tier !== "premium") {
       return {
-        success: true,
-        subscription,
-        plan: subscription.plan ?? "annual",
+        ok: false,
+        error: {
+          kind: "not-found",
+          code: "NO_ACTIVE_PURCHASE",
+          retryable: false,
+        },
       };
-    } catch {
-      return unavailableResult("Unable to restore purchases right now.");
     }
+
+    return {
+      ok: true,
+      value: { subscription, plan: subscription.plan ?? "annual" },
+    };
   }
 
-  /**
-   * Opens the platform subscription management screen through RevenueCat.
-   */
-  async openSubscriptionManagement(): Promise<SubscriptionActionResult> {
-    if (!this.runtime.isConfigured()) {
-      return unavailableResult("Subscription management is unavailable.");
-    }
+  /** Opens the platform subscription-management screen. */
+  async openSubscriptionManagement(): Promise<
+    SubscriptionResult<SubscriptionActionResult>
+  > {
+    if (!this.runtime.isConfigured()) return this.unavailableResult();
 
-    try {
-      await this.runtime.openManageSubscriptions();
+    const result = await this.executeOperation(() =>
+      this.runtime.openManageSubscriptions(),
+    );
+    if (!result.ok) return result;
 
-      return {
-        success: true,
+    return {
+      ok: true,
+      value: {
         subscription: {
           tier: "free",
           status: "inactive",
           cancelAtPeriodEnd: false,
         },
         plan: "annual",
-      };
-    } catch {
-      return unavailableResult("Unable to open subscription management.");
+      },
+    };
+  }
+
+  /** Reads the current RevenueCat entitlement. */
+  retrieveSubscriptionStatus(): Promise<
+    SubscriptionResult<Subscription | null>
+  > {
+    if (!this.runtime.isConfigured()) return this.unavailableResult();
+    return this.executeOperation(() =>
+      this.runtime.retrieveSubscriptionStatus(),
+    );
+  }
+
+  /** Executes one SDK operation without leaking its exceptions. */
+  private async executeOperation<Value>(
+    operation: () => Value | Promise<Value>,
+  ): Promise<SubscriptionResult<Value>> {
+    try {
+      return { ok: true, value: await operation() };
+    } catch (error) {
+      return { ok: false, error: mapSubscriptionAdapterError(error) };
     }
   }
 
-  /**
-   * Reads the RevenueCat subscription state when billing is available.
-   */
-  async retrieveSubscriptionStatus(): Promise<Subscription | null> {
-    if (!this.runtime.isConfigured()) {
-      return null;
-    }
-
-    return this.runtime.retrieveSubscriptionStatus();
+  /** Returns the shared technical failure for an unavailable billing runtime. */
+  private unavailableResult<Value>(): Promise<SubscriptionResult<Value>> {
+    return Promise.resolve({
+      ok: false,
+      error: { kind: "unavailable", retryable: true },
+    });
   }
 }

@@ -21,7 +21,10 @@ Rule of thumb:
 
 - screens orchestrate navigation and loading guards
 - dedicated form components own `react-hook-form` wiring
+- forms own input masks, presentation parsing, and conversion between field values and canonical submission values
 - shared business validation still belongs in `core/` when it becomes domain logic
+
+Do not move form-value formatting into the domain or a selector merely to share it. Extract it beside the owning form or feature UI when multiple components in that presentation flow need it.
 
 ## JSX helper rules
 

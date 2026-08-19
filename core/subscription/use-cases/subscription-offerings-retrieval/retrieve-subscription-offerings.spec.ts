@@ -50,6 +50,17 @@ describe("Subscription Offerings Retrieval", () => {
     expectSubscriptionOfferings(offerings);
   });
 
+  it("should expose a technical failure without storing offerings", async () => {
+    subscriptionBaseQuery.error = { kind: "network", retryable: true };
+
+    await expect(retrieveSubscriptionOfferings()).rejects.toEqual({
+      kind: "network",
+      retryable: true,
+    });
+
+    expect(store.getState().subscriptionOfferings.ids).toEqual([]);
+  });
+
   /**
    * Dispatches the subscription offerings retrieval use-case.
    */

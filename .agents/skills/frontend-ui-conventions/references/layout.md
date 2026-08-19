@@ -62,9 +62,12 @@ Components should:
 - keep JSX free of inline handlers whenever reasonably possible
 - never pass inline function expressions to JSX event props
 
+Import React hooks directly and call them by name. Prefer `import { useEffect } from "react"` and `useEffect(...)` over `import React from "react"` and `React.useEffect(...)`.
+
 Prefer explicit props such as `title`, `subtitle`, `onPress`, `selected`, and `disabled`.
 
 Avoid vague props such as `data`, `payload`, or `configBlob`.
+Define component props with named interfaces instead of inline object types in function parameters. Name them after the component and use a separate small type alias only when it clarifies repeated prop values.
 Avoid inline arrow functions, anonymous functions, or `.bind(...)` inside JSX event props such as `onPress`, `onChange`, `onSubmit`, `onDismiss`, and `onSelected`. Declare a named handler before the `return` and pass the handler reference, for example `onPress={handlePress}`.
 
 For screen feature sections:

@@ -1,32 +1,29 @@
-import { setAuth, setError, setLoading } from "@core/auth/domain/slice";
+import { setAuth } from "@core/auth/domain/slice";
 
-import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
-import type { AuthResult, RegisterPayload } from "@core/auth/apis/types";
+import type { AuthContext, RegisterPayload } from "@core/auth/apis/types";
+import type { AuthBaseQueryFn } from "@core/auth/gateways/auth-base-query";
+import type { EndpointBuilder } from "@reduxjs/toolkit/query";
 
 /**
  * Builds the endpoint that registers an account and stores the auth session.
  */
 export function registerBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
+  build: EndpointBuilder<AuthBaseQueryFn, "Auth", "authApi">,
 ) {
   return {
-    register: build.mutation<AuthResult, RegisterPayload>({
+    register: build.mutation<AuthContext, RegisterPayload>({
       query: (payload) => ({
         url: "/register",
         method: "POST",
         body: payload,
       }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        dispatch(setLoading());
-
-        const { data } = await queryFulfilled;
-
-        if (data.success) {
+        try {
+          const { data } = await queryFulfilled;
           dispatch(setAuth(data));
-          return;
+        } catch {
+          // RTK Query owns the transient request failure.
         }
-
-        dispatch(setError(data.error));
       },
     }),
   };

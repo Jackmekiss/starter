@@ -59,6 +59,8 @@ That includes:
 - small component-scoped selectors or hooks used only by that block
 - local navigation for that block when it is a screen feature section
 
+Presentation formatting includes input masks, localized display values, and parsing required by one interaction flow. Keep it with the owning component or form. Keep validation of the canonical business value in the domain.
+
 Do not move into components:
 
 - domain rules

@@ -54,24 +54,25 @@ describe("Log In", () => {
     });
   });
 
-  it("should store auth error when credentials are rejected", async () => {
+  it("should reject with auth error without changing durable state", async () => {
     authBaseQuery.account = null;
     authBaseQuery.authUser = null;
 
-    await login({
-      email: "missing@example.com",
-      password: "password",
+    await expect(
+      login({
+        email: "missing@example.com",
+        password: "password",
+      }),
+    ).rejects.toEqual({
+      kind: "business",
+      code: "INVALID_CREDENTIALS",
+      retryable: false,
     });
 
     expect(store.getState().auth).toEqual({
       account: null,
-      error: {
-        code: "INVALID_CREDENTIALS",
-        message: "Account not found.",
-      },
-      logoutRequested: false,
       session: null,
-      status: "error",
+      status: "idle",
       user: null,
     });
   });
@@ -97,8 +98,6 @@ describe("Log In", () => {
   }) {
     expect(store.getState().auth).toEqual({
       account,
-      error: null,
-      logoutRequested: false,
       session,
       status: "success",
       user,

@@ -61,3 +61,11 @@ Avoid names such as:
 - acronyms should be treated as words in `camelCase` and `PascalCase`: use `createAuthApi`, not `createAuthAPI`; use `AuthScopeDto`, not `AuthScopeDTO`
 - do not use abbreviations for variables, functions, members, or utility names; prefer complete self-explanatory words even when they are longer
 - avoid short aliases such as `cfg`, `tmp`, and `val`; use names such as `configuration`, `temporary`, or `value`
+
+## I18n key naming
+
+Translation keys should be hierarchical and use `__` between logical parts. Inside one logical part, compound words stay in `snake_case` with a single `_`.
+
+Use a stable product or feature context first, for example `auth__otp__code_label`, and shared contexts only for genuinely reusable copy, such as `common__action__continue`.
+
+Avoid camelCase keys, dot-separated namespaces, and flat keys that hide context.

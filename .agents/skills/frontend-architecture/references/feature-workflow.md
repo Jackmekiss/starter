@@ -44,6 +44,9 @@ Adapters are responsible for:
 - concrete data retrieval or persistence
 - implementation details
 - backend replacement strategy
+- reading runtime credentials through injected provider contracts when an operation is protected
+
+The application runtime is responsible for wiring a session provider to authenticated adapters. Use-cases and business gateway methods must remain independent from tokens, cookies, API keys, SDK auth objects, and the selected session store.
 
 ## Placement checks
 
@@ -53,3 +56,4 @@ Before writing code, ask:
 - Is this action important enough to deserve a use-case?
 - Should the UI know this directly, or should a context API expose it?
 - Am I modeling what the app means, or just what the screen needs today?
+- Am I passing infrastructure credentials through a business boundary instead of injecting a current-session provider into the concrete adapter?

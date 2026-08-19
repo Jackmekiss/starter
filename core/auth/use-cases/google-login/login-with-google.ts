@@ -1,33 +1,28 @@
-import { setAuth, setError, setLoading } from "@core/auth/domain/slice";
+import { setAuth } from "@core/auth/domain/slice";
 
-import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
-import type { AuthResult } from "@core/auth/apis/types";
+import type { AuthContext } from "@core/auth/apis/types";
+import type { AuthBaseQueryFn } from "@core/auth/gateways/auth-base-query";
+import type { EndpointBuilder } from "@reduxjs/toolkit/query";
 
 /**
  * Builds the endpoint that authenticates through Google Sign In.
  */
 export function loginWithGoogleBuilder(
-  build: EndpointBuilder<BaseQueryFn, "Auth", "authApi">,
+  build: EndpointBuilder<AuthBaseQueryFn, "Auth", "authApi">,
 ) {
   return {
-    loginWithGoogle: build.mutation<AuthResult, void>({
+    loginWithGoogle: build.mutation<AuthContext, void>({
       query: () => ({
         url: "/login/google",
         method: "POST",
-        body: undefined,
-        params: undefined,
       }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        dispatch(setLoading());
-
-        const { data } = await queryFulfilled;
-
-        if (data.success) {
+        try {
+          const { data } = await queryFulfilled;
           dispatch(setAuth(data));
-          return;
+        } catch {
+          // RTK Query owns the transient request failure.
         }
-
-        dispatch(setError(data.error));
       },
     }),
   };

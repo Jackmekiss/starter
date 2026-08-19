@@ -8,76 +8,56 @@
 4. [architecture-map.md](architecture-map.md)
 5. [technical-memory.md](technical-memory.md)
 6. [CURRENT.md](CURRENT.md)
-7. [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)
-
-If debugging, also read [FAILED_ATTEMPTS.md](FAILED_ATTEMPTS.md). If user-facing behavior changes, also read [user-flows.md](user-flows.md) and [domain-glossary.md](domain-glossary.md). If data/API behavior changes, also read [data-model.md](data-model.md) and [api-contracts.md](api-contracts.md).
+7. [../../plans/sync-rva-patterns.md](../../plans/sync-rva-patterns.md)
 
 ## Active plan
 
-None.
+None. [Synchronize Reusable RVA Patterns](../../plans/sync-rva-patterns.md) is complete.
 
 ## Situation summary
 
-The repository is an Expo/React Native starter app with frontend-first architecture. Durable domain code currently centers on auth and subscription bounded contexts under frontend `core/`. UI routes exist for auth, onboarding, and tabs/home, but screens are placeholders. The project memory system includes starter reset templates and an `initialize-project-memory` skill for derived projects. Code convention skills are named `frontend-*` to avoid backend confusion in future monorepos.
+The repository is an Expo/React Native starter app with frontend-first architecture. Reusable patterns that matured in `rva-app` are synchronized into frontend-scoped skills. `auth` and `subscription` now provide complete typed-error reference implementations using shared `ApplicationError` and `Result` contracts.
 
 ## Exact continuation point
 
-The initial memory system is installed. If this repo is copied into a concrete product, run `initialize project memory for <project name>` before adding product-specific facts.
+Review the final working-tree diff and commit it when desired. For new fallible contexts, follow `frontend-domain-layer/references/error-management.md` and migrate the entire context rather than mixing contracts.
 
 ## Known constraints
 
-- Do not invent product facts.
-- Do not modify app/source code for memory maintenance unless necessary.
-- Keep `AGENTS.md` as routing/instructions, not a knowledge dump.
-- Keep chronological files append-only.
-- Keep secrets and env values out of memory.
-- `.agents/skills` may require elevated write permission in the managed sandbox.
+- Preserve `frontend-*` skill naming and existing starter-only memory/testing improvements.
+- Do not copy RVA product codes, translation keys, generated clients, or backend assumptions.
+- Do not introduce a translation dependency solely for the example error resolvers.
+- Do not launch Expo unless explicitly requested.
 
 ## Last known good state
 
-- Branch before setup: `features/memory-test-2`.
-- Working tree before setup: clean.
-- App validation not run because setup was docs/workflow only.
+- Branch at migration start: `master`.
+- Both `starter` and `rva-app` working trees were clean before inspection.
+- Targeted validation, tests, and typecheck pass; global formatting/lint debt is unrelated and documented below.
 
 ## Branch
 
-`features/memory-test-2`
+`master`
 
 ## Working tree summary
 
-Expected changes after this setup:
-
-- New `docs/ai/*.md` memory files.
-- New `docs/adr/README.md`.
-- New `plans/README.md`.
-- New project memory skills under `.agents/skills/`.
-- New starter reset templates under `docs/ai/_templates/`.
-- Renamed code convention skills to `frontend-*`.
-- Standalone starter-only memory file removed; reusable starter knowledge lives in architecture, technical, testing, and skill docs.
-- Minimal `AGENTS.md` patch for project memory routing.
-- No application/source code changes.
+Expected changes include the completed plan, synchronized skills, shared error contracts, complete `auth` and `subscription` migrations, specs, a CSS module declaration needed by typecheck, and memory updates.
 
 ## Tests / checks last run
 
-- Passed: required memory files exist under `docs/ai/`.
-- Passed: project memory skills exist under `.agents/skills/`.
-- Passed: `AGENTS.md` references the memory system.
-- Passed: starter reset policy and templates exist.
-- Passed: `initialize-project-memory` skill file exists with expected frontmatter.
-- Passed: `frontend-*` code convention skill files exist with expected frontmatter.
-- Passed: strict secret-pattern scan over memory docs, plans, new skills, and `AGENTS.md` found no matches.
-- Passed: targeted source/config status check showed no changes under `src`, `core`, package/config files, or `README.md`.
-- Not run: `pnpm run test`.
-- Not run: `pnpm run typecheck`.
-- Not run: `pnpm run lint`.
+- Passed: `pnpm run test` (16 files, 24 tests).
+- Passed: `pnpm run typecheck`.
+- Passed: targeted Oxfmt, Oxlint, and ESLint for changed source files.
+- Passed: targeted Oxfmt check for all changed and new files.
+- Passed: `git diff --check`.
+- Global `pnpm run check` stops on pre-existing format issues in untouched files.
+- Global `pnpm run lint` stops on pre-existing findings in `src/components/ui/BottomSheetModal.tsx` and `src/components/ui/Button.tsx`.
 
 ## Things not to repeat
 
-- Do not assume product facts that are absent from `docs/ai/product-memory.md`.
-- Do not treat internal gateway `url` strings as real backend endpoints.
-- Do not treat in-memory subscription prices as production billing policy.
-- Do not assume `.agents/skills` is writable without checking sandbox permissions.
+- Do not reintroduce user-facing messages into domain errors or durable slices.
+- Do not leave one bounded context with both legacy success unions and typed failures.
 
 ## Recommended first command
 
-`git status --short`
+`git status --short && git diff --stat`

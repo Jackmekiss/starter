@@ -71,6 +71,5 @@ describe("Account Deletion", () => {
     expect(store.getState().auth.user).toBeNull();
     expect(store.getState().auth.session).toBeNull();
     expect(store.getState().auth.account).toBeNull();
-    expect(store.getState().auth.logoutRequested).toBe(false);
   }
 });

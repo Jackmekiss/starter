@@ -31,9 +31,7 @@ describe("Password Reset Request", () => {
       email: "reset@example.com",
     });
 
-    expect(result).toEqual({
-      success: true,
-    });
+    expect(result).toBeUndefined();
     expect(store.getState().auth.status).toBe("idle");
   });
 

@@ -4,17 +4,24 @@ import { purchaseSubscriptionBuilder } from "@core/subscription/use-cases/subscr
 import { restoreSubscriptionPurchasesBuilder } from "@core/subscription/use-cases/subscription-restore/restore-subscription-purchases";
 import { retrieveSubscriptionStatusBuilder } from "@core/subscription/use-cases/subscription-status-retrieval/retrieve-subscription-status";
 
-import type { BaseQueryFn, EndpointBuilder } from "@reduxjs/toolkit/query";
+import type { SubscriptionBaseQueryFn } from "@core/subscription/gateways/subscription-base-query";
+import type { EndpointBuilder } from "@reduxjs/toolkit/query";
 
 /**
  * Builds RTK Query endpoint options for subscription status and purchases.
  */
-export function createSubscriptionApiOptions(baseQuery: BaseQueryFn) {
+export function createSubscriptionApiOptions(
+  baseQuery: SubscriptionBaseQueryFn,
+) {
   return {
     baseQuery,
     reducerPath: "subscriptionApi",
     endpoints: (
-      builder: EndpointBuilder<BaseQueryFn, never, "subscriptionApi">,
+      builder: EndpointBuilder<
+        SubscriptionBaseQueryFn,
+        never,
+        "subscriptionApi"
+      >,
     ) => ({
       ...retrieveSubscriptionOfferingsBuilder(builder),
       ...purchaseSubscriptionBuilder(builder),

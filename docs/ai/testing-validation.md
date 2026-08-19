@@ -2,13 +2,13 @@
 
 ## Discovered validation commands
 
-| Purpose | Command | Source | Verified in this memory setup |
-|---|---|---|---|
-| Format check | `pnpm run format:check` | `package.json` | Not run |
-| Lint | `pnpm run lint` | `package.json` | Not run |
-| Typecheck | `pnpm run typecheck` | `package.json` | Not run |
-| Unit/use-case tests | `pnpm run test` | `package.json`, `vitest.config.ts` | Not run |
-| Broad code check | `pnpm run check` | `package.json` | Not run |
+| Purpose             | Command                 | Source                             | Verified in this memory setup |
+| ------------------- | ----------------------- | ---------------------------------- | ----------------------------- |
+| Format check        | `pnpm run format:check` | `package.json`                     | Not run                       |
+| Lint                | `pnpm run lint`         | `package.json`                     | Not run                       |
+| Typecheck           | `pnpm run typecheck`    | `package.json`                     | Not run                       |
+| Unit/use-case tests | `pnpm run test`         | `package.json`, `vitest.config.ts` | Not run                       |
+| Broad code check    | `pnpm run check`        | `package.json`                     | Not run                       |
 
 ## Fastest safe validation command
 
@@ -69,6 +69,8 @@ Unknown / none discovered.
 - Keep specs self-contained.
 - Builders live under `core/<bounded-context>/domain/builders/`.
 - Prefer explicit expectations over snapshots.
+- For fallible use-cases, assert the exact value rejected by `.unwrap()` and confirm failure does not apply success-side durable state updates.
+- Inject deterministic typed adapter failures through in-memory fixture setters; do not add mapper-only tests.
 
 ## When to add tests
 

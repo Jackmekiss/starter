@@ -7,9 +7,11 @@ Before validating a feature, ask:
 - Is the screen still thin?
 - Is data access abstracted behind a gateway?
 - Is the implementation placed in the right bounded context?
+- Are adapter files grouped under named concern folders instead of living directly in `adapters/`?
 - Is any code too generic or ambiguous?
 - Is UI logic leaking into the domain?
 - Is domain logic leaking into the UI?
+- Do fallible gateways expose typed context results without leaking infrastructure failures?
 - Are business concepts and application functions documented with useful JSDoc?
 - Does the documentation explain intent or constraints instead of repeating names and types?
 

@@ -13,6 +13,7 @@ Typical contents:
 The domain layer should:
 
 - describe business concepts clearly
+- own canonical representations and intrinsic business invariants
 - remain independent from UI
 - remain independent from storage
 - be stable and expressive
@@ -34,6 +35,14 @@ Avoid putting these concerns in the domain layer:
 - query filters, request payloads, or retrieve params that describe how data is asked for rather than what the business object is
 
 Rule of thumb: `domain/` defines what the application is.
+
+## Behavior ownership
+
+A domain file is not a container for every function that manipulates the same business concept.
+
+Keep behavior in the domain only when it expresses durable product truth or an intrinsic invariant. Move flow-specific comparisons and update selection to a use-case, infrastructure representation mapping to an adapter, and presentation formatting to the owning UI.
+
+Split these responsibilities even when they operate on the same domain type.
 
 Naming rule:
 

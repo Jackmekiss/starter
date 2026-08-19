@@ -43,3 +43,13 @@ Prefer composing primitives such as:
 - `Header`
 
 Do not recreate typography, button, or input systems inside screens.
+
+## Icon colors
+
+Match the NativeWind color utility to the SVG paint channel:
+
+- use `fill-*` for fill-based icons, including default icons produced by `createIcon`
+- use `stroke-*` for stroke-based icons
+- do not use `text-*` to color `Icon` or `ButtonIcon`
+
+`ButtonIcon` inherits its size from the parent `Button`. Do not add manual `h-*` or `w-*` utilities when the button size already provides the intended icon size.

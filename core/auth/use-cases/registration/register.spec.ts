@@ -40,7 +40,7 @@ describe("Registration", () => {
       password: "password",
     });
 
-    if (!result.success || !result.account) {
+    if (!result.account) {
       throw new Error("Expected registered account.");
     }
 
@@ -88,8 +88,6 @@ describe("Registration", () => {
   }) {
     expect(store.getState().auth).toEqual({
       account,
-      error: null,
-      logoutRequested: false,
       session,
       status: "success",
       user,
