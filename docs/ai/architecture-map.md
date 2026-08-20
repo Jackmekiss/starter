@@ -92,7 +92,7 @@ Unknown / none discovered.
 ## Deployment / runtime assumptions
 
 - Expo app with `expo-router/entry`.
-- NativeWind is wired through Babel and Metro.
+- NativeWind v5 preview is wired through Tailwind CSS v4/PostCSS and Metro import rewrites; Babel uses only `babel-preset-expo`.
 - `app.json` configures iOS, Android, web, splash screen, typed routes, and React Compiler.
 - `ios/` exists locally but is ignored by `.gitignore`; treat generated native folders carefully.
 - Build/release commands are Unknown; no `build` script was discovered in `package.json`.

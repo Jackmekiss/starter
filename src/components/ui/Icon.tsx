@@ -1,4 +1,4 @@
-import { cssInterop } from "nativewind";
+import { styled } from "nativewind";
 
 import { cn } from "@/lib/cn";
 
@@ -11,17 +11,15 @@ type IconProps = LucideProps & {
   as: LucideIcon;
 };
 
-/**
- * NativeWind interop target that forwards class styles to Lucide props.
- */
+/** NativeWind interop target that forwards class styles to Lucide props. */
 function IconImpl({ as: IconComponent, ...props }: IconProps) {
   return <IconComponent {...props} />;
 }
 
-cssInterop(IconImpl, {
+const StyledIcon = styled(IconImpl, {
   className: {
     target: "style",
-    nativeStyleToProp: {
+    nativeStyleMapping: {
       height: "size",
       width: "size",
     },
@@ -38,7 +36,7 @@ function Icon({
   ...props
 }: IconProps) {
   return (
-    <IconImpl
+    <StyledIcon
       as={IconComponent}
       className={cn("text-foreground", className)}
       size={size}

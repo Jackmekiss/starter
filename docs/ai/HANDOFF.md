@@ -5,37 +5,38 @@
 1. `AGENTS.md`
 2. `docs/ai/INDEX.md`
 3. `docs/ai/CURRENT.md`
-4. `core/shared/gateways/date-provider.ts`
-5. `core/auth/adapters/in-memory/in-memory-auth-gateway.ts`
-6. `core/subscription/adapters/in-memory/in-memory-subscription-gateway.ts`
+4. `src/global.css`
+5. `src/components/ui/Icon.tsx`
+6. `.agents/skills/frontend-ui-conventions/references/styling.md`
 
 ## Situation summary
 
-Auth and Subscription no longer read the system clock directly from their in-memory adapters. Runtime composition injects `RealDateProvider`; deterministic runtimes and behavior specs can inject `DeterministicDateProvider`.
+Starter has been migrated from NativeWind v4/Tailwind v3 to NativeWind v5 preview/Tailwind v4. Configuration is CSS-first through PostCSS, Metro uses import rewrites, and the obsolete Babel transform and JS Tailwind config were removed.
 
-The duplicate `SubscriptionPlan` declaration was removed from `subscription.ts`, leaving `subscription-plan.ts` as the canonical definition. Subscription offering fixtures now use EUR labels.
+Third-party components that need class-based styling now use `styled()` adapters. Safe-area utilities were migrated to the Tailwind v4 plugin syntax, and the repository UI skill documents the rule.
 
 ## Exact continuation point
 
-Review the uncommitted DateProvider/domain diff after `cd442b5`, then commit and push only when requested.
+Review the uncommitted NativeWind migration after `8b74ad5`, then commit and push only when requested.
 
 ## Known constraints
 
-- Keep system time selection in app runtime composition.
-- Keep time-dependent behavior deterministic in specs.
-- Keep `SubscriptionPlan` defined only in `core/subscription/domain/subscription-plan.ts`.
+- NativeWind v5 is a preview release.
+- Keep theme tokens and custom utilities in `src/global.css`.
+- Use `styled()` for incompatible third-party components and forward `className` from application-owned components.
 
 ## Branch and working tree
 
 - Branch: `master`.
-- Expected uncommitted changes: shared DateProvider files, Auth/Subscription gateway injection, runtime wiring, deterministic specs, subscription type/fixture cleanup, and checkpoint documentation.
+- Expected uncommitted changes: NativeWind/Tailwind dependencies and lockfile, CSS-first configuration, Metro/Babel/PostCSS setup, third-party interop adapters, safe-area classes, UI skill guidance, and checkpoint documentation.
 
 ## Tests / checks last run
 
 - Passed: `pnpm run test` (16 files, 28 tests).
 - Passed: `pnpm run typecheck`.
-- Passed: targeted Oxfmt, Oxlint, and ESLint after formatting.
-- Passed: `git diff --check`.
+- Passed: `pnpm run lint`.
+- Passed: targeted Oxfmt check.
+- Passed: `pnpm exec expo export --platform web`.
 
 ## Recommended first command
 

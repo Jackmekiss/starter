@@ -470,3 +470,31 @@ The audit found direct system-clock access in in-memory adapters, a duplicated s
 ### Next
 
 - Review the diff and commit/push only when requested.
+
+## 2026-08-20 - Migrate Starter to NativeWind v5
+
+### Context
+
+The user requested the NativeWind v5 migration and asked that third-party component styling use the v5 `styled()` boundary instead of `StyleSheet` workarounds.
+
+### Changes
+
+- Upgraded NativeWind to the preview v5 release with `react-native-css`, Tailwind CSS v4, and PostCSS.
+- Replaced Babel/Metro v4 wiring with v5 import rewrites and pinned the migration-required Lightning CSS version.
+- Moved design tokens and the hairline utility from `tailwind.config.js` into CSS-first `src/global.css`.
+- Replaced Lucide `cssInterop`, the keyboard-aware scroll view's `StyleSheet` bridge, and the ignored bottom-sheet background `className` with `styled()` adapters.
+- Migrated bottom-sheet safe-area classes to the Tailwind v4 safe-area plugin syntax.
+- Updated the frontend UI skill with the application-owned versus third-party `className` rule.
+
+### Validation
+
+- Passed: `pnpm run test` (16 files, 28 tests).
+- Passed: `pnpm run typecheck`.
+- Passed: `pnpm run lint`.
+- Passed: targeted Oxfmt check.
+- Passed: Expo web export and generated CSS verification for theme and safe-area utilities.
+- Passed: Skill Creator validation for the updated frontend UI skill using the available Anaconda Python runtime; the system Python lacked PyYAML.
+
+### Next
+
+- Review and native smoke-test the migration, then commit/push only when requested.

@@ -1,13 +1,18 @@
 import {
   BottomSheetBackdrop,
-  BottomSheetBackdropProps,
+  type BottomSheetBackdropProps,
   BottomSheetModal as BottomSheetModalComponent,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import { styled } from "nativewind";
 import React, { useCallback, useImperativeHandle, useRef } from "react";
 
 import { THEME } from "@/constants/theme";
 import { cn } from "@/lib/cn";
+
+const StyledBottomSheetModal = styled(BottomSheetModalComponent, {
+  backgroundClassName: "backgroundStyle",
+});
 
 /**
  * Imperative controls exposed by the shared bottom sheet modal.
@@ -49,7 +54,8 @@ function BottomSheetModal({
   snapPoints,
   backdropOpacity = 0.4,
 }: Props) {
-  const bottomSheetModalRef = useRef<BottomSheetModalComponent>(null);
+  const bottomSheetModalRef =
+    useRef<React.ComponentRef<typeof StyledBottomSheetModal>>(null);
 
   useImperativeHandle(
     ref,
@@ -73,8 +79,9 @@ function BottomSheetModal({
   );
 
   return (
-    <BottomSheetModalComponent
+    <StyledBottomSheetModal
       ref={bottomSheetModalRef}
+      backgroundClassName="bg-background rounded-t-full"
       backdropComponent={renderBackdrop}
       snapPoints={snapPoints}
       handleIndicatorStyle={{
@@ -82,20 +89,18 @@ function BottomSheetModal({
         width: 60,
         marginVertical: 16,
       }}
-      // @ts-ignore
-      className="rounded-t-full bg-background"
       backgroundStyle={{ backgroundColor }}
     >
       <BottomSheetView
         className={cn(
-          "gap-4 bg-background px-safe-horizontal pb-safe-4 pt-4",
+          "gap-4 bg-background px-safe pb-safe-offset-1 pt-4",
           contentClassName,
         )}
         style={{ minHeight }}
       >
         {children}
       </BottomSheetView>
-    </BottomSheetModalComponent>
+    </StyledBottomSheetModal>
   );
 }
 

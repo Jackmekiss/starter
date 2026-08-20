@@ -8,31 +8,32 @@ Last updated: 2026-08-20
 
 ## Current focus
 
-Deterministic time boundaries for the Auth and Subscription in-memory adapters.
+NativeWind v5 and Tailwind CSS v4 migration.
 
 ## Current status
 
-Implemented and validated locally. Changes are uncommitted after `cd442b5`.
+Implemented and validated locally. Changes are uncommitted after `8b74ad5`.
 
-Starter now owns the same shared `DateProvider`, `RealDateProvider`, and `DeterministicDateProvider` pattern as RVA. Auth and Subscription runtimes inject the system clock, while in-memory and fake gateways can receive deterministic time in behavior specs.
+Starter now uses NativeWind `5.0.0-preview.4`, `react-native-css`, Tailwind CSS v4, and PostCSS. Theme tokens moved from `tailwind.config.js` to the CSS-first `src/global.css`; Babel no longer loads the removed NativeWind JSX transform, and Metro uses `withNativewind` import rewrites.
 
-`SubscriptionPlan` has one canonical domain definition, and bundled subscription prices now display EUR values consistently with the domain currency.
+Lucide, `KeyboardAwareScrollView`, and the bottom-sheet background style use local `styled()` adapters. Safe-area utilities use the v5/Tailwind v4 syntax. The frontend UI skill records the same convention.
 
 ## Next 3 concrete actions
 
-1. Review the DateProvider and subscription-domain diff.
+1. Review the NativeWind v5 dependency, configuration, component, and skill diff.
 2. Commit and push only when requested.
-3. Continue the prioritized session/bootstrap audit fixes separately.
+3. Smoke-test the native iOS/Android screens when a simulator or device is available.
 
 ## Relevant files
 
-- `core/shared/gateways/date-provider.ts`
-- `core/shared/adapters/date/`
-- `core/auth/adapters/in-memory/in-memory-auth-gateway.ts`
-- `core/subscription/adapters/in-memory/in-memory-subscription-gateway.ts`
-- `core/subscription/domain/subscription-plan.ts`
-- `src/app-runtime/runtime/auth-runtime.ts`
-- `src/app-runtime/runtime/subscription-runtime.ts`
+- `package.json`
+- `src/global.css`
+- `postcss.config.mjs`
+- `metro.config.js`
+- `babel.config.js`
+- `src/components/ui/Icon.tsx`
+- `src/app/(auth)/index.tsx`
+- `.agents/skills/frontend-ui-conventions/references/styling.md`
 
 ## Active plan
 
@@ -42,9 +43,9 @@ None.
 
 - Passed: `pnpm run test` (16 files, 28 tests).
 - Passed: `pnpm run typecheck`.
-- Passed: targeted Oxlint.
-- Passed after formatting: targeted Oxfmt and ESLint.
-- Passed: `git diff --check`.
+- Passed: `pnpm run lint`.
+- Passed: targeted `oxfmt --check` on migrated files.
+- Passed: `pnpm exec expo export --platform web` with the NativeWind-generated CSS bundle.
 
 ## Blockers / open questions
 
@@ -53,6 +54,7 @@ None.
 
 ## Do-not-forget notes
 
-- Runtime adapters should receive `RealDateProvider` from app composition.
-- Specs that assert time-dependent behavior should inject `DeterministicDateProvider`.
+- NativeWind v5 is still published as a preview release.
+- Keep Tailwind customization in `src/global.css`, not a v3-style JS config.
+- Use `styled()` only at incompatible third-party boundaries; application-owned components should forward `className`.
 - Do not push until requested.

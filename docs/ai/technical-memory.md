@@ -59,7 +59,8 @@ Do not claim a command passes unless it was run in the current session or a reco
 ## UI conventions
 
 - Use Expo Router route groups and keep route files thin.
-- Use NativeWind `className` and Tailwind/theme tokens.
+- Use NativeWind v5 `className` and Tailwind/theme tokens defined CSS-first in `src/global.css` with Tailwind v4 `@theme`/`@utility`.
+- Application-owned components accept and forward `className`. Wrap incompatible third-party native components with `styled()` and map secondary style props there; do not replace desired utilities with `StyleSheet` workarounds.
 - Reuse `src/components/ui/` primitives before creating local systems.
 - Use `react-hook-form` for real forms, with `<Controller />` for controlled primitives.
 - Avoid inline arrow functions in JSX returns when reasonably possible; use named handlers.
@@ -121,6 +122,7 @@ Unknown. No explicit logging convention was discovered. ESLint allows `console` 
 - Screens should rely on context API hooks/selectors and avoid raw infrastructure access.
 - Domain should remain independent from UI, navigation, storage, and networking details.
 - Avoid generic folders like `helpers`, `misc`, `manager`, or catch-all `utils` without strong justification.
+- NativeWind v5 is currently installed from its preview channel. Keep `react-native-css`, PostCSS, Tailwind CSS v4, and the pinned `lightningcss` override aligned with the official migration guide.
 
 ## Environment / config conventions
 
