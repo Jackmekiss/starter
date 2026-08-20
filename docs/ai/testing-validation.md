@@ -73,6 +73,7 @@ Unknown / none discovered.
 - Prefer explicit expectations over snapshots.
 - For fallible use-cases, assert the exact value rejected by `.unwrap()` and confirm failure does not apply success-side durable state updates.
 - Inject deterministic typed adapter failures through adapter setters or injected transports; exercise mappers through use-cases instead of mapper-only specs.
+- Inject `DeterministicDateProvider` when a behavior depends on the current time and assert exact timestamps rather than broad string shapes.
 
 ## When to add tests
 

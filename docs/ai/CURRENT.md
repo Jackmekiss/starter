@@ -8,32 +8,31 @@ Last updated: 2026-08-20
 
 ## Current focus
 
-Auth and subscription use domain-oriented gateways instead of HTTP-like RTK Query requests.
+Deterministic time boundaries for the Auth and Subscription in-memory adapters.
 
 ## Current status
 
-Implemented and validated locally. Changes are uncommitted after `d1e17ae`.
+Implemented and validated locally. Changes are uncommitted after `cd442b5`.
 
-Auth and subscription use-cases call injected gateways through `queryFn`. Shared `toRtkQueryResult` converts typed application `Result` values to RTK Query's `{ data } | { error }` contract. Infrastructure details remain inside concrete adapters.
+Starter now owns the same shared `DateProvider`, `RealDateProvider`, and `DeterministicDateProvider` pattern as RVA. Auth and Subscription runtimes inject the system clock, while in-memory and fake gateways can receive deterministic time in behavior specs.
 
-The convention is now encoded in the `frontend-domain-layer` and `frontend-coding-standards` skills, including implementation, testing, and review guidance.
+`SubscriptionPlan` has one canonical domain definition, and bundled subscription prices now display EUR values consistently with the domain currency.
 
 ## Next 3 concrete actions
 
-1. Review the gateway/queryFn pattern across both bounded contexts.
-2. Mount the subscription API in app runtime only when a product flow requires it.
-3. Commit and push only when requested.
+1. Review the DateProvider and subscription-domain diff.
+2. Commit and push only when requested.
+3. Continue the prioritized session/bootstrap audit fixes separately.
 
 ## Relevant files
 
-- `core/auth/gateways/auth-gateway.ts`
-- `core/auth/apis/auth-api.ts`
-- `core/subscription/gateways/subscription-gateway.ts`
-- `core/subscription/apis/subscription-api.ts`
-- `core/shared/adapters/rtk-query/to-rtk-query-result.ts`
+- `core/shared/gateways/date-provider.ts`
+- `core/shared/adapters/date/`
+- `core/auth/adapters/in-memory/in-memory-auth-gateway.ts`
+- `core/subscription/adapters/in-memory/in-memory-subscription-gateway.ts`
+- `core/subscription/domain/subscription-plan.ts`
 - `src/app-runtime/runtime/auth-runtime.ts`
-- `.agents/skills/frontend-domain-layer/`
-- `.agents/skills/frontend-coding-standards/`
+- `src/app-runtime/runtime/subscription-runtime.ts`
 
 ## Active plan
 
@@ -43,16 +42,17 @@ None.
 
 - Passed: `pnpm run test` (16 files, 28 tests).
 - Passed: `pnpm run typecheck`.
-- Passed: targeted Oxfmt, Oxlint, and ESLint for both bounded contexts.
+- Passed: targeted Oxlint.
+- Passed after formatting: targeted Oxfmt and ESLint.
 - Passed: `git diff --check`.
 
 ## Blockers / open questions
 
-- Subscription runtime mounting and concrete RevenueCat configuration remain Unknown.
-- Production auth backend/provider, token refresh, and startup retry/error UX remain Unknown.
+- Production auth token refresh and startup retry/error UX remain Unknown.
+- Concrete RevenueCat runtime configuration remains Unknown.
 
 ## Do-not-forget notes
 
-- Keep HTTP paths and methods inside concrete HTTP adapters.
-- Keep `.unwrap()` rejection values equal to the bounded-context error contract.
+- Runtime adapters should receive `RealDateProvider` from app composition.
+- Specs that assert time-dependent behavior should inject `DeterministicDateProvider`.
 - Do not push until requested.

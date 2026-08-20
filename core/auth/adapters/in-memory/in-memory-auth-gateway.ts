@@ -2,6 +2,7 @@ import { produce } from "immer";
 
 import { mapAuthAdapterError } from "@core/auth/adapters/errors/auth-error-mapper";
 import { AuthGateway } from "@core/auth/gateways/auth-gateway";
+import { DeterministicDateProvider } from "@core/shared/adapters/date/deterministic-date-provider";
 
 import type {
   AuthContext,
@@ -15,6 +16,7 @@ import type { Account } from "@core/auth/domain/account";
 import type { AuthError } from "@core/auth/domain/auth-error";
 import type { AuthResult } from "@core/auth/domain/auth-result";
 import type { AuthUser, Session } from "@core/auth/domain/auth";
+import type { DateProvider } from "@core/shared/gateways/date-provider";
 
 /** Preserves onboarding status unless an account update changes it. */
 function resolveNextOnboardingStatus(
@@ -28,27 +30,38 @@ function resolveNextOnboardingStatus(
 export class InMemoryAuthGateway extends AuthGateway {
   private currentError?: AuthError;
 
-  private currentAccount: Account | null = {
-    id: "1",
-    email: "test@test.com",
-    avatarUri: null,
-    firstName: "John",
-    lastName: "Doe",
-    onboardingStatus: "completed",
-    createdAt: new Date().toISOString(),
-  };
+  private currentAccount: Account | null;
 
   private currentAuthUser: AuthUser | null = {
     id: "1",
     email: "test@test.com",
   };
 
-  private currentSession: Session = {
-    userId: "1",
-    accessToken: "accessToken",
-    refreshToken: "refreshToken",
-    expiresAt: new Date().getTime() + 1000 * 60 * 60 * 24 * 30,
-  };
+  private currentSession: Session;
+
+  /** Creates local auth fixtures against an injected, controllable clock. */
+  constructor(
+    private readonly dateProvider: DateProvider = new DeterministicDateProvider(),
+  ) {
+    super();
+    const currentTime = dateProvider.now();
+
+    this.currentAccount = {
+      id: "1",
+      email: "test@test.com",
+      avatarUri: null,
+      firstName: "John",
+      lastName: "Doe",
+      onboardingStatus: "completed",
+      createdAt: currentTime.toISOString(),
+    };
+    this.currentSession = {
+      userId: "1",
+      accessToken: "accessToken",
+      refreshToken: "refreshToken",
+      expiresAt: currentTime.getTime() + 1000 * 60 * 60 * 24 * 30,
+    };
+  }
 
   /** Replaces the account fixture used by the adapter. */
   set account(value: Account | null) {
@@ -116,7 +129,7 @@ export class InMemoryAuthGateway extends AuthGateway {
         firstName: payload.firstName,
         lastName: payload.lastName,
         onboardingStatus: "pending",
-        createdAt: new Date().toISOString(),
+        createdAt: this.dateProvider.now().toISOString(),
       };
       this.currentAuthUser = { id: "1", email: payload.email };
 

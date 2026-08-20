@@ -446,3 +446,27 @@ The user requested that the accepted auth/subscription pattern become durable sk
 ### Next
 
 - Use these skill rules for new bounded contexts and future architecture reviews.
+
+## 2026-08-20 - Make Auth and Subscription time deterministic
+
+### Context
+
+The audit found direct system-clock access in in-memory adapters, a duplicated subscription-plan type, and USD labels conflicting with the EUR domain currency.
+
+### Changes
+
+- Added the RVA-aligned shared `DateProvider`, `RealDateProvider`, and `DeterministicDateProvider` implementations.
+- Injected time into Auth and Subscription in-memory/fake gateways and wired the real clock in app runtimes.
+- Added exact time assertions for registration and monthly subscription purchase behavior.
+- Kept `subscription-plan.ts` as the single `SubscriptionPlan` source of truth.
+- Replaced bundled USD offering labels with EUR labels.
+
+### Validation
+
+- Passed: `pnpm run test` (16 files, 28 tests).
+- Passed: `pnpm run typecheck`.
+- Passed: targeted Oxfmt, Oxlint, and ESLint after formatting.
+
+### Next
+
+- Review the diff and commit/push only when requested.

@@ -7,16 +7,19 @@ import { FakeSubscriptionGateway } from "@core/subscription/adapters/fake/fake-s
 import { InMemorySubscriptionGateway } from "@core/subscription/adapters/in-memory/in-memory-subscription-gateway";
 import { createSubscriptionApiOptions } from "@core/subscription/apis/subscription-api";
 import { clearSubscriptionState } from "@core/subscription/domain/slice";
+import { RealDateProvider } from "@core/shared/adapters/date/real-date-provider";
 
 import type { SubscriptionGateway } from "@core/subscription/gateways/subscription-gateway";
 
 /** Creates the subscription gateway implementation for the current runtime mode. */
 function createSubscriptionGateway(): SubscriptionGateway {
+  const dateProvider = new RealDateProvider();
+
   if (appMode === "fake") {
-    return new FakeSubscriptionGateway();
+    return new FakeSubscriptionGateway(dateProvider);
   }
 
-  return new InMemorySubscriptionGateway();
+  return new InMemorySubscriptionGateway(dateProvider);
 }
 
 export const subscriptionApi = createApi(

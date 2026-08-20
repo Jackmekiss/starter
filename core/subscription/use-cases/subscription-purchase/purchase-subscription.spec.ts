@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { InMemorySubscriptionGateway } from "@core/subscription/adapters/in-memory/in-memory-subscription-gateway";
 import { createSubscriptionApiOptions } from "@core/subscription/apis/subscription-api";
 import { createStore } from "@core/init-redux-store";
+import { DeterministicDateProvider } from "@core/shared/adapters/date/deterministic-date-provider";
 
 import type { PurchaseSubscriptionPayload } from "@core/subscription/apis/types";
 import type { Subscription } from "@core/subscription/domain/subscription";
@@ -24,7 +25,9 @@ describe("Subscription Purchase", () => {
   let subscriptionApi: ReturnType<typeof createSubscriptionApi>;
 
   beforeEach(() => {
-    subscriptionGateway = new InMemorySubscriptionGateway();
+    const dateProvider = new DeterministicDateProvider();
+    dateProvider.dateOfNow = new Date("2026-06-17T00:00:00.000Z");
+    subscriptionGateway = new InMemorySubscriptionGateway(dateProvider);
     subscriptionApi = createSubscriptionApi(subscriptionGateway);
     store = createStore({ subscriptionApi }, {});
   });
@@ -37,6 +40,7 @@ describe("Subscription Purchase", () => {
     expect(result.plan).toBe("monthly");
     expect(result.subscription).toMatchObject({
       cancelAtPeriodEnd: false,
+      currentPeriodEnd: "2026-07-17T00:00:00.000Z",
       plan: "monthly",
       status: "active",
       tier: "premium",

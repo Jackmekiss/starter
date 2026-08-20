@@ -7,7 +7,7 @@ export function subscriptionOfferingBuilder({
   id = "premium-annual",
   plan = "annual",
   title = "Annual Premium",
-  priceLabel = "$59.99",
+  priceLabel = "€59.99",
   periodLabel = "year",
   detailsLabel = "Billed yearly",
   badgeLabel = "Best value",

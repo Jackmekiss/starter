@@ -36,7 +36,7 @@ describe("Subscription Offerings Retrieval", () => {
         .withId("monthly-offering")
         .withPlan("monthly")
         .withTitle("Monthly Premium")
-        .withPriceLabel("$7.99")
+        .withPriceLabel("€7.99")
         .withPeriodLabel("month")
         .build(),
     ];

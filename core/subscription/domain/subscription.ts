@@ -1,7 +1,4 @@
-/**
- * Commercial billing interval available for premium access.
- */
-export type SubscriptionPlan = "annual" | "monthly";
+import type { SubscriptionPlan } from "@core/subscription/domain/subscription-plan";
 
 /**
  * Product access tier currently granted to the account.

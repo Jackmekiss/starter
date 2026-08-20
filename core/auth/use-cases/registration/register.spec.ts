@@ -6,6 +6,7 @@ import { createAuthApiOptions } from "@core/auth/apis/auth-api";
 import { authUserBuilder } from "@core/auth/domain/builders/auth-user-builder";
 import { sessionBuilder } from "@core/auth/domain/builders/session-builder";
 import { createStore } from "@core/init-redux-store";
+import { DeterministicDateProvider } from "@core/shared/adapters/date/deterministic-date-provider";
 
 import type { RegisterPayload } from "@core/auth/apis/types";
 import type { Account } from "@core/auth/domain/account";
@@ -25,7 +26,9 @@ describe("Registration", () => {
   let authApi: ReturnType<typeof createAuthApi>;
 
   beforeEach(() => {
-    authGateway = new InMemoryAuthGateway();
+    const dateProvider = new DeterministicDateProvider();
+    dateProvider.dateOfNow = new Date("2026-06-17T00:00:00.000Z");
+    authGateway = new InMemoryAuthGateway(dateProvider);
     authApi = createAuthApi(authGateway);
     store = createStore({ authApi }, {});
   });
@@ -56,7 +59,7 @@ describe("Registration", () => {
     });
     expect(account).toEqual({
       avatarUri: null,
-      createdAt: expect.any(String),
+      createdAt: "2026-06-17T00:00:00.000Z",
       email: "registered@example.com",
       firstName: "Registered",
       id: "1",

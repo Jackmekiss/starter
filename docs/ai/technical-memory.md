@@ -84,6 +84,8 @@ Do not claim a command passes unless it was run in the current session or a reco
 - API DTOs live in `core/<context>/apis/types.ts`.
 - Durable collections keyed by id should use `createEntityAdapter`.
 - Test use-cases by dispatching RTK Query endpoints against in-memory adapters.
+- Inject `DateProvider` into time-dependent adapters instead of reading `Date.now()` or constructing the current date directly.
+- Use `RealDateProvider` in app runtime composition and `DeterministicDateProvider` in time-dependent behavior specs.
 
 ## Error handling conventions
 

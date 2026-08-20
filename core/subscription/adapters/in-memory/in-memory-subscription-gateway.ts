@@ -1,5 +1,6 @@
 import { mapSubscriptionAdapterError } from "@core/subscription/adapters/errors/subscription-error-mapper";
 import { SubscriptionGateway } from "@core/subscription/gateways/subscription-gateway";
+import { DeterministicDateProvider } from "@core/shared/adapters/date/deterministic-date-provider";
 
 import type {
   PurchaseSubscriptionPayload,
@@ -9,10 +10,12 @@ import type { Subscription } from "@core/subscription/domain/subscription";
 import type { SubscriptionError } from "@core/subscription/domain/subscription-error";
 import type { SubscriptionOffering } from "@core/subscription/domain/subscription-offering";
 import type { SubscriptionResult } from "@core/subscription/domain/subscription-result";
+import type { DateProvider } from "@core/shared/gateways/date-provider";
 
 /** Builds the local premium entitlement granted by a purchase. */
 function createPremiumSubscription(
   plan: PurchaseSubscriptionPayload["plan"],
+  currentDate: Date,
 ): Subscription {
   return {
     tier: "premium",
@@ -20,7 +23,7 @@ function createPremiumSubscription(
     status: "active",
     cancelAtPeriodEnd: false,
     currentPeriodEnd: new Date(
-      Date.now() +
+      currentDate.getTime() +
         (plan === "annual"
           ? 1000 * 60 * 60 * 24 * 365
           : 1000 * 60 * 60 * 24 * 30),
@@ -37,7 +40,7 @@ export class InMemorySubscriptionGateway extends SubscriptionGateway {
       id: "premium-annual",
       plan: "annual",
       title: "Annual Premium",
-      priceLabel: "$59.99",
+      priceLabel: "€59.99",
       periodLabel: "year",
       detailsLabel: "Billed yearly",
       badgeLabel: "Best value",
@@ -47,7 +50,7 @@ export class InMemorySubscriptionGateway extends SubscriptionGateway {
       id: "premium-monthly",
       plan: "monthly",
       title: "Monthly Premium",
-      priceLabel: "$7.99",
+      priceLabel: "€7.99",
       periodLabel: "month",
       detailsLabel: "Billed monthly",
     },
@@ -58,6 +61,13 @@ export class InMemorySubscriptionGateway extends SubscriptionGateway {
     status: "inactive",
     cancelAtPeriodEnd: false,
   };
+
+  /** Creates local subscription fixtures against an injected clock. */
+  constructor(
+    private readonly dateProvider: DateProvider = new DeterministicDateProvider(),
+  ) {
+    super();
+  }
 
   /** Sets the locally returned offerings. */
   set subscriptionOfferings(value: SubscriptionOffering[]) {
@@ -86,7 +96,10 @@ export class InMemorySubscriptionGateway extends SubscriptionGateway {
     payload: PurchaseSubscriptionPayload,
   ): Promise<SubscriptionResult<SubscriptionActionResult>> {
     return this.executeOperation(() => {
-      this.currentSubscription = createPremiumSubscription(payload.plan);
+      this.currentSubscription = createPremiumSubscription(
+        payload.plan,
+        this.dateProvider.now(),
+      );
       return { subscription: this.currentSubscription, plan: payload.plan };
     });
   }

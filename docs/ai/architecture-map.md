@@ -16,7 +16,7 @@
 | `core/auth/`               | Authentication bounded context.                                                                                      | Owns account/session domain, auth use-cases, auth gateway, adapters, selectors, and RTK Query API options.        |
 | `core/subscription/`       | Subscription bounded context.                                                                                        | Owns premium entitlement domain, subscription use-cases, gateway, adapters, selectors, and RTK Query API options. |
 | `core/shared/`             | Transport-independent contracts and lower-level shared adapters.                                                     | Owns `ApplicationError`, `Result`, `toRtkQueryResult`, and the Supabase slugify helper.                           |
-| `core/init-redux-store.ts` | Root Redux store factory for bounded-context slices and RTK Query APIs.                                              | Can mount auth and subscription APIs; runtime currently mounts auth API.                                          |
+| `core/init-redux-store.ts` | Root Redux store factory for bounded-context slices and RTK Query APIs.                                              | Runtime mounts both Auth and Subscription APIs.                                                                   |
 | `.agents/skills/`          | Repo-specific agent workflow and convention skills.                                                                  | `frontend-*` skills cover the Expo app and frontend business core only; project memory skills cover continuity.   |
 | `docs/ai/`                 | Project memory system.                                                                                               | Stable and operational memory for humans and agents.                                                              |
 | `plans/`                   | Multi-session feature plans.                                                                                         | Use only when work is too large/risky for a single session.                                                       |
@@ -43,6 +43,7 @@
 - Transient request failures remain in RTK Query; durable slices only store failures when the failure itself is product truth shared across flows.
 - Authenticated concrete adapters should read credentials from an injected current-session provider rather than accept transport credentials through use-cases or business gateways.
 - Adapter files are grouped by named concern such as `errors/`, `fake/`, `http/`, `in-memory/`, `presentation/`, `selectors/`, or another concrete transport.
+- Time-dependent adapters receive the shared `DateProvider`; runtime composition injects `RealDateProvider` and behavior specs may inject `DeterministicDateProvider`.
 
 ## Dependency direction rules
 
