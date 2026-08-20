@@ -1,3 +1,4 @@
+import devToolsEnhancer from "redux-devtools-expo-dev-plugin";
 import { persistStore } from "redux-persist";
 import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2";
 
@@ -33,6 +34,10 @@ export const store = createStore(
     authSessionListenerMiddleware.middleware,
     subscriptionSessionListenerMiddleware.middleware,
   ],
+  {
+    devTools: true,
+    enhancers: [devToolsEnhancer()],
+  },
 );
 
 connectAuthSessionProvider(() => store.getState().auth.session);

@@ -15,13 +15,14 @@ import {
   subscriptionSlice,
 } from "@core/subscription/domain/slice";
 
-import type { PersistConfig as ReduxPersistConfig } from "redux-persist";
 import type {
   Action,
   Middleware,
   Reducer,
+  StoreEnhancer,
   ThunkDispatch,
 } from "@reduxjs/toolkit";
+import type { PersistConfig as ReduxPersistConfig } from "redux-persist";
 
 /**
  * Minimal RTK Query API surface needed by the Redux store.
@@ -51,6 +52,16 @@ export interface Apis {
  * Extra dependencies available to Redux thunks.
  */
 export interface Dependencies {}
+
+/**
+ * Runtime-specific Redux configuration supplied by the application shell.
+ */
+export interface StoreRuntimeConfiguration {
+  /** Enables or disables Redux Toolkit's built-in DevTools integration. */
+  devTools?: boolean;
+  /** Store enhancers owned by the application runtime. */
+  enhancers?: StoreEnhancer[];
+}
 
 /**
  * Creates the root reducer from enabled APIs and domain slices.
@@ -96,22 +107,26 @@ export interface PersistConfig {
  */
 export function createStore(
   apis: Partial<Apis> = {},
-  dependencies: Partial<Dependencies> = {},
+  dependencies: Dependencies = {},
   preloadedState?: Partial<RootState>,
   persistConfig?: PersistConfig,
   customMiddlewares: Middleware[] = [],
+  runtimeConfiguration: StoreRuntimeConfiguration = {},
 ) {
   const rootReducer = createReducers(apis);
   const apiMiddlewares = createMiddlewares(apis);
 
-  if (persistConfig) {
-    const persistedReducer = persistReducer<RootState>(
-      persistConfig,
-      rootReducer,
-    );
-
+  /**
+   * Configures both persisted and in-memory stores while preserving their
+   * distinct reducer and preloaded-state types.
+   */
+  function configureApplicationStore<State, PreloadedState = State>(
+    reducer: Reducer<State, Action, PreloadedState>,
+    initialState?: PreloadedState,
+  ) {
     return configureStore({
-      reducer: persistedReducer,
+      reducer,
+      devTools: runtimeConfiguration.devTools,
       middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
           serializableCheck: false,
@@ -123,24 +138,17 @@ export function createStore(
         })
           .concat(apiMiddlewares)
           .concat(...customMiddlewares),
+      enhancers: (getDefaultEnhancers) =>
+        getDefaultEnhancers().concat(...(runtimeConfiguration.enhancers ?? [])),
+      preloadedState: initialState,
     });
   }
 
-  return configureStore({
-    reducer: rootReducer,
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: false,
-        immutableCheck: false,
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        thunk: {
-          extraArgument: dependencies,
-        },
-      })
-        .concat(apiMiddlewares)
-        .concat(...customMiddlewares),
-    preloadedState,
-  });
+  return persistConfig
+    ? configureApplicationStore(
+        persistReducer<RootState>(persistConfig, rootReducer),
+      )
+    : configureApplicationStore(rootReducer, preloadedState);
 }
 
 /**
