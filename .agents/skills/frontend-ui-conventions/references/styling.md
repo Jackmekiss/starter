@@ -11,7 +11,28 @@ Default styling mechanism:
 - wrap a third-party native component with NativeWind v5 `styled()` when it does not pass `className` through
 - map secondary style props with `styled()`, for example `contentContainerClassName` to `contentContainerStyle`
 
-Do not replace a desired NativeWind utility with `StyleSheet.create()` merely because the target is a third-party component. Keep styling declarative through a local `styled()` adapter. Reserve `StyleSheet` for values that cannot be represented correctly by NativeWind.
+## Third-party component interop
+
+When `className` does not work, first determine whether the component comes from React Native, application code, or a third-party library:
+
+- React Native components support NativeWind through its import rewrites.
+- Application-owned components should accept `className` and pass it to the underlying React Native component.
+- Third-party native components that ignore or consume `className` require a local NativeWind v5 `styled()` adapter.
+
+Map every class prop to the style prop expected by the third-party component:
+
+```tsx
+import { styled } from "nativewind";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+
+const StyledBottomSheetModal = styled(BottomSheetModal, {
+  backgroundClassName: "backgroundStyle",
+});
+
+<StyledBottomSheetModal backgroundClassName="rounded-t-full bg-background" />;
+```
+
+Do not replace the desired utility classes with `StyleSheet.create()` merely because a third-party component does not support `className`. Keep the styling declarative through the adapter. Reserve `StyleSheet` for values that NativeWind cannot represent correctly, not as an interop mechanism.
 
 Prefer:
 

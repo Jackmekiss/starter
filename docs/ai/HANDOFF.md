@@ -5,19 +5,18 @@
 1. `AGENTS.md`
 2. `docs/ai/INDEX.md`
 3. `docs/ai/CURRENT.md`
-4. `src/global.css`
-5. `src/components/ui/Icon.tsx`
-6. `.agents/skills/frontend-ui-conventions/references/styling.md`
+4. `.agents/skills/frontend-ui-conventions/SKILL.md`
+5. `.agents/skills/frontend-ui-conventions/references/styling.md`
 
 ## Situation summary
 
-Starter has been migrated from NativeWind v4/Tailwind v3 to NativeWind v5 preview/Tailwind v4. Configuration is CSS-first through PostCSS, Metro uses import rewrites, and the obsolete Babel transform and JS Tailwind config were removed.
+The NativeWind v5 migration is published in `754c054`. A focused follow-up makes the third-party interop rule explicit in the frontend UI skill entrypoint and its styling reference.
 
-Third-party components that need class-based styling now use `styled()` adapters. Safe-area utilities were migrated to the Tailwind v4 plugin syntax, and the repository UI skill documents the rule.
+When a third-party native component ignores `className`, create a local `styled()` adapter and map class props to the component's real style props. Do not use `StyleSheet` merely to bypass missing `className` support.
 
 ## Exact continuation point
 
-Review the uncommitted NativeWind migration after `8b74ad5`, then commit and push only when requested.
+Review the two uncommitted skill files after `754c054`, then commit and push only when requested.
 
 ## Known constraints
 
@@ -28,15 +27,13 @@ Review the uncommitted NativeWind migration after `8b74ad5`, then commit and pus
 ## Branch and working tree
 
 - Branch: `master`.
-- Expected uncommitted changes: NativeWind/Tailwind dependencies and lockfile, CSS-first configuration, Metro/Babel/PostCSS setup, third-party interop adapters, safe-area classes, UI skill guidance, and checkpoint documentation.
+- Expected uncommitted changes: the frontend UI skill entrypoint, its styling reference, and checkpoint documentation.
 
 ## Tests / checks last run
 
-- Passed: `pnpm run test` (16 files, 28 tests).
-- Passed: `pnpm run typecheck`.
-- Passed: `pnpm run lint`.
+- Passed: Skill Creator `quick_validate.py`.
 - Passed: targeted Oxfmt check.
-- Passed: `pnpm exec expo export --platform web`.
+- Passed: `git diff --check`.
 
 ## Recommended first command
 

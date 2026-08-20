@@ -35,6 +35,7 @@ Use this skill when the task is primarily about Expo screens, React Native compo
 - Consume typed context errors through the bounded context's primary presentation adapter.
 - Avoid prop drilling generically: screens place sections; screen feature sections own the simple reads, selectors, and handlers used only by that section; generic UI primitives stay prop-driven.
 - Reuse `components/ui/` primitives before introducing new local systems.
+- When a third-party native component ignores `className`, create a local NativeWind v5 `styled()` adapter; do not replace the intended utility classes with a `StyleSheet` workaround.
 
 ## Do not use this skill for
 

@@ -498,3 +498,25 @@ The user requested the NativeWind v5 migration and asked that third-party compon
 ### Next
 
 - Review and native smoke-test the migration, then commit/push only when requested.
+
+## 2026-08-20 - Strengthen the NativeWind third-party interop skill rule
+
+### Context
+
+The user requested an explicit skill rule for components whose `className` does not work because they are not React Native primitives.
+
+### Changes
+
+- Added the mandatory `styled()` decision directly to the `frontend-ui-conventions` entrypoint.
+- Expanded the styling reference with the React Native, application-owned, and incompatible third-party decision tree.
+- Added a concrete secondary-style-prop mapping example and prohibited `StyleSheet` as an interop workaround.
+
+### Validation
+
+- Passed: Skill Creator `quick_validate.py` with the available Anaconda Python runtime.
+- Passed: targeted Oxfmt check on both skill files.
+- Passed: `git diff --check`.
+
+### Next
+
+- Review the focused skill diff and commit/push only when requested.

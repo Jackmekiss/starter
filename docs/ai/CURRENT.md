@@ -8,31 +8,23 @@ Last updated: 2026-08-20
 
 ## Current focus
 
-NativeWind v5 and Tailwind CSS v4 migration.
+Explicit NativeWind v5 third-party interop guidance.
 
 ## Current status
 
-Implemented and validated locally. Changes are uncommitted after `8b74ad5`.
+Implemented and validated locally. Changes are uncommitted after `754c054`.
 
-Starter now uses NativeWind `5.0.0-preview.4`, `react-native-css`, Tailwind CSS v4, and PostCSS. Theme tokens moved from `tailwind.config.js` to the CSS-first `src/global.css`; Babel no longer loads the removed NativeWind JSX transform, and Metro uses `withNativewind` import rewrites.
-
-Lucide, `KeyboardAwareScrollView`, and the bottom-sheet background style use local `styled()` adapters. Safe-area utilities use the v5/Tailwind v4 syntax. The frontend UI skill records the same convention.
+The `frontend-ui-conventions` entrypoint and styling reference now enforce the exact decision: application components forward `className`; incompatible third-party native components use a local NativeWind v5 `styled()` adapter; `StyleSheet` is not an interop workaround.
 
 ## Next 3 concrete actions
 
-1. Review the NativeWind v5 dependency, configuration, component, and skill diff.
+1. Review the focused frontend UI skill diff.
 2. Commit and push only when requested.
-3. Smoke-test the native iOS/Android screens when a simulator or device is available.
+3. Apply the rule to future third-party UI integrations.
 
 ## Relevant files
 
-- `package.json`
-- `src/global.css`
-- `postcss.config.mjs`
-- `metro.config.js`
-- `babel.config.js`
-- `src/components/ui/Icon.tsx`
-- `src/app/(auth)/index.tsx`
+- `.agents/skills/frontend-ui-conventions/SKILL.md`
 - `.agents/skills/frontend-ui-conventions/references/styling.md`
 
 ## Active plan
@@ -41,11 +33,9 @@ None.
 
 ## Last validation commands and results
 
-- Passed: `pnpm run test` (16 files, 28 tests).
-- Passed: `pnpm run typecheck`.
-- Passed: `pnpm run lint`.
-- Passed: targeted `oxfmt --check` on migrated files.
-- Passed: `pnpm exec expo export --platform web` with the NativeWind-generated CSS bundle.
+- Passed: Skill Creator `quick_validate.py`.
+- Passed: targeted Oxfmt check on both changed skill files.
+- Passed: `git diff --check`.
 
 ## Blockers / open questions
 
