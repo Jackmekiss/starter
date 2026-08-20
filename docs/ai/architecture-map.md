@@ -15,7 +15,7 @@
 | `src/lib/`                 | Small app-level helpers.                                                                                             | Avoid growing generic utility buckets.                                                                            |
 | `core/auth/`               | Authentication bounded context.                                                                                      | Owns account/session domain, auth use-cases, auth gateway, adapters, selectors, and RTK Query API options.        |
 | `core/subscription/`       | Subscription bounded context.                                                                                        | Owns premium entitlement domain, subscription use-cases, gateway, adapters, selectors, and RTK Query API options. |
-| `core/shared/`             | Transport-independent contracts and lower-level shared adapters.                                                     | Owns `ApplicationError`, `Result`, and the Supabase slugify helper.                                               |
+| `core/shared/`             | Transport-independent contracts and lower-level shared adapters.                                                     | Owns `ApplicationError`, `Result`, `toRtkQueryResult`, and the Supabase slugify helper.                           |
 | `core/init-redux-store.ts` | Root Redux store factory for bounded-context slices and RTK Query APIs.                                              | Can mount auth and subscription APIs; runtime currently mounts auth API.                                          |
 | `.agents/skills/`          | Repo-specific agent workflow and convention skills.                                                                  | `frontend-*` skills cover the Expo app and frontend business core only; project memory skills cover continuity.   |
 | `docs/ai/`                 | Project memory system.                                                                                               | Stable and operational memory for humans and agents.                                                              |
@@ -33,6 +33,7 @@
 
 - Frontend-first architecture inspired by Clean Architecture, Domain-Driven Design, and bounded contexts.
 - Use-cases are explicit RTK Query endpoint builders under `core/<context>/use-cases/<action>/`.
+- Use-cases call their business gateway directly through `queryFn`; `toRtkQueryResult` owns the RTK Query result adaptation for auth and subscription.
 - Context API options are assembled in `core/<context>/apis/*-api.ts`.
 - Runtime adapters are selected in `src/app-runtime/runtime/*`; auth supports in-memory, fake, and opt-in HTTP implementations.
 - In-memory adapters are valid local infrastructure while real backend/provider integrations are absent.
@@ -71,7 +72,7 @@
 - Account retrieval starts only after a rehydrated session exists, and the splash remains visible during its initial load.
 - Route selection derives connection directly from `auth.session` and onboarding from `auth.account`.
 - Successful logout and account deletion clear `auth.session`; the next serialized persistence write removes SecureStore credentials.
-- `EXPO_PUBLIC_APP_MODE=fake` selects `FakeAuthBaseQuery`; `http` selects `HttpAuthBaseQuery`; all other modes use `InMemoryAuthBaseQuery`.
+- `EXPO_PUBLIC_APP_MODE=fake` selects `FakeAuthGateway`; `http` selects `HttpAuthGateway`; all other modes use `InMemoryAuthGateway`.
 - The HTTP adapter reads the current Redux session through an injected `AuthSessionProvider` immediately before protected requests.
 - `EXPO_PUBLIC_AUTH_API_URL` configures the sample HTTP origin; the production backend/provider remains unspecified.
 
@@ -83,7 +84,7 @@ Unknown / none discovered.
 
 - Expo Localization provides the phone language; i18next and react-i18next provide typed French/English UI translation.
 - The optional auth HTTP adapter uses the platform `fetch` API, validates successful JSON, and maps remote failures before the gateway boundary.
-- RevenueCat subscription boundaries exist through `RevenueCatSubscriptionRuntime` and `RevenueCatSubscriptionBaseQuery`.
+- RevenueCat subscription boundaries exist through `RevenueCatSubscriptionRuntime` and `RevenueCatSubscriptionGateway`.
 - Supabase dependency exists in `package.json`, and a shared Supabase slugify helper exists, but no configured Supabase client, schema, or migrations were discovered.
 - Expo SecureStore is configured and used by `secureSessionStorage`; unsupported platforms keep the Redux runtime session but never persist credentials in AsyncStorage.
 

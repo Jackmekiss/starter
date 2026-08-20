@@ -23,7 +23,7 @@ Starter already has `ApplicationError`, `Result`, typed RTK Query errors, presen
 ## Relevant source files
 
 - `core/auth/adapters/http/`
-- `core/auth/adapters/fake/fake-auth-base-query.ts`
+- `core/auth/adapters/fake/fake-auth-gateway.ts`
 - `core/auth/adapters/presentation/auth-error-message.ts`
 - `core/auth/gateways/auth-session-provider.ts`
 - `core/auth/use-cases/log-in/`

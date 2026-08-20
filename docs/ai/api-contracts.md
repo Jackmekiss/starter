@@ -4,37 +4,37 @@
 
 No HTTP API route files, server actions, GraphQL schema, webhooks, or backend handlers were discovered.
 
-The current app uses RTK Query endpoint builders over local gateway contracts. Gateway requests use internal `url` strings such as `/login` or `/purchase`; these are not discovered server endpoints.
+The current app uses RTK Query endpoint builders over local gateway contracts. Auth and subscription use-cases call their gateway directly through `queryFn`; internal application operations are not backend endpoints.
 
 ## Internal contracts
 
-| Area                         | Path / endpoint                                         | Purpose                                                | Auth                                                | Notes                                                                    |
-| ---------------------------- | ------------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------- | ------------------------------------------------------------------------ | ------ |
-| Auth API options             | `core/auth/apis/auth-api.ts`                            | Builds RTK Query endpoints for auth use-cases.         | Current user context comes from auth state/gateway. | Runtime mounted in `src/app-runtime/runtime/auth-runtime.ts`.            |
-| Auth gateway                 | `core/auth/gateways/auth-base-query.ts`                 | Contract for account/auth data source.                 | Depends on adapter implementation.                  | Internal request union maps to abstract methods.                         |
-| Register                     | `/register`                                             | Create auth user, account profile, and session.        | Unauthenticated.                                    | Body: `RegisterPayload`; result: `AuthResult`.                           |
-| Login                        | `/login`                                                | Authenticate with email/password.                      | Unauthenticated.                                    | Body: `LoginPayload`; result: `AuthResult`.                              |
-| Retrieve account             | `/retrieve`                                             | Retrieve current account profile.                      | Current session implied.                            | Result: `Account                                                         | null`. |
-| Update account               | `/update`                                               | Persist editable account fields.                       | Current session implied.                            | Body: `UpdateAccountPayload`; result: `Account`.                         |
-| Request password reset       | `/password/request-reset`                               | Start password reset flow.                             | Unauthenticated.                                    | Body: `RequestPasswordResetPayload`; result: `AuthActionResult`.         |
-| Reset password               | `/password/reset`                                       | Complete password reset.                               | Reset challenge implied.                            | Body: `ResetPasswordPayload`; result: `AuthActionResult`.                |
-| Google login                 | `/login/google`                                         | Authenticate/provision through Google provider.        | Unauthenticated.                                    | Result: `AuthResult`. Provider wiring Unknown.                           |
-| Apple login                  | `/login/apple`                                          | Authenticate/provision through Apple provider.         | Unauthenticated.                                    | Result: `AuthResult`. Provider wiring Unknown.                           |
-| Logout                       | `/logout`                                               | End current session and clear local auth state.        | Current session implied.                            | Result: `void`.                                                          |
-| Delete account               | `/delete`                                               | Delete current account and clear local auth state.     | Current session implied.                            | Result: `void`; backend deletion rules Unknown.                          |
-| Subscription API options     | `core/subscription/apis/subscription-api.ts`            | Builds RTK Query endpoints for subscription use-cases. | Current account implied.                            | Store factory supports it; runtime store does not currently mount it.    |
-| Subscription gateway         | `core/subscription/gateways/subscription-base-query.ts` | Contract for billing/status data source.               | Current account/provider identity implied.          | Internal request union maps to abstract methods.                         |
-| Retrieve offerings           | `/offerings/retrieve`                                   | Retrieve paywall offerings.                            | Unknown; likely no auth requirement for catalog.    | Result: `SubscriptionOffering[]`.                                        |
-| Purchase                     | `/purchase`                                             | Purchase selected premium plan.                        | Current account/provider identity implied.          | Body: `PurchaseSubscriptionPayload`; result: `SubscriptionActionResult`. |
-| Restore                      | `/restore`                                              | Restore platform purchases.                            | Current account/provider identity implied.          | Result: `SubscriptionActionResult`.                                      |
-| Manage                       | `/manage`                                               | Open platform subscription management.                 | Current account/provider identity implied.          | Result: `SubscriptionActionResult`.                                      |
-| Retrieve subscription status | `/status/retrieve`                                      | Read current premium entitlement.                      | Current account/provider identity implied.          | Result: `Subscription                                                    | null`. |
+| Area                         | Path / endpoint                                      | Purpose                                                | Auth                                                | Notes                                                                     |
+| ---------------------------- | ---------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------- | ------------------------------------------------------------------------- |
+| Auth API options             | `core/auth/apis/auth-api.ts`                         | Builds RTK Query endpoints for auth use-cases.         | Current user context comes from auth state/gateway. | Runtime mounted in `src/app-runtime/runtime/auth-runtime.ts`.             |
+| Auth gateway                 | `core/auth/gateways/auth-gateway.ts`                 | Contract for account/auth data source.                 | Depends on adapter implementation.                  | Use-cases call domain-oriented methods directly.                          |
+| Register                     | `AuthGateway.register`                               | Create auth user, account profile, and session.        | Unauthenticated.                                    | Input: `RegisterPayload`; result: `AuthResult<AuthContext>`.              |
+| Login                        | `AuthGateway.login`                                  | Authenticate with email/password.                      | Unauthenticated.                                    | Input: `LoginPayload`; result: `AuthResult<AuthContext>`.                 |
+| Retrieve account             | `AuthGateway.retrieveAccount`                        | Retrieve current account profile.                      | Current session implied.                            | Result: `AuthResult<Account \| null>`.                                    |
+| Update account               | `AuthGateway.updateAccount`                          | Persist editable account fields.                       | Current session implied.                            | Input: `UpdateAccountPayload`; result: `AuthResult<Account>`.             |
+| Request password reset       | `AuthGateway.requestPasswordReset`                   | Start password reset flow.                             | Unauthenticated.                                    | Input: `RequestPasswordResetPayload`; result: `AuthResult<void>`.         |
+| Reset password               | `AuthGateway.resetPassword`                          | Complete password reset.                               | Reset challenge implied.                            | Input: `ResetPasswordPayload`; result: `AuthResult<void>`.                |
+| Google login                 | `AuthGateway.loginWithGoogle`                        | Authenticate/provision through Google provider.        | Unauthenticated.                                    | Result: `AuthResult<AuthContext>`; provider wiring Unknown.               |
+| Apple login                  | `AuthGateway.loginWithApple`                         | Authenticate/provision through Apple provider.         | Unauthenticated.                                    | Result: `AuthResult<AuthContext>`; provider wiring Unknown.               |
+| Logout                       | `AuthGateway.logout`                                 | End current session and clear local auth state.        | Current session implied.                            | Result: `AuthResult<void>`.                                               |
+| Delete account               | `AuthGateway.deleteAccount`                          | Delete current account and clear local auth state.     | Current session implied.                            | Result: `AuthResult<void>`; backend deletion rules Unknown.               |
+| Subscription API options     | `core/subscription/apis/subscription-api.ts`         | Builds RTK Query endpoints for subscription use-cases. | Current account implied.                            | Store factory supports it; runtime store does not currently mount it.     |
+| Subscription gateway         | `core/subscription/gateways/subscription-gateway.ts` | Contract for billing/status data source.               | Current account/provider identity implied.          | Use-cases call domain-oriented methods directly.                          |
+| Retrieve offerings           | `SubscriptionGateway.retrieveSubscriptionOfferings`  | Retrieve paywall offerings.                            | Unknown; likely no auth requirement for catalog.    | Result: `SubscriptionResult<SubscriptionOffering[]>`.                     |
+| Purchase                     | `SubscriptionGateway.purchaseSubscription`           | Purchase selected premium plan.                        | Current account/provider identity implied.          | Input: `PurchaseSubscriptionPayload`; result: `SubscriptionActionResult`. |
+| Restore                      | `SubscriptionGateway.restoreSubscriptionPurchases`   | Restore platform purchases.                            | Current account/provider identity implied.          | Result: `SubscriptionResult<SubscriptionActionResult>`.                   |
+| Manage                       | `SubscriptionGateway.openSubscriptionManagement`     | Open platform subscription management.                 | Current account/provider identity implied.          | Result: `SubscriptionResult<SubscriptionActionResult>`.                   |
+| Retrieve subscription status | `SubscriptionGateway.retrieveSubscriptionStatus`     | Read current premium entitlement.                      | Current account/provider identity implied.          | Result: `SubscriptionResult<Subscription \| null>`.                       |
 
 ## Request / response patterns
 
 - Endpoint builders return RTK Query query/mutation definitions.
 - Every fallible gateway operation returns `ContextResult<Value>` with `{ ok: true, value }` or `{ ok: false, error }`.
-- Gateway `handle()` methods adapt internal requests and convert context results to RTK Query `{ data }` or `{ error }`.
+- Auth and subscription use-cases call their gateway in `queryFn`; shared `toRtkQueryResult` converts each context result to RTK Query `{ data }` or `{ error }`.
 - Auth and subscription use-cases update durable state only after `queryFulfilled` succeeds.
 - `.unwrap()` rejects with the exact `AuthError` or `SubscriptionError` from the typed base query.
 - Technical errors use transport-independent categories; business codes belong to one bounded context.
@@ -42,7 +42,7 @@ The current app uses RTK Query endpoint builders over local gateway contracts. G
 
 ## Sample HTTP auth adapter contract
 
-`HttpAuthBaseQuery` is an executable Starter integration example, not evidence of an existing production backend. It is selected with `EXPO_PUBLIC_APP_MODE=http` and configured by `EXPO_PUBLIC_AUTH_API_URL`.
+`HttpAuthGateway` is an executable Starter integration example, not evidence of an existing production backend. It is selected with `EXPO_PUBLIC_APP_MODE=http` and configured by `EXPO_PUBLIC_AUTH_API_URL`.
 
 | Method   | Remote path                    | Result            | Authentication |
 | -------- | ------------------------------ | ----------------- | -------------- |
@@ -81,7 +81,7 @@ Unknown / none discovered.
 
 ## Contract gotchas
 
-- Internal gateway `url` strings are not proof of backend routes.
+- Auth and subscription use-cases contain no transport URL or HTTP method.
 - Subscription API exists in `core/` but is not mounted in the current runtime store.
 - In-memory auth fixture contains sample token strings in source; do not copy real token values into memory.
 - RevenueCat unavailable states and SDK failures use the typed subscription error channel rather than successful responses containing failure messages.

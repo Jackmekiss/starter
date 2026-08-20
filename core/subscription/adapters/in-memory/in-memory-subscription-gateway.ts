@@ -1,5 +1,5 @@
 import { mapSubscriptionAdapterError } from "@core/subscription/adapters/errors/subscription-error-mapper";
-import { SubscriptionBaseQuery } from "@core/subscription/gateways/subscription-base-query";
+import { SubscriptionGateway } from "@core/subscription/gateways/subscription-gateway";
 
 import type {
   PurchaseSubscriptionPayload,
@@ -29,7 +29,7 @@ function createPremiumSubscription(
 }
 
 /** In-memory subscription gateway for local premium flows. */
-export class InMemorySubscriptionBaseQuery extends SubscriptionBaseQuery {
+export class InMemorySubscriptionGateway extends SubscriptionGateway {
   private currentError?: SubscriptionError;
 
   private currentSubscriptionOfferings: SubscriptionOffering[] = [

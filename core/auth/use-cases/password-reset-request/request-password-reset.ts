@@ -1,20 +1,21 @@
+import { toRtkQueryResult } from "@core/shared/adapters/rtk-query/to-rtk-query-result";
+
+import type { AuthApiBaseQueryFn } from "@core/auth/apis/auth-api-base-query";
 import type { RequestPasswordResetPayload } from "@core/auth/apis/types";
-import type { AuthBaseQueryFn } from "@core/auth/gateways/auth-base-query";
+import type { AuthGateway } from "@core/auth/gateways/auth-gateway";
 import type { EndpointBuilder } from "@reduxjs/toolkit/query";
 
 /**
  * Builds the endpoint that requests a password reset email.
  */
 export function requestPasswordResetBuilder(
-  build: EndpointBuilder<AuthBaseQueryFn, "Auth", "authApi">,
+  build: EndpointBuilder<AuthApiBaseQueryFn, "Auth", "authApi">,
+  authGateway: AuthGateway,
 ) {
   return {
     requestPasswordReset: build.mutation<void, RequestPasswordResetPayload>({
-      query: (payload) => ({
-        url: "/password/request-reset",
-        method: "POST",
-        body: payload,
-      }),
+      queryFn: async (payload) =>
+        toRtkQueryResult(await authGateway.requestPasswordReset(payload)),
     }),
   };
 }

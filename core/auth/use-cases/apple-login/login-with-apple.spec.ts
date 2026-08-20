@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { InMemoryAuthBaseQuery } from "@core/auth/adapters/in-memory/in-memory-auth-base-query";
+import { InMemoryAuthGateway } from "@core/auth/adapters/in-memory/in-memory-auth-gateway";
 import { createAuthApiOptions } from "@core/auth/apis/auth-api";
 import { accountBuilder } from "@core/auth/domain/builders/account-builder";
 import { authUserBuilder } from "@core/auth/domain/builders/auth-user-builder";
@@ -15,18 +15,18 @@ import type { ReduxStore } from "@core/init-redux-store";
 /**
  * Creates the auth API used by Apple login behavior specs.
  */
-function createAuthApi(authBaseQuery: InMemoryAuthBaseQuery) {
-  return createApi(createAuthApiOptions(authBaseQuery.handle()));
+function createAuthApi(authGateway: InMemoryAuthGateway) {
+  return createApi(createAuthApiOptions(authGateway));
 }
 
 describe("Apple Login", () => {
   let store: ReduxStore;
-  let authBaseQuery: InMemoryAuthBaseQuery;
+  let authGateway: InMemoryAuthGateway;
   let authApi: ReturnType<typeof createAuthApi>;
 
   beforeEach(() => {
-    authBaseQuery = new InMemoryAuthBaseQuery();
-    authApi = createAuthApi(authBaseQuery);
+    authGateway = new InMemoryAuthGateway();
+    authApi = createAuthApi(authGateway);
     store = createStore({ authApi }, {});
   });
 
@@ -37,9 +37,9 @@ describe("Apple Login", () => {
     const user = authUserBuilder().withId(accountId).withEmail(email).build();
     const session = sessionBuilder().withUserId(accountId).build();
 
-    authBaseQuery.account = account;
-    authBaseQuery.authUser = user;
-    authBaseQuery.session = session;
+    authGateway.account = account;
+    authGateway.authUser = user;
+    authGateway.session = session;
 
     await loginWithApple();
 
@@ -51,8 +51,8 @@ describe("Apple Login", () => {
   });
 
   it("should reject with auth error without changing durable state", async () => {
-    authBaseQuery.account = null;
-    authBaseQuery.authUser = null;
+    authGateway.account = null;
+    authGateway.authUser = null;
 
     await expect(loginWithApple()).rejects.toEqual({
       kind: "business",

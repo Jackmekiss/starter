@@ -75,7 +75,7 @@ Create or access an account.
 
 ### Error / empty / loading states
 
-- Auth status supports `idle`, `loading`, `success`, and `error`.
+- Durable auth status supports `idle` and `success`; transient loading and error state belongs to RTK Query.
 - Auth errors have stable codes without raw backend messages.
 - The login form disables controls while submitting and renders localized field and submission errors.
 
@@ -83,13 +83,13 @@ Create or access an account.
 
 - `core/auth/apis/auth-api.ts`
 - `core/auth/apis/types.ts`
-- `core/auth/gateways/auth-base-query.ts`
+- `core/auth/gateways/auth-gateway.ts`
 - `core/auth/use-cases/registration/register.ts`
 - `core/auth/use-cases/log-in/login.ts`
 - `core/auth/use-cases/google-login/login-with-google.ts`
 - `core/auth/use-cases/apple-login/login-with-apple.ts`
 - `core/auth/domain/slice.ts`
-- `core/auth/adapters/http/http-auth-base-query.ts`
+- `core/auth/adapters/http/http-auth-gateway.ts`
 - `core/auth/adapters/presentation/auth-error-message.ts`
 - `src/components/auth/login-form.tsx`
 - `src/localization/localization-provider.tsx`
@@ -284,9 +284,9 @@ View premium offerings, purchase or restore premium, manage subscription, and re
 ### Relevant files
 
 - `core/subscription/apis/subscription-api.ts`
-- `core/subscription/gateways/subscription-base-query.ts`
-- `core/subscription/adapters/in-memory/in-memory-subscription-base-query.ts`
-- `core/subscription/adapters/revenuecat/revenue-cat-subscription-base-query.ts`
+- `core/subscription/gateways/subscription-gateway.ts`
+- `core/subscription/adapters/in-memory/in-memory-subscription-gateway.ts`
+- `core/subscription/adapters/revenuecat/revenue-cat-subscription-gateway.ts`
 - `core/subscription/adapters/revenuecat/revenue-cat-subscription-runtime.ts`
 - `core/subscription/adapters/selectors/subscription-selectors.ts`
 - `core/subscription/domain/subscription.ts`

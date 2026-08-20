@@ -1,21 +1,24 @@
 import { setSubscription } from "@core/subscription/domain/slice";
+import { toRtkQueryResult } from "@core/shared/adapters/rtk-query/to-rtk-query-result";
 
+import type { SubscriptionApiBaseQueryFn } from "@core/subscription/apis/subscription-api-base-query";
 import type { SubscriptionActionResult } from "@core/subscription/apis/types";
-import type { SubscriptionBaseQueryFn } from "@core/subscription/gateways/subscription-base-query";
+import type { SubscriptionGateway } from "@core/subscription/gateways/subscription-gateway";
 import type { EndpointBuilder } from "@reduxjs/toolkit/query";
 
 /**
  * Builds the endpoint that opens or refreshes subscription management state.
  */
 export function openSubscriptionManagementBuilder(
-  build: EndpointBuilder<SubscriptionBaseQueryFn, never, "subscriptionApi">,
+  build: EndpointBuilder<SubscriptionApiBaseQueryFn, never, "subscriptionApi">,
+  subscriptionGateway: SubscriptionGateway,
 ) {
   return {
     openSubscriptionManagement: build.mutation<SubscriptionActionResult, void>({
-      query: () => ({
-        url: "/manage",
-        method: "POST",
-      }),
+      queryFn: async () =>
+        toRtkQueryResult(
+          await subscriptionGateway.openSubscriptionManagement(),
+        ),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;

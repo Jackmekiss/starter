@@ -1,28 +1,30 @@
 import { setSubscription } from "@core/subscription/domain/slice";
+import { toRtkQueryResult } from "@core/shared/adapters/rtk-query/to-rtk-query-result";
 
+import type { SubscriptionApiBaseQueryFn } from "@core/subscription/apis/subscription-api-base-query";
 import type {
   PurchaseSubscriptionPayload,
   SubscriptionActionResult,
 } from "@core/subscription/apis/types";
-import type { SubscriptionBaseQueryFn } from "@core/subscription/gateways/subscription-base-query";
+import type { SubscriptionGateway } from "@core/subscription/gateways/subscription-gateway";
 import type { EndpointBuilder } from "@reduxjs/toolkit/query";
 
 /**
  * Builds the endpoint that purchases a selected premium plan.
  */
 export function purchaseSubscriptionBuilder(
-  build: EndpointBuilder<SubscriptionBaseQueryFn, never, "subscriptionApi">,
+  build: EndpointBuilder<SubscriptionApiBaseQueryFn, never, "subscriptionApi">,
+  subscriptionGateway: SubscriptionGateway,
 ) {
   return {
     purchaseSubscription: build.mutation<
       SubscriptionActionResult,
       PurchaseSubscriptionPayload
     >({
-      query: (body) => ({
-        url: "/purchase",
-        method: "POST",
-        body,
-      }),
+      queryFn: async (payload) =>
+        toRtkQueryResult(
+          await subscriptionGateway.purchaseSubscription(payload),
+        ),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;

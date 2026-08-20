@@ -1,5 +1,5 @@
-import { InMemoryAuthBaseQuery } from "@core/auth/adapters/in-memory/in-memory-auth-base-query";
-import { AuthBaseQuery } from "@core/auth/gateways/auth-base-query";
+import { InMemoryAuthGateway } from "@core/auth/adapters/in-memory/in-memory-auth-gateway";
+import { AuthGateway } from "@core/auth/gateways/auth-gateway";
 import { sleep } from "@core/lib/sleep";
 
 import type {
@@ -15,8 +15,8 @@ import type { AuthError } from "@core/auth/domain/auth-error";
 import type { AuthResult } from "@core/auth/domain/auth-result";
 
 /** Fake auth gateway that adds latency to the in-memory adapter. */
-export class FakeAuthBaseQuery extends AuthBaseQuery {
-  private readonly inMemoryBaseQuery = new InMemoryAuthBaseQuery();
+export class FakeAuthGateway extends AuthGateway {
+  private readonly inMemoryGateway = new InMemoryAuthGateway();
 
   private currentError?: AuthError;
 
@@ -32,40 +32,34 @@ export class FakeAuthBaseQuery extends AuthBaseQuery {
 
   /** Retrieves the simulated account. */
   retrieveAccount(): Promise<AuthResult<Account | null>> {
-    return this.executeOperation(() =>
-      this.inMemoryBaseQuery.retrieveAccount(),
-    );
+    return this.executeOperation(() => this.inMemoryGateway.retrieveAccount());
   }
 
   /** Applies simulated account changes. */
   updateAccount(payload: UpdateAccountPayload): Promise<AuthResult<Account>> {
     return this.executeOperation(() =>
-      this.inMemoryBaseQuery.updateAccount(payload),
+      this.inMemoryGateway.updateAccount(payload),
     );
   }
 
   /** Creates a simulated registered session. */
   register(payload: RegisterPayload): Promise<AuthResult<AuthContext>> {
-    return this.executeOperation(() =>
-      this.inMemoryBaseQuery.register(payload),
-    );
+    return this.executeOperation(() => this.inMemoryGateway.register(payload));
   }
 
   /** Authenticates against the simulated account. */
   login(payload: LoginPayload): Promise<AuthResult<AuthContext>> {
-    return this.executeOperation(() => this.inMemoryBaseQuery.login(payload));
+    return this.executeOperation(() => this.inMemoryGateway.login(payload));
   }
 
   /** Simulates Google sign-in. */
   loginWithGoogle(): Promise<AuthResult<AuthContext>> {
-    return this.executeOperation(() =>
-      this.inMemoryBaseQuery.loginWithGoogle(),
-    );
+    return this.executeOperation(() => this.inMemoryGateway.loginWithGoogle());
   }
 
   /** Simulates Apple sign-in. */
   loginWithApple(): Promise<AuthResult<AuthContext>> {
-    return this.executeOperation(() => this.inMemoryBaseQuery.loginWithApple());
+    return this.executeOperation(() => this.inMemoryGateway.loginWithApple());
   }
 
   /** Simulates requesting a password reset. */
@@ -73,25 +67,25 @@ export class FakeAuthBaseQuery extends AuthBaseQuery {
     payload: RequestPasswordResetPayload,
   ): Promise<AuthResult<void>> {
     return this.executeOperation(() =>
-      this.inMemoryBaseQuery.requestPasswordReset(payload),
+      this.inMemoryGateway.requestPasswordReset(payload),
     );
   }
 
   /** Simulates completing a password reset. */
   resetPassword(payload: ResetPasswordPayload): Promise<AuthResult<void>> {
     return this.executeOperation(() =>
-      this.inMemoryBaseQuery.resetPassword(payload),
+      this.inMemoryGateway.resetPassword(payload),
     );
   }
 
   /** Simulates logout. */
   logout(): Promise<AuthResult<void>> {
-    return this.executeOperation(() => this.inMemoryBaseQuery.logout());
+    return this.executeOperation(() => this.inMemoryGateway.logout());
   }
 
   /** Simulates permanent account deletion. */
   deleteAccount(): Promise<AuthResult<void>> {
-    return this.executeOperation(() => this.inMemoryBaseQuery.deleteAccount());
+    return this.executeOperation(() => this.inMemoryGateway.deleteAccount());
   }
 
   /** Applies fake latency and the injected failure before running an operation. */

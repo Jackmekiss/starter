@@ -1,35 +1,44 @@
+import { createListenerMiddleware } from "@reduxjs/toolkit";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 import { appMode } from "@/app-runtime/runtime/app-mode";
 import { authSessionProvider } from "@/app-runtime/runtime/auth-session-provider";
-import { FakeAuthBaseQuery } from "@core/auth/adapters/fake/fake-auth-base-query";
-import { HttpAuthBaseQuery } from "@core/auth/adapters/http/http-auth-base-query";
-import { InMemoryAuthBaseQuery } from "@core/auth/adapters/in-memory/in-memory-auth-base-query";
+import { FakeAuthGateway } from "@core/auth/adapters/fake/fake-auth-gateway";
+import { HttpAuthGateway } from "@core/auth/adapters/http/http-auth-gateway";
+import { InMemoryAuthGateway } from "@core/auth/adapters/in-memory/in-memory-auth-gateway";
 import { createAuthApiOptions } from "@core/auth/apis/auth-api";
+import { clearAuth } from "@core/auth/domain/slice";
 
-import type { AuthBaseQuery } from "@core/auth/gateways/auth-base-query";
+import type { AuthGateway } from "@core/auth/gateways/auth-gateway";
 
 /**
  * Creates the auth gateway implementation for the current app runtime mode.
  */
-function createAuthBaseQuery(): AuthBaseQuery {
+function createAuthGateway(): AuthGateway {
   if (appMode === "http") {
-    return new HttpAuthBaseQuery({
+    return new HttpAuthGateway({
       baseUrl: process.env.EXPO_PUBLIC_AUTH_API_URL ?? "",
       sessionProvider: authSessionProvider,
     });
   }
 
   if (appMode === "fake") {
-    return new FakeAuthBaseQuery();
+    return new FakeAuthGateway();
   }
 
-  return new InMemoryAuthBaseQuery();
+  return new InMemoryAuthGateway();
 }
 
-export const authApi = createApi(
-  createAuthApiOptions(createAuthBaseQuery().handle()),
-);
+export const authApi = createApi(createAuthApiOptions(createAuthGateway()));
+
+export const authSessionListenerMiddleware = createListenerMiddleware();
+
+authSessionListenerMiddleware.startListening({
+  actionCreator: clearAuth,
+  effect: (_, { dispatch }) => {
+    dispatch(authApi.util.resetApiState());
+  },
+});
 
 export const {
   useRetrieveAccountQuery,

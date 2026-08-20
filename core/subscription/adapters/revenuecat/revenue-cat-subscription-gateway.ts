@@ -1,5 +1,5 @@
 import { mapSubscriptionAdapterError } from "@core/subscription/adapters/errors/subscription-error-mapper";
-import { SubscriptionBaseQuery } from "@core/subscription/gateways/subscription-base-query";
+import { SubscriptionGateway } from "@core/subscription/gateways/subscription-gateway";
 
 import type { RevenueCatSubscriptionRuntime } from "@core/subscription/adapters/revenuecat/revenue-cat-subscription-runtime";
 import type {
@@ -11,7 +11,7 @@ import type { SubscriptionOffering } from "@core/subscription/domain/subscriptio
 import type { SubscriptionResult } from "@core/subscription/domain/subscription-result";
 
 /** RevenueCat-backed gateway for premium subscription operations. */
-export class RevenueCatSubscriptionBaseQuery extends SubscriptionBaseQuery {
+export class RevenueCatSubscriptionGateway extends SubscriptionGateway {
   /** Receives the platform billing runtime. */
   constructor(private readonly runtime: RevenueCatSubscriptionRuntime) {
     super();

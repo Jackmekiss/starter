@@ -1,9 +1,9 @@
 import { createApi } from "@reduxjs/toolkit/query";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { FakeAuthBaseQuery } from "@core/auth/adapters/fake/fake-auth-base-query";
-import { HttpAuthBaseQuery } from "@core/auth/adapters/http/http-auth-base-query";
-import { InMemoryAuthBaseQuery } from "@core/auth/adapters/in-memory/in-memory-auth-base-query";
+import { FakeAuthGateway } from "@core/auth/adapters/fake/fake-auth-gateway";
+import { HttpAuthGateway } from "@core/auth/adapters/http/http-auth-gateway";
+import { InMemoryAuthGateway } from "@core/auth/adapters/in-memory/in-memory-auth-gateway";
 import { createAuthApiOptions } from "@core/auth/apis/auth-api";
 import { accountBuilder } from "@core/auth/domain/builders/account-builder";
 import { authUserBuilder } from "@core/auth/domain/builders/auth-user-builder";
@@ -13,24 +13,24 @@ import { createStore } from "@core/init-redux-store";
 import type { LoginPayload } from "@core/auth/apis/types";
 import type { Account } from "@core/auth/domain/account";
 import type { AuthUser, Session } from "@core/auth/domain/auth";
-import type { AuthBaseQuery } from "@core/auth/gateways/auth-base-query";
+import type { AuthGateway } from "@core/auth/gateways/auth-gateway";
 import type { ReduxStore } from "@core/init-redux-store";
 
 /**
  * Creates the auth API used by log-in behavior specs.
  */
-function createAuthApi(authBaseQuery: AuthBaseQuery) {
-  return createApi(createAuthApiOptions(authBaseQuery.handle()));
+function createAuthApi(authGateway: AuthGateway) {
+  return createApi(createAuthApiOptions(authGateway));
 }
 
 describe("Log In", () => {
   let store: ReduxStore;
-  let authBaseQuery: InMemoryAuthBaseQuery;
+  let authGateway: InMemoryAuthGateway;
   let authApi: ReturnType<typeof createAuthApi>;
 
   beforeEach(() => {
-    authBaseQuery = new InMemoryAuthBaseQuery();
-    authApi = createAuthApi(authBaseQuery);
+    authGateway = new InMemoryAuthGateway();
+    authApi = createAuthApi(authGateway);
     store = createStore({ authApi }, {});
   });
 
@@ -41,9 +41,9 @@ describe("Log In", () => {
     const user = authUserBuilder().withId(accountId).withEmail(email).build();
     const session = sessionBuilder().withUserId(accountId).build();
 
-    authBaseQuery.account = account;
-    authBaseQuery.authUser = user;
-    authBaseQuery.session = session;
+    authGateway.account = account;
+    authGateway.authUser = user;
+    authGateway.session = session;
 
     await login({
       email,
@@ -58,8 +58,8 @@ describe("Log In", () => {
   });
 
   it("should reject with auth error without changing durable state", async () => {
-    authBaseQuery.account = null;
-    authBaseQuery.authUser = null;
+    authGateway.account = null;
+    authGateway.authUser = null;
 
     await expect(
       login({
@@ -81,8 +81,8 @@ describe("Log In", () => {
   });
 
   it("should map a backend login code before RTK Query rejects", async () => {
-    useAuthBaseQuery(
-      createHttpAuthBaseQuery(
+    useAuthGateway(
+      createHttpAuthGateway(
         new Response(
           JSON.stringify({
             code: "email_not_verified",
@@ -108,9 +108,7 @@ describe("Log In", () => {
   });
 
   it("should map an HTTP service failure before RTK Query rejects", async () => {
-    useAuthBaseQuery(
-      createHttpAuthBaseQuery(new Response(null, { status: 503 })),
-    );
+    useAuthGateway(createHttpAuthGateway(new Response(null, { status: 503 })));
 
     await expect(
       login({ email: "user@example.com", password: "password" }),
@@ -123,9 +121,9 @@ describe("Log In", () => {
   });
 
   it("should propagate an injected fake failure through the same contract", async () => {
-    const fakeAuthBaseQuery = new FakeAuthBaseQuery(0);
-    fakeAuthBaseQuery.error = { kind: "network", retryable: true };
-    useAuthBaseQuery(fakeAuthBaseQuery);
+    const fakeAuthGateway = new FakeAuthGateway(0);
+    fakeAuthGateway.error = { kind: "network", retryable: true };
+    useAuthGateway(fakeAuthGateway);
 
     await expect(
       login({ email: "user@example.com", password: "password" }),
@@ -145,14 +143,14 @@ describe("Log In", () => {
   }
 
   /** Rebuilds the test API and store around one adapter implementation. */
-  function useAuthBaseQuery(nextAuthBaseQuery: AuthBaseQuery) {
-    authApi = createAuthApi(nextAuthBaseQuery);
+  function useAuthGateway(nextAuthGateway: AuthGateway) {
+    authApi = createAuthApi(nextAuthGateway);
     store = createStore({ authApi }, {});
   }
 
   /** Creates the HTTP adapter around one deterministic response. */
-  function createHttpAuthBaseQuery(response: Response) {
-    return new HttpAuthBaseQuery({
+  function createHttpAuthGateway(response: Response) {
+    return new HttpAuthGateway({
       baseUrl: "https://auth.example.test",
       sessionProvider: { getSession: () => null },
       fetcher: async () => response,

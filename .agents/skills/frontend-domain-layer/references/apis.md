@@ -21,6 +21,23 @@ APIs should avoid exposing:
 - how the slice is updated
 - DTO types re-exported indirectly from `gateways/`
 
+## RTK Query wiring
+
+In this repository, the context API factory receives the bounded-context gateway and configures `fakeBaseQuery<ContextError>()`. Endpoint builders receive that gateway explicitly:
+
+```ts
+export function createCatalogApiOptions(catalogGateway: CatalogGateway) {
+  return {
+    baseQuery: fakeBaseQuery<CatalogError>(),
+    endpoints: (builder: CatalogEndpointBuilder) => ({
+      ...retrieveProductBuilder(builder, catalogGateway),
+    }),
+  };
+}
+```
+
+Keep the empty RTK Query base-query type in the API concern. Do not make the business gateway extend `BaseQueryFn` or accept RTK Query request objects.
+
 Rule of thumb: screens should talk to a context API, not to the internals of the context.
 
 For collection retrievals:

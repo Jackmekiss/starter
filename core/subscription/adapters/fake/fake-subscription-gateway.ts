@@ -1,5 +1,5 @@
-import { InMemorySubscriptionBaseQuery } from "@core/subscription/adapters/in-memory/in-memory-subscription-base-query";
-import { SubscriptionBaseQuery } from "@core/subscription/gateways/subscription-base-query";
+import { InMemorySubscriptionGateway } from "@core/subscription/adapters/in-memory/in-memory-subscription-gateway";
+import { SubscriptionGateway } from "@core/subscription/gateways/subscription-gateway";
 import { sleep } from "@core/lib/sleep";
 
 import type {
@@ -11,15 +11,15 @@ import type { SubscriptionOffering } from "@core/subscription/domain/subscriptio
 import type { SubscriptionResult } from "@core/subscription/domain/subscription-result";
 
 /** Fake subscription gateway that adds latency to in-memory billing. */
-export class FakeSubscriptionBaseQuery extends SubscriptionBaseQuery {
-  private readonly inMemoryBaseQuery = new InMemorySubscriptionBaseQuery();
+export class FakeSubscriptionGateway extends SubscriptionGateway {
+  private readonly inMemoryGateway = new InMemorySubscriptionGateway();
 
   /** Retrieves simulated paywall offerings. */
   async retrieveSubscriptionOfferings(): Promise<
     SubscriptionResult<SubscriptionOffering[]>
   > {
     await sleep(800);
-    return this.inMemoryBaseQuery.retrieveSubscriptionOfferings();
+    return this.inMemoryGateway.retrieveSubscriptionOfferings();
   }
 
   /** Simulates a purchase round trip. */
@@ -27,7 +27,7 @@ export class FakeSubscriptionBaseQuery extends SubscriptionBaseQuery {
     payload: PurchaseSubscriptionPayload,
   ): Promise<SubscriptionResult<SubscriptionActionResult>> {
     await sleep(1200);
-    return this.inMemoryBaseQuery.purchaseSubscription(payload);
+    return this.inMemoryGateway.purchaseSubscription(payload);
   }
 
   /** Simulates restoring purchases. */
@@ -35,7 +35,7 @@ export class FakeSubscriptionBaseQuery extends SubscriptionBaseQuery {
     SubscriptionResult<SubscriptionActionResult>
   > {
     await sleep(1200);
-    return this.inMemoryBaseQuery.restoreSubscriptionPurchases();
+    return this.inMemoryGateway.restoreSubscriptionPurchases();
   }
 
   /** Simulates opening subscription management. */
@@ -43,7 +43,7 @@ export class FakeSubscriptionBaseQuery extends SubscriptionBaseQuery {
     SubscriptionResult<SubscriptionActionResult>
   > {
     await sleep(600);
-    return this.inMemoryBaseQuery.openSubscriptionManagement();
+    return this.inMemoryGateway.openSubscriptionManagement();
   }
 
   /** Retrieves the simulated subscription status. */
@@ -51,6 +51,6 @@ export class FakeSubscriptionBaseQuery extends SubscriptionBaseQuery {
     SubscriptionResult<Subscription | null>
   > {
     await sleep(600);
-    return this.inMemoryBaseQuery.retrieveSubscriptionStatus();
+    return this.inMemoryGateway.retrieveSubscriptionStatus();
   }
 }

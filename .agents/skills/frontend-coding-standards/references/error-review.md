@@ -14,13 +14,14 @@ Verify:
 - adapter-independent error mappers live under `adapters/errors/`
 - adapters catch expected infrastructure failures and return `{ ok: false }`
 - use-cases do not import concrete adapters or infrastructure mappers
-- RTK Query base queries return `{ error: ContextError }`
+- RTK Query endpoint `queryFn` calls the injected gateway and uses `toRtkQueryResult`
+- use-cases contain no transport URL, HTTP method, transport body, SDK operation identifier, or gateway request router
 - `.unwrap()` rejects with the exact domain error
 - transient request failures are not duplicated into durable slices
 - UI copy comes from the context's primary presentation adapter
 - global mappings do not assign action-specific copy without an explicit action
 
-Search the target scope for `throw error`, `error.message`, `response.status`, `data.code`, `transformErrorResponse`, `success: false`, and `setError(`. Treat matches as inspection points, not automatic violations.
+Search the target scope for `throw error`, `error.message`, `response.status`, `data.code`, `transformErrorResponse`, `success: false`, `setError(`, `url:`, and `method:`. Treat matches as inspection points, not automatic violations; `url:` and `method:` are valid inside concrete HTTP adapters.
 
 ## Severity guidance
 

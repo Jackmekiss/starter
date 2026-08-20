@@ -1,22 +1,22 @@
 import { setAuth } from "@core/auth/domain/slice";
+import { toRtkQueryResult } from "@core/shared/adapters/rtk-query/to-rtk-query-result";
 
+import type { AuthApiBaseQueryFn } from "@core/auth/apis/auth-api-base-query";
 import type { AuthContext, RegisterPayload } from "@core/auth/apis/types";
-import type { AuthBaseQueryFn } from "@core/auth/gateways/auth-base-query";
+import type { AuthGateway } from "@core/auth/gateways/auth-gateway";
 import type { EndpointBuilder } from "@reduxjs/toolkit/query";
 
 /**
  * Builds the endpoint that registers an account and stores the auth session.
  */
 export function registerBuilder(
-  build: EndpointBuilder<AuthBaseQueryFn, "Auth", "authApi">,
+  build: EndpointBuilder<AuthApiBaseQueryFn, "Auth", "authApi">,
+  authGateway: AuthGateway,
 ) {
   return {
     register: build.mutation<AuthContext, RegisterPayload>({
-      query: (payload) => ({
-        url: "/register",
-        method: "POST",
-        body: payload,
-      }),
+      queryFn: async (payload) =>
+        toRtkQueryResult(await authGateway.register(payload)),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;

@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { InMemoryAuthBaseQuery } from "@core/auth/adapters/in-memory/in-memory-auth-base-query";
+import { InMemoryAuthGateway } from "@core/auth/adapters/in-memory/in-memory-auth-gateway";
 import { createAuthApiOptions } from "@core/auth/apis/auth-api";
 import { accountBuilder } from "@core/auth/domain/builders/account-builder";
 import { authUserBuilder } from "@core/auth/domain/builders/auth-user-builder";
@@ -12,25 +12,25 @@ import type { ReduxStore } from "@core/init-redux-store";
 /**
  * Creates the auth API used by account deletion behavior specs.
  */
-function createAuthApi(authBaseQuery: InMemoryAuthBaseQuery) {
-  return createApi(createAuthApiOptions(authBaseQuery.handle()));
+function createAuthApi(authGateway: InMemoryAuthGateway) {
+  return createApi(createAuthApiOptions(authGateway));
 }
 
 describe("Account Deletion", () => {
   let store: ReduxStore;
-  let authBaseQuery: InMemoryAuthBaseQuery;
+  let authGateway: InMemoryAuthGateway;
   let authApi: ReturnType<typeof createAuthApi>;
 
   beforeEach(() => {
-    authBaseQuery = new InMemoryAuthBaseQuery();
-    authApi = createAuthApi(authBaseQuery);
+    authGateway = new InMemoryAuthGateway();
+    authApi = createAuthApi(authGateway);
     store = createStore({ authApi }, {});
   });
 
   it("should delete account", async () => {
     const account = accountBuilder().withId("1").build();
-    authBaseQuery.account = account;
-    authBaseQuery.authUser = authUserBuilder()
+    authGateway.account = account;
+    authGateway.authUser = authUserBuilder()
       .withId(account.id)
       .withEmail(account.email)
       .build();

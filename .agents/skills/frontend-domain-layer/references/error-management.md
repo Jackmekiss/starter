@@ -8,8 +8,8 @@ Apply this protocol to every bounded context whose operations can fail.
 backend or local data source
   -> concrete adapter maps infrastructure failure
   -> gateway returns ContextResult<Value>
-  -> RTK base query returns { data } or { error }
-  -> use-case exposes the typed error channel
+  -> use-case calls the gateway through RTK Query queryFn
+  -> toRtkQueryResult returns { data } or { error }
   -> UI .unwrap() rejects with a domain error
   -> presentation adapter selects safe copy
 ```
@@ -50,11 +50,11 @@ Every fallible operation declares its error channel:
 abstract retrieveProduct(productId: string): Promise<CatalogResult<Product>>;
 ```
 
-The RTK Query base query uses the context error and converts results at the gateway boundary:
+The use-case keeps the context error and converts the result only at the RTK Query boundary:
 
 ```ts
-if (!result.ok) return { error: result.error };
-return { data: result.value };
+queryFn: async (payload) =>
+  toRtkQueryResult(await catalogGateway.retrieveProduct(payload));
 ```
 
 Do not expose `Promise<Product>` when expected failures exist or document the failure only in JSDoc.
@@ -93,7 +93,7 @@ A use-case may create a context error when it owns business validation. It must 
 With RTK Query:
 
 - return `{ error: ContextError }` for use-case-owned validation
-- let the typed base query carry adapter failures
+- call the typed gateway directly and adapt its `Result` with `toRtkQueryResult`
 - use `onQueryStarted` for successful durable state updates
 - catch `queryFulfilled` rejection only to avoid duplicating request errors
 - keep transient request errors in RTK Query rather than a durable domain slice
@@ -113,7 +113,7 @@ Never expose `error.message` from an exception or backend payload to users.
 3. Add the context guard and result alias.
 4. Change every fallible gateway method to return the context result.
 5. Update remote, fake, and in-memory adapters.
-6. Convert results to RTK Query `{ data }` or `{ error }` in the base query.
+6. Convert results to RTK Query `{ data }` or `{ error }` with shared `toRtkQueryResult` in each endpoint `queryFn`.
 7. Remove infrastructure mapping from use-cases and legacy `success: false` unions.
 8. Remove transient request errors from durable slices and selectors.
 9. Update UI consumers to use `.unwrap()` and the context presentation adapter.

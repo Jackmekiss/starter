@@ -26,7 +26,7 @@ Each spec must be self-contained.
 import { createApi } from "@reduxjs/toolkit/query";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { InMemoryXxxBaseQuery } from "@core/xxx/adapters/in-memory/in-memory-xxx-base-query";
+import { InMemoryXxxGateway } from "@core/xxx/adapters/in-memory/in-memory-xxx-gateway";
 import { createXxxApiOptions } from "@core/xxx/apis/xxx-api";
 import { createStore } from "@core/init-redux-store";
 
@@ -35,18 +35,18 @@ import type { ReduxStore } from "@core/init-redux-store";
 /**
  * Creates the xxx API used by behavior specs.
  */
-function createXxxApi(xxxBaseQuery: InMemoryXxxBaseQuery) {
-  return createApi(createXxxApiOptions(xxxBaseQuery.handle()));
+function createXxxApi(xxxGateway: InMemoryXxxGateway) {
+  return createApi(createXxxApiOptions(xxxGateway));
 }
 
 describe("Business Action", () => {
   let store: ReduxStore;
-  let xxxBaseQuery: InMemoryXxxBaseQuery;
+  let xxxGateway: InMemoryXxxGateway;
   let xxxApi: ReturnType<typeof createXxxApi>;
 
   beforeEach(() => {
-    xxxBaseQuery = new InMemoryXxxBaseQuery();
-    xxxApi = createXxxApi(xxxBaseQuery);
+    xxxGateway = new InMemoryXxxGateway();
+    xxxApi = createXxxApi(xxxGateway);
     store = createStore({ xxxApi }, {});
   });
 });
@@ -104,7 +104,7 @@ export function entityBuilder({ id = "entity-id" }: Partial<Entity> = {}) {
 If an in-memory adapter has mutable module-level state, move that state to private instance fields. Expose fixture setters without `public`.
 
 ```ts
-export class InMemoryXxxBaseQuery extends XxxBaseQuery {
+export class InMemoryXxxGateway extends XxxGateway {
   private currentEntity: Entity | null = defaultEntity;
 
   /**

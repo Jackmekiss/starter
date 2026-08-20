@@ -8,7 +8,7 @@ import {
   decodeRequiredHttpAccount,
   decodeHttpVoid,
 } from "@core/auth/adapters/http/http-auth-response";
-import { AuthBaseQuery } from "@core/auth/gateways/auth-base-query";
+import { AuthGateway } from "@core/auth/gateways/auth-gateway";
 
 import type { HttpAuthOperation } from "@core/auth/adapters/http/http-auth-error-mapper";
 import type {
@@ -32,7 +32,7 @@ export type HttpAuthFetch = (
 ) => Promise<Response>;
 
 /** Runtime dependencies and configuration for the HTTP auth adapter. */
-export interface HttpAuthBaseQueryOptions {
+export interface HttpAuthGatewayOptions {
   /** Backend origin implementing the documented Starter auth contract. */
   baseUrl: string;
   /** Reads the latest Redux-owned session for protected requests. */
@@ -57,7 +57,7 @@ interface HttpAuthRequestOptions {
 }
 
 /** REST implementation of the authentication gateway with typed error mapping. */
-export class HttpAuthBaseQuery extends AuthBaseQuery {
+export class HttpAuthGateway extends AuthGateway {
   private readonly baseUrl: string;
 
   private readonly fetcher: HttpAuthFetch;
@@ -65,7 +65,7 @@ export class HttpAuthBaseQuery extends AuthBaseQuery {
   private readonly requestTimeoutMilliseconds: number;
 
   /** Binds the remote origin, runtime session provider, and transport. */
-  constructor(private readonly options: HttpAuthBaseQueryOptions) {
+  constructor(private readonly options: HttpAuthGatewayOptions) {
     super();
     this.baseUrl = options.baseUrl.replace(/\/+$/, "");
     this.fetcher = options.fetcher ?? fetch;

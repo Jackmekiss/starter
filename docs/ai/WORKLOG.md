@@ -368,3 +368,81 @@ The error audit identified that typed errors and presentation resolvers stopped 
 
 - Review the diff and commit/push only when requested.
 - Adapt the sample HTTP contract when the production auth backend is selected.
+
+## 2026-08-20 - Decouple auth use-cases from HTTP-shaped base-query requests
+
+### Context
+
+The user challenged `url` and `method` values inside auth use-cases and requested a concrete `toRtkQueryResult` experiment on the Starter auth bounded context.
+
+### Changes
+
+- Replaced `AuthBaseQuery` with a domain-oriented `AuthGateway`.
+- Renamed HTTP, fake, and in-memory auth implementations from base queries to gateways.
+- Configured the auth API with `fakeBaseQuery` and injected the gateway into endpoint builders.
+- Migrated every auth use-case to call its gateway method through `queryFn`.
+- Added shared `toRtkQueryResult` as the only `Result` to RTK Query conversion boundary.
+- Updated the auth behavior specs and runtime composition without changing public hooks or outcomes.
+
+### Decisions
+
+- Keep HTTP paths and methods exclusively inside `HttpAuthGateway`.
+- Preserve typed application results until the use-case's RTK Query boundary.
+
+### Validation
+
+- Passed: `pnpm run test` (16 files, 28 tests).
+- Passed: `pnpm run typecheck`.
+- Passed: targeted Oxfmt, Oxlint, and ESLint.
+- Passed: `git diff --check`.
+
+### Next
+
+- Review the spike and commit/push only when requested.
+- Migrate `subscription` only after the auth convention is accepted.
+
+## 2026-08-20 - Apply the direct gateway pattern to subscription
+
+### Context
+
+The user accepted the auth spike and requested the same architecture for the subscription bounded context.
+
+### Changes
+
+- Replaced `SubscriptionBaseQuery` with `SubscriptionGateway`.
+- Renamed in-memory, fake, and RevenueCat implementations as gateways.
+- Configured the subscription API with `fakeBaseQuery`.
+- Migrated all five subscription use-cases to direct gateway `queryFn` calls through `toRtkQueryResult`.
+- Updated behavior specs, architecture guidance, and contract memory.
+
+### Validation
+
+- Passed: `pnpm run test` (16 files, 28 tests).
+- Passed: `pnpm run typecheck`.
+- Passed: targeted Oxfmt, Oxlint, and ESLint.
+
+### Next
+
+- Review both bounded-context migrations and commit/push only when requested.
+
+## 2026-08-20 - Codify direct gateway RTK Query wiring in frontend skills
+
+### Context
+
+The user requested that the accepted auth/subscription pattern become durable skill guidance.
+
+### Changes
+
+- Added the direct gateway `queryFn` and `toRtkQueryResult` convention to `frontend-domain-layer`.
+- Documented gateway naming, adapter ownership, `fakeBaseQuery` API wiring, and use-case test setup.
+- Added review checks to `frontend-coding-standards` for transport leakage in use-cases.
+- Declared that `BaseQuery` naming is reserved for real RTK Query base-query functions.
+
+### Validation
+
+- Passed: Skill Creator `quick_validate.py` for both updated skills using the available Anaconda Python runtime.
+- Passed: targeted Oxfmt and `git diff --check`.
+
+### Next
+
+- Use these skill rules for new bounded contexts and future architecture reviews.

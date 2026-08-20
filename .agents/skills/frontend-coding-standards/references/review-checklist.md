@@ -12,6 +12,8 @@ Before validating a feature, ask:
 - Is UI logic leaking into the domain?
 - Is domain logic leaking into the UI?
 - Do fallible gateways expose typed context results without leaking infrastructure failures?
+- Do RTK Query use-cases call their injected gateway through `queryFn` and adapt results with `toRtkQueryResult`?
+- Are transport URLs, HTTP methods, SDK operations, and response mapping confined to concrete adapters?
 - Are business concepts and application functions documented with useful JSDoc?
 - Does the documentation explain intent or constraints instead of repeating names and types?
 

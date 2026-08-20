@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { InMemoryAuthBaseQuery } from "@core/auth/adapters/in-memory/in-memory-auth-base-query";
+import { InMemoryAuthGateway } from "@core/auth/adapters/in-memory/in-memory-auth-gateway";
 import { createAuthApiOptions } from "@core/auth/apis/auth-api";
 import { accountBuilder } from "@core/auth/domain/builders/account-builder";
 import { createStore } from "@core/init-redux-store";
@@ -12,23 +12,23 @@ import type { ReduxStore } from "@core/init-redux-store";
 /**
  * Creates the auth API used by onboarding completion behavior specs.
  */
-function createAuthApi(authBaseQuery: InMemoryAuthBaseQuery) {
-  return createApi(createAuthApiOptions(authBaseQuery.handle()));
+function createAuthApi(authGateway: InMemoryAuthGateway) {
+  return createApi(createAuthApiOptions(authGateway));
 }
 
 describe("Onboarding Completion", () => {
   let store: ReduxStore;
-  let authBaseQuery: InMemoryAuthBaseQuery;
+  let authGateway: InMemoryAuthGateway;
   let authApi: ReturnType<typeof createAuthApi>;
 
   beforeEach(() => {
-    authBaseQuery = new InMemoryAuthBaseQuery();
-    authApi = createAuthApi(authBaseQuery);
+    authGateway = new InMemoryAuthGateway();
+    authApi = createAuthApi(authGateway);
     store = createStore({ authApi }, {});
   });
 
   it("should mark account onboarding as completed", async () => {
-    authBaseQuery.account = accountBuilder()
+    authGateway.account = accountBuilder()
       .withId("onboarding-account")
       .withOnboardingStatus("pending")
       .build();

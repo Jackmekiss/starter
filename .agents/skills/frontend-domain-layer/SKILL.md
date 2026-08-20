@@ -32,6 +32,8 @@ Use this skill when the task is mainly about the app's frontend business layer u
 - Put frontend business concepts in `domain/`, not in screens or adapters.
 - Model important actions as explicit verb-based use-cases.
 - Keep gateways abstract and adapters replaceable.
+- In this repository, inject bounded-context gateways into RTK Query API factories, call them from endpoint `queryFn`, and convert their typed `Result` with shared `toRtkQueryResult`.
+- Keep RTK Query request objects, transport URLs, HTTP methods, and SDK operation identifiers out of use-cases and business gateway contracts.
 - Keep transport credentials out of use-case and business gateway parameters.
 - Inject a current-session provider into adapters that perform protected operations.
 - Make every fallible gateway operation expose its bounded-context `Result` contract.

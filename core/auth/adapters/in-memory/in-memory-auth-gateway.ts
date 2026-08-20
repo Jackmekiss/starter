@@ -1,7 +1,7 @@
 import { produce } from "immer";
 
 import { mapAuthAdapterError } from "@core/auth/adapters/errors/auth-error-mapper";
-import { AuthBaseQuery } from "@core/auth/gateways/auth-base-query";
+import { AuthGateway } from "@core/auth/gateways/auth-gateway";
 
 import type {
   AuthContext,
@@ -25,7 +25,7 @@ function resolveNextOnboardingStatus(
 }
 
 /** In-memory auth gateway used by local development and starter flows. */
-export class InMemoryAuthBaseQuery extends AuthBaseQuery {
+export class InMemoryAuthGateway extends AuthGateway {
   private currentError?: AuthError;
 
   private currentAccount: Account | null = {

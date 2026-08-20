@@ -1,4 +1,8 @@
-import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import {
+  createAction,
+  createEntityAdapter,
+  createSlice,
+} from "@reduxjs/toolkit";
 
 import type { EntityState } from "@reduxjs/toolkit";
 import type { Subscription } from "@core/subscription/domain/subscription";
@@ -26,6 +30,11 @@ const initialSubscriptionOfferingState: EntityState<
   string
 > = subscriptionOfferingAdapter.getInitialState();
 
+/** Clears every durable state owned by the subscription bounded context. */
+export const clearSubscriptionState = createAction(
+  "subscription/clearSubscriptionState",
+);
+
 export const subscriptionSlice = createSlice({
   name: "subscription",
   initialState: initialSubscriptionState,
@@ -39,17 +48,27 @@ export const subscriptionSlice = createSlice({
       subscription: null,
     }),
   },
+  extraReducers: (builder) => {
+    builder.addCase(clearSubscriptionState, () => initialSubscriptionState);
+  },
 });
 
 export const subscriptionOfferingSlice = createSlice({
   name: "subscriptionOfferings",
   initialState: initialSubscriptionOfferingState,
   reducers: {
+    clearSubscriptionOfferings: subscriptionOfferingAdapter.removeAll,
     updateSubscriptionOfferings: subscriptionOfferingAdapter.upsertMany,
+  },
+  extraReducers: (builder) => {
+    builder.addCase(
+      clearSubscriptionState,
+      subscriptionOfferingAdapter.removeAll,
+    );
   },
 });
 
 export const { setSubscription, clearSubscription } = subscriptionSlice.actions;
 
-export const { updateSubscriptionOfferings } =
+export const { clearSubscriptionOfferings, updateSubscriptionOfferings } =
   subscriptionOfferingSlice.actions;

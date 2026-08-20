@@ -29,6 +29,7 @@ Use this skill when the task is mainly about Expo/frontend or frontend-core code
 - Prefer business meaning over generic helpers.
 - Prefer smaller clear files over large ambiguous ones.
 - Treat infrastructure leakage and untyped fallible gateway methods as boundary defects.
+- Treat `url`, HTTP `method`, transport `body`, or SDK operation identifiers inside use-cases as infrastructure leakage; use direct gateway `queryFn` calls and `toRtkQueryResult` for bounded-context APIs.
 - Use this skill as a guardrail, not as a substitute for architecture or domain design.
 
 ## Do not use this skill for

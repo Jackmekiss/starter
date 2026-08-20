@@ -89,7 +89,7 @@ Do not claim a command passes unless it was run in the current session or a reco
 
 - Shared technical failures and the generic `Result` container live in `core/shared/domain/`.
 - Each bounded context owns a stable error-code union, type guard, and `ContextResult<Value>` alias.
-- Every fallible gateway method returns its context result; base queries convert it to RTK Query `{ data }` or `{ error }`.
+- Every fallible gateway method returns its context result. Use-cases call their bounded-context gateway through `queryFn`, and shared `toRtkQueryResult` converts it to RTK Query `{ data }` or `{ error }`.
 - Concrete adapters preserve typed context errors, map infrastructure failures, and never expose raw exception messages.
 - `.unwrap()` resolves success values and rejects with the exact typed context error.
 - Transient request failures stay in RTK Query instead of durable Redux slices.

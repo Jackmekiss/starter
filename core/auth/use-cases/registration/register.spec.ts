@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { InMemoryAuthBaseQuery } from "@core/auth/adapters/in-memory/in-memory-auth-base-query";
+import { InMemoryAuthGateway } from "@core/auth/adapters/in-memory/in-memory-auth-gateway";
 import { createAuthApiOptions } from "@core/auth/apis/auth-api";
 import { authUserBuilder } from "@core/auth/domain/builders/auth-user-builder";
 import { sessionBuilder } from "@core/auth/domain/builders/session-builder";
@@ -15,23 +15,23 @@ import type { ReduxStore } from "@core/init-redux-store";
 /**
  * Creates the auth API used by registration behavior specs.
  */
-function createAuthApi(authBaseQuery: InMemoryAuthBaseQuery) {
-  return createApi(createAuthApiOptions(authBaseQuery.handle()));
+function createAuthApi(authGateway: InMemoryAuthGateway) {
+  return createApi(createAuthApiOptions(authGateway));
 }
 
 describe("Registration", () => {
   let store: ReduxStore;
-  let authBaseQuery: InMemoryAuthBaseQuery;
+  let authGateway: InMemoryAuthGateway;
   let authApi: ReturnType<typeof createAuthApi>;
 
   beforeEach(() => {
-    authBaseQuery = new InMemoryAuthBaseQuery();
-    authApi = createAuthApi(authBaseQuery);
+    authGateway = new InMemoryAuthGateway();
+    authApi = createAuthApi(authGateway);
     store = createStore({ authApi }, {});
   });
 
   it("should register account and store auth state", async () => {
-    authBaseQuery.session = sessionBuilder().withUserId("1").build();
+    authGateway.session = sessionBuilder().withUserId("1").build();
 
     const result = await register({
       email: "registered@example.com",

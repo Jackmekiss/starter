@@ -1,3 +1,5 @@
+import { fakeBaseQuery } from "@reduxjs/toolkit/query";
+
 import { deleteAccountBuilder } from "@core/auth/use-cases/account-deletion/delete-account";
 import { updateAccountBuilder } from "@core/auth/use-cases/account-modification/update-account";
 import { retrieveAccountBuilder } from "@core/auth/use-cases/account-retrieval/retrieve-account";
@@ -10,31 +12,33 @@ import { resetPasswordBuilder } from "@core/auth/use-cases/password-reset-comple
 import { requestPasswordResetBuilder } from "@core/auth/use-cases/password-reset-request/request-password-reset";
 import { registerBuilder } from "@core/auth/use-cases/registration/register";
 
-import type { AuthBaseQueryFn } from "@core/auth/gateways/auth-base-query";
+import type { AuthApiBaseQueryFn } from "@core/auth/apis/auth-api-base-query";
+import type { AuthError } from "@core/auth/domain/auth-error";
+import type { AuthGateway } from "@core/auth/gateways/auth-gateway";
 import type { EndpointBuilder } from "@reduxjs/toolkit/query";
 
 /**
  * Builds RTK Query endpoint options for all authentication use-cases.
  */
-export function createAuthApiOptions(baseQuery: AuthBaseQueryFn) {
+export function createAuthApiOptions(authGateway: AuthGateway) {
   return {
-    baseQuery,
+    baseQuery: fakeBaseQuery<AuthError>(),
     reducerPath: "authApi",
     tagTypes: ["Auth"],
     endpoints: (
-      builder: EndpointBuilder<AuthBaseQueryFn, "Auth", "authApi">,
+      builder: EndpointBuilder<AuthApiBaseQueryFn, "Auth", "authApi">,
     ) => ({
-      ...retrieveAccountBuilder(builder),
-      ...updateAccountBuilder(builder),
-      ...completeOnboardingBuilder(builder),
-      ...loginBuilder(builder),
-      ...loginWithGoogleBuilder(builder),
-      ...loginWithAppleBuilder(builder),
-      ...registerBuilder(builder),
-      ...requestPasswordResetBuilder(builder),
-      ...resetPasswordBuilder(builder),
-      ...logoutBuilder(builder),
-      ...deleteAccountBuilder(builder),
+      ...retrieveAccountBuilder(builder, authGateway),
+      ...updateAccountBuilder(builder, authGateway),
+      ...completeOnboardingBuilder(builder, authGateway),
+      ...loginBuilder(builder, authGateway),
+      ...loginWithGoogleBuilder(builder, authGateway),
+      ...loginWithAppleBuilder(builder, authGateway),
+      ...registerBuilder(builder, authGateway),
+      ...requestPasswordResetBuilder(builder, authGateway),
+      ...resetPasswordBuilder(builder, authGateway),
+      ...logoutBuilder(builder, authGateway),
+      ...deleteAccountBuilder(builder, authGateway),
     }),
   };
 }

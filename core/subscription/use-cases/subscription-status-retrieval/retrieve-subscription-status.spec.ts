@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { InMemorySubscriptionBaseQuery } from "@core/subscription/adapters/in-memory/in-memory-subscription-base-query";
+import { InMemorySubscriptionGateway } from "@core/subscription/adapters/in-memory/in-memory-subscription-gateway";
 import { createSubscriptionApiOptions } from "@core/subscription/apis/subscription-api";
 import { subscriptionBuilder } from "@core/subscription/domain/builders/subscription-builder";
 import { createStore } from "@core/init-redux-store";
@@ -13,21 +13,19 @@ import type { ReduxStore } from "@core/init-redux-store";
  * Creates the subscription API used by status retrieval behavior specs.
  */
 function createSubscriptionApi(
-  subscriptionBaseQuery: InMemorySubscriptionBaseQuery,
+  subscriptionGateway: InMemorySubscriptionGateway,
 ) {
-  return createApi(
-    createSubscriptionApiOptions(subscriptionBaseQuery.handle()),
-  );
+  return createApi(createSubscriptionApiOptions(subscriptionGateway));
 }
 
 describe("Subscription Status Retrieval", () => {
   let store: ReduxStore;
-  let subscriptionBaseQuery: InMemorySubscriptionBaseQuery;
+  let subscriptionGateway: InMemorySubscriptionGateway;
   let subscriptionApi: ReturnType<typeof createSubscriptionApi>;
 
   beforeEach(() => {
-    subscriptionBaseQuery = new InMemorySubscriptionBaseQuery();
-    subscriptionApi = createSubscriptionApi(subscriptionBaseQuery);
+    subscriptionGateway = new InMemorySubscriptionGateway();
+    subscriptionApi = createSubscriptionApi(subscriptionGateway);
     store = createStore({ subscriptionApi }, {});
   });
 
@@ -37,7 +35,7 @@ describe("Subscription Status Retrieval", () => {
       .withCurrentPeriodEnd("2027-07-17T00:00:00.000Z")
       .build();
 
-    subscriptionBaseQuery.subscription = subscription;
+    subscriptionGateway.subscription = subscription;
 
     await retrieveSubscriptionStatus();
 
