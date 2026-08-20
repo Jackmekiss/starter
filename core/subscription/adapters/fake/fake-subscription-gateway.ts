@@ -1,7 +1,7 @@
 import { InMemorySubscriptionGateway } from "@core/subscription/adapters/in-memory/in-memory-subscription-gateway";
 import { SubscriptionGateway } from "@core/subscription/gateways/subscription-gateway";
-import { sleep } from "@core/lib/sleep";
 import { DeterministicDateProvider } from "@core/shared/adapters/date/deterministic-date-provider";
+import { sleep } from "@core/shared/adapters/time/sleep";
 
 import type {
   PurchaseSubscriptionPayload,

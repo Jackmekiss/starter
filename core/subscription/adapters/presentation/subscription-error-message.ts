@@ -1,21 +1,28 @@
 import { isContextApplicationError } from "@core/shared/domain/application-error";
 import { isSubscriptionError } from "@core/subscription/domain/subscription-error";
 
-/** Resolves one application message key through the active UI locale. */
-export type SubscriptionMessageResolver = (key: string) => string;
+import type { TFunction } from "i18next";
+
+/** Presentation context needed when a subscription error has flow-specific copy. */
+export interface ResolveSubscriptionErrorMessageOptions {
+  /** Subscription action that rejected. */
+  action?: "restore";
+  /** Safe copy returned for unknown or unmapped failures. */
+  fallbackMessage: string;
+}
 
 /** Resolves a subscription rejection into safe localized copy. */
 export function resolveSubscriptionErrorMessage(
   error: unknown,
-  resolveMessage: SubscriptionMessageResolver,
-  fallbackMessage: string,
+  resolveMessage: TFunction,
+  options: ResolveSubscriptionErrorMessageOptions,
 ): string {
-  if (!isSubscriptionError(error)) return fallbackMessage;
+  if (!isSubscriptionError(error)) return options.fallbackMessage;
 
   if (isContextApplicationError(error)) {
-    return error.code === "NO_ACTIVE_PURCHASE"
+    return error.code === "NO_ACTIVE_PURCHASE" && options.action === "restore"
       ? resolveMessage("subscription__restore__error__no_active_purchase")
-      : fallbackMessage;
+      : options.fallbackMessage;
   }
 
   switch (error.kind) {
@@ -31,6 +38,6 @@ export function resolveSubscriptionErrorMessage(
     case "forbidden":
     case "unexpected":
     default:
-      return fallbackMessage;
+      return options.fallbackMessage;
   }
 }

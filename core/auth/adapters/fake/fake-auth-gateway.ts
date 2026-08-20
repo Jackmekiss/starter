@@ -1,7 +1,7 @@
 import { InMemoryAuthGateway } from "@core/auth/adapters/in-memory/in-memory-auth-gateway";
 import { AuthGateway } from "@core/auth/gateways/auth-gateway";
-import { sleep } from "@core/lib/sleep";
 import { DeterministicDateProvider } from "@core/shared/adapters/date/deterministic-date-provider";
+import { sleep } from "@core/shared/adapters/time/sleep";
 
 import type {
   AuthContext,
@@ -20,8 +20,6 @@ import type { DateProvider } from "@core/shared/gateways/date-provider";
 export class FakeAuthGateway extends AuthGateway {
   private readonly inMemoryGateway: InMemoryAuthGateway;
 
-  private currentError?: AuthError;
-
   /** Configures deterministic latency while keeping production demo defaults. */
   constructor(
     private readonly latencyMilliseconds = 3000,
@@ -33,7 +31,7 @@ export class FakeAuthGateway extends AuthGateway {
 
   /** Injects one failure consistently across every fake auth operation. */
   set error(value: AuthError | undefined) {
-    this.currentError = value;
+    this.inMemoryGateway.error = value;
   }
 
   /** Retrieves the simulated account. */
@@ -99,11 +97,6 @@ export class FakeAuthGateway extends AuthGateway {
     operation: () => Promise<AuthResult<Value>>,
   ): Promise<AuthResult<Value>> {
     await sleep(this.latencyMilliseconds);
-
-    if (this.currentError) {
-      return { ok: false, error: this.currentError };
-    }
-
     return operation();
   }
 }

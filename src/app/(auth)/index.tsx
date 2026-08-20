@@ -35,9 +35,7 @@ const StyledKeyboardAwareScrollView = styled(KeyboardAwareScrollViewAdapter, {
   contentContainerClassName: "contentContainerStyle",
 });
 
-/**
- * Initial authentication route rendered before concrete auth forms are added.
- */
+/** Authentication route composing localized welcome copy and the login form. */
 export default function AuthIndexScreen() {
   const { t } = useTranslation();
 

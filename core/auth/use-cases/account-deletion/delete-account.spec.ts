@@ -67,7 +67,6 @@ describe("Account Deletion", () => {
    * Expects auth state to be cleared after account deletion.
    */
   function expectAccountDeleted() {
-    expect(store.getState().auth.status).toBe("idle");
     expect(store.getState().auth.user).toBeNull();
     expect(store.getState().auth.session).toBeNull();
     expect(store.getState().auth.account).toBeNull();

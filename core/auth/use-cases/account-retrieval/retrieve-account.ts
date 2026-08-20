@@ -10,7 +10,7 @@ import type { EndpointBuilder } from "@reduxjs/toolkit/query";
  * Builds the endpoint that retrieves and stores the current account profile.
  */
 export function retrieveAccountBuilder(
-  build: EndpointBuilder<AuthApiBaseQueryFn, "Auth", "authApi">,
+  build: EndpointBuilder<AuthApiBaseQueryFn, never, "authApi">,
   authGateway: AuthGateway,
 ) {
   return {

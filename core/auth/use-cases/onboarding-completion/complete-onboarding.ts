@@ -11,7 +11,7 @@ import type { EndpointBuilder } from "@reduxjs/toolkit/query";
  * Builds the endpoint that marks onboarding as completed for the account.
  */
 export function completeOnboardingBuilder(
-  build: EndpointBuilder<AuthApiBaseQueryFn, "Auth", "authApi">,
+  build: EndpointBuilder<AuthApiBaseQueryFn, never, "authApi">,
   authGateway: AuthGateway,
 ) {
   return {

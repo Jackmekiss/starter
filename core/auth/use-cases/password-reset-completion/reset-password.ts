@@ -9,7 +9,7 @@ import type { EndpointBuilder } from "@reduxjs/toolkit/query";
  * Builds the endpoint that completes a password reset challenge.
  */
 export function resetPasswordBuilder(
-  build: EndpointBuilder<AuthApiBaseQueryFn, "Auth", "authApi">,
+  build: EndpointBuilder<AuthApiBaseQueryFn, never, "authApi">,
   authGateway: AuthGateway,
 ) {
   return {

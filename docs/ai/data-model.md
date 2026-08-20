@@ -16,16 +16,16 @@ Unknown / none discovered.
 
 ## Core entities
 
-| Entity                     | Purpose                                                | Key fields                                                                             | Relationships                                                                        | Notes                                                                                    |
-| -------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| Account                    | User-owned profile data for an authenticated identity. | `id`, `email`, `avatarUri`, `firstName`, `lastName`, `onboardingStatus`, `createdAt`   | Associated with `AuthUser` and `Session` through shared user/account id.             | Onboarding status controls route access.                                                 |
-| AuthUser                   | Minimal authenticated identity.                        | `id`, `email`                                                                          | Owns current `Session`; maps to `Account`.                                           | Distinct from account profile.                                                           |
-| Session                    | Auth token state for current user.                     | `userId`, `accessToken`, `refreshToken`, `expiresAt`                                   | Belongs to `AuthUser`.                                                               | Runtime truth lives in Redux; Redux Persist extracts durable credentials to SecureStore. |
-| AuthState                  | Durable auth runtime state.                            | `status`, `user`, `session`, `account`                                                 | Stores current account/session; transient request failures remain in RTK Query.      | Redux slice `auth`.                                                                      |
-| Subscription               | Current premium entitlement.                           | `tier`, `plan`, `status`, `price`, `currentPeriodEnd`, `trialEnd`, `cancelAtPeriodEnd` | Belongs to the current account conceptually; no explicit account id field currently. | Singleton subscription state.                                                            |
-| SubscriptionOffering       | Sellable premium plan option.                          | `id`, `plan`, `title`, `priceLabel`, `periodLabel`, optional labels                    | Used to purchase a `SubscriptionPlan`.                                               | Normalized with `createEntityAdapter`.                                                   |
-| SubscriptionState          | Runtime subscription entitlement state.                | `subscription`                                                                         | Stores current `Subscription`; transient billing failures remain in RTK Query.       | Redux slice `subscription`.                                                              |
-| SubscriptionOfferingsState | Normalized offering collection.                        | `ids`, `entities`                                                                      | Stores `SubscriptionOffering` by id.                                                 | Redux slice `subscriptionOfferings`.                                                     |
+| Entity                     | Purpose                                                | Key fields                                                                             | Relationships                                                                                                                | Notes                                                                                    |
+| -------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Account                    | User-owned profile data for an authenticated identity. | `id`, `email`, `avatarUri`, `firstName`, `lastName`, `onboardingStatus`, `createdAt`   | Associated with `AuthUser` and `Session` through shared user/account id.                                                     | Onboarding status controls route access.                                                 |
+| AuthUser                   | Minimal authenticated identity.                        | `id`, `email`                                                                          | Owns current `Session`; maps to `Account`.                                                                                   | Distinct from account profile.                                                           |
+| Session                    | Auth token state for current user.                     | `userId`, `accessToken`, `refreshToken`, `expiresAt`                                   | Belongs to `AuthUser`.                                                                                                       | Runtime truth lives in Redux; Redux Persist extracts durable credentials to SecureStore. |
+| AuthState                  | Durable auth runtime state.                            | `user`, `session`, `account`                                                           | Stores current account/session; connection derives from session presence and transient request failures remain in RTK Query. | Redux slice `auth`.                                                                      |
+| Subscription               | Current premium entitlement.                           | `tier`, `plan`, `status`, `price`, `currentPeriodEnd`, `trialEnd`, `cancelAtPeriodEnd` | Belongs to the current account conceptually; no explicit account id field currently.                                         | Singleton subscription state.                                                            |
+| SubscriptionOffering       | Sellable premium plan option.                          | `id`, `plan`, `title`, `priceLabel`, `periodLabel`, optional labels                    | Used to purchase a `SubscriptionPlan`.                                                                                       | Normalized with `createEntityAdapter`.                                                   |
+| SubscriptionState          | Runtime subscription entitlement state.                | `subscription`                                                                         | Stores current `Subscription`; transient billing failures remain in RTK Query.                                               | Redux slice `subscription`.                                                              |
+| SubscriptionOfferingsState | Normalized offering collection.                        | `ids`, `entities`                                                                      | Stores `SubscriptionOffering` by id.                                                                                         | Redux slice `subscriptionOfferings`.                                                     |
 
 ## Relationships
 
@@ -38,7 +38,6 @@ Unknown / none discovered.
 
 ## Lifecycle states
 
-- `AuthState.status`: `idle`, `success`.
 - `OnboardingStatus`: `pending`, `in-progress`, `completed`.
 - `SubscriptionTier`: `free`, `premium`.
 - `SubscriptionStatus`: `inactive`, `trialing`, `active`, `canceled`.
@@ -46,7 +45,7 @@ Unknown / none discovered.
 ## Deletion / archival rules
 
 - Auth logout clears the auth slice; Redux persistence then deletes the securely stored session.
-- Account deletion clears the same auth state and the in-memory adapter account/auth user.
+- Successful account deletion clears the same auth state and the in-memory adapter account/auth user; a failed deletion preserves local state.
 - Unknown: backend deletion, archival, retention, legal hold, or cascade rules.
 
 ## Ownership / multi-tenancy rules

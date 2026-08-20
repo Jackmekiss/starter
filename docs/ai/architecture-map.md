@@ -2,24 +2,24 @@
 
 ## App / package structure
 
-| Path                       | Responsibility                                                                                                       | Notes                                                                                                             |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `src/app/`                 | Expo Router routes, route groups, layouts, and screens.                                                              | Current route groups: `(auth)`, `(on-boarding)`, `(tabs)`, `(tabs)/(home)`. Screens are placeholders.             |
-| `src/app-runtime/`         | Runtime composition for providers, navigation, store, app mode, auth API wiring, and RVA-aligned secure persistence. | `src/app/_layout.tsx` exports runtime APIs for screens.                                                           |
-| `src/components/ui/`       | Reusable UI primitives.                                                                                              | Includes `Button`, `Icon`, `Input`, `Text`, `TextArea`, `BottomSheetModal`.                                       |
-| `src/components/ux/`       | UX-specific components that are not generic primitives.                                                              | Current example: `HapticTab`.                                                                                     |
-| `src/hooks/`               | App hooks and typed Redux hooks.                                                                                     | Keep business logic in `core/` when it has durable meaning.                                                       |
-| `src/localization/`        | i18next initialization, supported locale resolution, and the application localization provider.                      | Bundled catalogs live separately under `src/translations/`.                                                       |
-| `src/translations/`        | Bundled French and English application copy.                                                                         | French is the typed source catalog and fallback locale.                                                           |
-| `src/constants/`           | App constants and theme exports.                                                                                     | Keep durable domain constants in `core/` when they are business concepts.                                         |
-| `src/lib/`                 | Small app-level helpers.                                                                                             | Avoid growing generic utility buckets.                                                                            |
-| `core/auth/`               | Authentication bounded context.                                                                                      | Owns account/session domain, auth use-cases, auth gateway, adapters, selectors, and RTK Query API options.        |
-| `core/subscription/`       | Subscription bounded context.                                                                                        | Owns premium entitlement domain, subscription use-cases, gateway, adapters, selectors, and RTK Query API options. |
-| `core/shared/`             | Transport-independent contracts and lower-level shared adapters.                                                     | Owns `ApplicationError`, `Result`, `toRtkQueryResult`, and the Supabase slugify helper.                           |
-| `core/init-redux-store.ts` | Root Redux store factory for bounded-context slices and RTK Query APIs.                                              | Runtime mounts both Auth and Subscription APIs.                                                                   |
-| `.agents/skills/`          | Repo-specific agent workflow and convention skills.                                                                  | `frontend-*` skills cover the Expo app and frontend business core only; project memory skills cover continuity.   |
-| `docs/ai/`                 | Project memory system.                                                                                               | Stable and operational memory for humans and agents.                                                              |
-| `plans/`                   | Multi-session feature plans.                                                                                         | Use only when work is too large/risky for a single session.                                                       |
+| Path                       | Responsibility                                                                                                          | Notes                                                                                                                                                                                               |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/`                 | Expo Router routes, route groups, layouts, and screens.                                                                 | Current route groups: `(auth)`, `(on-boarding)`, `(tabs)`, `(tabs)/(home)`. Auth mounts the concrete login form; onboarding and home remain placeholders.                                           |
+| `src/app-runtime/`         | Runtime composition for providers, navigation, store, app mode, context API wiring, and RVA-aligned secure persistence. | `app-runtime.ts` is the explicit hook facade consumed by presentation code.                                                                                                                         |
+| `src/components/ui/`       | Reusable UI primitives.                                                                                                 | Includes `Button`, `Icon`, `Input`, `Text`, `Textarea`, `BottomSheetModal`.                                                                                                                         |
+| `src/components/ux/`       | UX-specific components that are not generic primitives.                                                                 | Current example: `HapticTab`.                                                                                                                                                                       |
+| `src/hooks/`               | App hooks and typed Redux hooks.                                                                                        | Keep business logic in `core/` when it has durable meaning.                                                                                                                                         |
+| `src/localization/`        | i18next initialization, supported locale resolution, and the application localization provider.                         | Bundled catalogs live separately under `src/translations/`.                                                                                                                                         |
+| `src/translations/`        | Bundled French and English application copy.                                                                            | French is the typed source catalog and fallback locale.                                                                                                                                             |
+| `src/constants/`           | App constants and theme exports.                                                                                        | Keep durable domain constants in `core/` when they are business concepts.                                                                                                                           |
+| `src/lib/`                 | Small app-level helpers.                                                                                                | Avoid growing generic utility buckets.                                                                                                                                                              |
+| `core/auth/`               | Authentication bounded context.                                                                                         | Owns account/session domain, auth use-cases, auth gateway, adapters, selectors, and RTK Query API options.                                                                                          |
+| `core/subscription/`       | Subscription bounded context.                                                                                           | Owns premium entitlement domain, subscription use-cases, gateway, adapters, selectors, and RTK Query API options.                                                                                   |
+| `core/shared/`             | Transport-independent contracts and lower-level shared adapters.                                                        | Owns `ApplicationError`, `Result`, `toRtkQueryResult`, and the Supabase slugify helper.                                                                                                             |
+| `core/init-redux-store.ts` | Root Redux store factory for bounded-context slices and RTK Query APIs.                                                 | Runtime mounts both Auth and Subscription APIs.                                                                                                                                                     |
+| `.agents/skills/`          | Repo-specific agent workflow and convention skills.                                                                     | [`frontend-core`](../../.agents/skills/frontend-core/SKILL.md) owns core/runtime guidance; [`frontend-ui`](../../.agents/skills/frontend-ui/SKILL.md) owns presentation and accessibility guidance. |
+| `docs/ai/`                 | Project memory system.                                                                                                  | Stable and operational memory for humans and agents.                                                                                                                                                |
+| `plans/`                   | Multi-session feature plans.                                                                                            | Use only when work is too large/risky for a single session.                                                                                                                                         |
 
 ## Frontend/backend boundaries
 
@@ -31,7 +31,8 @@
 
 ## Important architectural patterns
 
-- Frontend-first architecture inspired by Clean Architecture, Domain-Driven Design, and bounded contexts.
+- Starter applies strategic DDD to organize frontend business truth by bounded context and pragmatic Clean Architecture to isolate UI, transport, storage, and SDK details.
+- Redux Toolkit in `domain/slice.ts` and RTK Query in use-cases/APIs are intentional parts of this frontend architecture, not violations to replace with academic abstractions.
 - Use-cases are explicit RTK Query endpoint builders under `core/<context>/use-cases/<action>/`.
 - Use-cases call their business gateway directly through `queryFn`; `toRtkQueryResult` owns the RTK Query result adaptation for auth and subscription.
 - Context API options are assembled in `core/<context>/apis/*-api.ts`.
@@ -48,6 +49,7 @@
 ## Dependency direction rules
 
 - UI depends on bounded-context APIs/selectors.
+- `core/` never imports `src/`, and bounded contexts do not import one another directly.
 - Domain models should not depend on UI, navigation, storage, or network implementation details.
 - Gateways expose contracts and should not know concrete infrastructure.
 - Adapters depend on gateways/domain/API DTOs and are replaceable.
@@ -67,7 +69,7 @@
 
 ## Auth / session approach
 
-- Auth domain state stores runtime `user`, `session`, `account`, and connection `status`; transient auth request failures stay in RTK Query.
+- Auth domain state stores runtime `user`, `session`, and `account`; connection derives from `session`, and transient auth request failures stay in RTK Query.
 - The secure-session adapter stays in `src/app-runtime/runtime/`; the auth domain remains independent from storage.
 - `PersistGate` waits for secure-session rehydration before mounting route selection.
 - Account retrieval starts only after a rehydrated session exists, and the splash remains visible during its initial load.
@@ -93,6 +95,7 @@ Unknown / none discovered.
 
 - Expo app with `expo-router/entry`.
 - NativeWind v5 preview is wired through Tailwind CSS v4/PostCSS and Metro import rewrites; Babel uses only `babel-preset-expo`.
+- UI composition uses React Native primitives, local CVA-based primitives, and NativeWind; gluestack-ui is not part of the Starter stack.
 - `app.json` configures iOS, Android, web, splash screen, typed routes, and React Compiler.
 - `ios/` exists locally but is ignored by `.gitignore`; treat generated native folders carefully.
 - Build/release commands are Unknown; no `build` script was discovered in `package.json`.

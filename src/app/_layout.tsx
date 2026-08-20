@@ -8,8 +8,6 @@ import "@/global.css";
 import { RootAppProviders } from "@/app-runtime/root-app-providers";
 import { RootNavigator } from "@/app-runtime/root-navigator";
 
-export * from "@/app-runtime/app-runtime";
-
 SplashScreen.preventAutoHideAsync();
 
 SplashScreen.setOptions({

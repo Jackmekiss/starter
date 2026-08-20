@@ -10,7 +10,7 @@ import type { EndpointBuilder } from "@reduxjs/toolkit/query";
  * Builds the endpoint that registers an account and stores the auth session.
  */
 export function registerBuilder(
-  build: EndpointBuilder<AuthApiBaseQueryFn, "Auth", "authApi">,
+  build: EndpointBuilder<AuthApiBaseQueryFn, never, "authApi">,
   authGateway: AuthGateway,
 ) {
   return {

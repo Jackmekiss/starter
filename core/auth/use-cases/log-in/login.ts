@@ -10,7 +10,7 @@ import type { EndpointBuilder } from "@reduxjs/toolkit/query";
  * Builds the endpoint that authenticates with email and password.
  */
 export function loginBuilder(
-  build: EndpointBuilder<AuthApiBaseQueryFn, "Auth", "authApi">,
+  build: EndpointBuilder<AuthApiBaseQueryFn, never, "authApi">,
   authGateway: AuthGateway,
 ) {
   return {

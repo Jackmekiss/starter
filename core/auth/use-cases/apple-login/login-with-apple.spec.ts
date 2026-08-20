@@ -60,7 +60,11 @@ describe("Apple Login", () => {
       retryable: false,
     });
 
-    expect(store.getState().auth.status).toBe("idle");
+    expect(store.getState().auth).toEqual({
+      account: null,
+      session: null,
+      user: null,
+    });
   });
 
   /**
@@ -85,7 +89,6 @@ describe("Apple Login", () => {
     expect(store.getState().auth).toEqual({
       account,
       session,
-      status: "success",
       user,
     });
   }

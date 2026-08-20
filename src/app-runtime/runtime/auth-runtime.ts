@@ -46,6 +46,7 @@ authSessionListenerMiddleware.startListening({
 export const {
   useRetrieveAccountQuery,
   useUpdateAccountMutation,
+  useCompleteOnboardingMutation,
   useLoginMutation,
   useLoginWithGoogleMutation,
   useLoginWithAppleMutation,

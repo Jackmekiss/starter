@@ -33,7 +33,11 @@ describe("Password Reset Completion", () => {
     });
 
     expect(result).toBeUndefined();
-    expect(store.getState().auth.status).toBe("idle");
+    expect(store.getState().auth).toEqual({
+      account: null,
+      session: null,
+      user: null,
+    });
   });
 
   /**

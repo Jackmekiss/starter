@@ -7,7 +7,7 @@
 | Format check        | `pnpm run format:check` | `package.json`                     | Targeted Oxfmt passed         |
 | Lint                | `pnpm run lint`         | `package.json`                     | Passed 2026-08-20             |
 | Typecheck           | `pnpm run typecheck`    | `package.json`                     | Passed 2026-08-20             |
-| Unit/use-case tests | `pnpm run test`         | `package.json`, `vitest.config.ts` | 16 files, 31 tests passed     |
+| Unit/use-case tests | `pnpm run test`         | `package.json`, `vitest.config.ts` | 16 files, 32 tests passed     |
 | Broad code check    | `pnpm run check`        | `package.json`                     | Not run                       |
 
 ## Fastest safe validation command
@@ -85,3 +85,10 @@ Unknown / none discovered.
 
 - Current test suite: `core/**/use-cases/**/*.spec.ts`.
 - No UI, integration, or e2e test locations were discovered.
+
+## Frontend skill validation
+
+- Validate `frontend-core` and `frontend-ui` with Skill Creator's `quick_validate.py`.
+- When a frozen blueprint changes, rerun an independent generation scenario for the changed workflow and at least one regression scenario.
+- Evaluate generated diffs against architectural and behavioral invariants, not against exact prose.
+- Keep forward-test workspaces outside the repository and do not retain their generated source.

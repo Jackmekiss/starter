@@ -85,24 +85,27 @@ export class InMemoryAuthGateway extends AuthGateway {
 
   /** Returns the current local account. */
   retrieveAccount(): Promise<AuthResult<Account | null>> {
-    return this.executeOperation(() => this.currentAccount);
+    return this.executeOperation(() => ({
+      ok: true,
+      value: this.currentAccount,
+    }));
   }
 
   /** Updates the current local account. */
   updateAccount(payload: UpdateAccountPayload): Promise<AuthResult<Account>> {
-    const { currentAccount } = this;
-    if (!currentAccount) {
-      return Promise.resolve({
-        ok: false,
-        error: {
-          kind: "not-found",
-          code: "ACCOUNT_NOT_FOUND",
-          retryable: false,
-        },
-      });
-    }
-
     return this.executeOperation(() => {
+      const { currentAccount } = this;
+      if (!currentAccount) {
+        return {
+          ok: false,
+          error: {
+            kind: "not-found",
+            code: "ACCOUNT_NOT_FOUND",
+            retryable: false,
+          },
+        };
+      }
+
       this.currentAccount = produce(currentAccount, (draft) => {
         if (payload.avatarUri !== undefined)
           draft.avatarUri = payload.avatarUri;
@@ -115,7 +118,7 @@ export class InMemoryAuthGateway extends AuthGateway {
         );
       });
 
-      return this.currentAccount;
+      return { ok: true, value: this.currentAccount };
     });
   }
 
@@ -133,26 +136,37 @@ export class InMemoryAuthGateway extends AuthGateway {
       };
       this.currentAuthUser = { id: "1", email: payload.email };
 
-      return this.createAuthContext(this.currentAuthUser, this.currentAccount);
+      return {
+        ok: true,
+        value: this.createAuthContext(
+          this.currentAuthUser,
+          this.currentAccount,
+        ),
+      };
     });
   }
 
   /** Resolves the local auth session when a user and account exist. */
   login(_: LoginPayload): Promise<AuthResult<AuthContext>> {
-    if (!this.currentAuthUser || !this.currentAccount) {
-      return Promise.resolve({
-        ok: false,
-        error: {
-          kind: "business",
-          code: "INVALID_CREDENTIALS",
-          retryable: false,
-        },
-      });
-    }
+    return this.executeOperation(() => {
+      if (!this.currentAuthUser || !this.currentAccount) {
+        return {
+          ok: false,
+          error: {
+            kind: "business",
+            code: "INVALID_CREDENTIALS",
+            retryable: false,
+          },
+        };
+      }
 
-    return Promise.resolve({
-      ok: true,
-      value: this.createAuthContext(this.currentAuthUser, this.currentAccount),
+      return {
+        ok: true,
+        value: this.createAuthContext(
+          this.currentAuthUser,
+          this.currentAccount,
+        ),
+      };
     });
   }
 
@@ -176,17 +190,17 @@ export class InMemoryAuthGateway extends AuthGateway {
   requestPasswordReset(
     _: RequestPasswordResetPayload,
   ): Promise<AuthResult<void>> {
-    return Promise.resolve({ ok: true, value: undefined });
+    return this.executeOperation(() => ({ ok: true, value: undefined }));
   }
 
   /** Acknowledges password-reset completion. */
   resetPassword(_: ResetPasswordPayload): Promise<AuthResult<void>> {
-    return Promise.resolve({ ok: true, value: undefined });
+    return this.executeOperation(() => ({ ok: true, value: undefined }));
   }
 
   /** Completes local logout without deleting fixtures. */
   logout(): Promise<AuthResult<void>> {
-    return this.executeOperation(() => undefined);
+    return this.executeOperation(() => ({ ok: true, value: undefined }));
   }
 
   /** Clears the local account and identity. */
@@ -194,6 +208,8 @@ export class InMemoryAuthGateway extends AuthGateway {
     return this.executeOperation(() => {
       this.currentAccount = null;
       this.currentAuthUser = null;
+
+      return { ok: true, value: undefined };
     });
   }
 
@@ -204,12 +220,12 @@ export class InMemoryAuthGateway extends AuthGateway {
 
   /** Executes a local operation without leaking implementation failures. */
   private async executeOperation<Value>(
-    operation: () => Value | Promise<Value>,
+    operation: () => AuthResult<Value> | Promise<AuthResult<Value>>,
   ): Promise<AuthResult<Value>> {
     if (this.currentError) return { ok: false, error: this.currentError };
 
     try {
-      return { ok: true, value: await operation() };
+      return await operation();
     } catch (error) {
       return { ok: false, error: mapAuthAdapterError(error) };
     }

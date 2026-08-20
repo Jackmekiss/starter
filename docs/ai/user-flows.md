@@ -56,7 +56,7 @@ Create or access an account.
 ### Entry points
 
 - `src/app/(auth)/index.tsx`
-- Auth API hooks exported from `src/app/_layout.tsx` through `src/app-runtime/app-runtime.ts`
+- Auth API hooks exported from the `src/app-runtime/app-runtime.ts` presentation facade
 
 ### Happy path
 
@@ -75,7 +75,7 @@ Create or access an account.
 
 ### Error / empty / loading states
 
-- Durable auth status supports `idle` and `success`; transient loading and error state belongs to RTK Query.
+- `auth.session` presence is the durable connection truth; transient loading and error state belongs to RTK Query.
 - Auth errors have stable codes without raw backend messages.
 - The login form disables controls while submitting and renders localized field and submission errors.
 
@@ -183,19 +183,19 @@ Retrieve, update, log out, or delete an account.
 
 ### Entry points
 
-- Auth API hooks from `src/app-runtime/runtime/auth-runtime.ts`
+- Auth API hooks from the `src/app-runtime/app-runtime.ts` presentation facade
 - Current UI entry points are Unknown.
 
 ### Happy path
 
 1. Account retrieval stores the current account in auth state.
 2. Account updates store the updated account in auth state.
-3. Logout marks logout requested, waits for the gateway, then clears auth state.
-4. Account deletion marks logout requested, waits for the gateway, then clears auth state.
+3. Logout waits for the gateway attempt to settle, then always clears local auth state while preserving the remote result.
+4. Successful account deletion clears local auth state; a failed deletion remains an RTK Query error.
 
 ### Edge cases
 
-- Updating an account throws if no account exists in the in-memory adapter.
+- Updating a missing account returns the typed `ACCOUNT_NOT_FOUND` auth result.
 - Account retrieval can store `null`.
 
 ### Error / empty / loading states
@@ -222,7 +222,7 @@ Request and complete password reset.
 
 ### Entry points
 
-- Auth API hooks from `src/app-runtime/runtime/auth-runtime.ts`
+- Auth API hooks from the `src/app-runtime/app-runtime.ts` presentation facade
 - Current UI entry points are Unknown.
 
 ### Happy path
@@ -257,15 +257,15 @@ View premium offerings, purchase or restore premium, manage subscription, and re
 
 ### Entry points
 
-- Subscription RTK Query API in `core/subscription/apis/subscription-api.ts`.
+- Subscription hooks exported from the `src/app-runtime/app-runtime.ts` presentation facade.
 - Current UI entry points are Unknown.
-- The runtime store defines subscription support, but `src/app-runtime/runtime/store-runtime.ts` currently mounts only `authApi`.
+- `src/app-runtime/runtime/store-runtime.ts` mounts both `authApi` and `subscriptionApi`.
 
 ### Happy path
 
 1. Retrieve offerings through the subscription gateway and store normalized offerings.
 2. Purchase selected `annual` or `monthly` plan.
-3. Store successful subscription entitlement or an error message.
+3. Store successful subscription entitlement while transient failures remain in RTK Query.
 4. Restore purchases or open subscription management through the active billing adapter.
 5. Read subscription status during startup or feature gating.
 
@@ -277,7 +277,7 @@ View premium offerings, purchase or restore premium, manage subscription, and re
 
 ### Error / empty / loading states
 
-- Subscription state stores latest billing `errorMessage`.
+- Subscription slices store durable entitlement and normalized offerings, not transient error messages.
 - RevenueCat adapter normalizes unavailable and failed purchase/restore/manage errors.
 - Concrete paywall UI is Unknown.
 
@@ -294,5 +294,4 @@ View premium offerings, purchase or restore premium, manage subscription, and re
 
 ### Open questions
 
-- Should the subscription API be mounted in the runtime store now or only when a paywall UI exists?
 - What RevenueCat product identifiers, entitlement names, prices, and platform setup are intended?

@@ -92,7 +92,6 @@ describe("Registration", () => {
     expect(store.getState().auth).toEqual({
       account,
       session,
-      status: "success",
       user,
     });
   }

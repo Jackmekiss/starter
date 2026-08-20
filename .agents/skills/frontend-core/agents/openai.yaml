@@ -1,0 +1,6 @@
+interface:
+  display_name: "Frontend Core"
+  short_description: "Build Starter frontend core capabilities"
+  default_prompt: "Use $frontend-core to implement this capability in Starter's frontend business core."
+policy:
+  allow_implicit_invocation: true

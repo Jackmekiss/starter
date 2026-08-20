@@ -75,9 +75,21 @@ describe("Log In", () => {
     expect(store.getState().auth).toEqual({
       account: null,
       session: null,
-      status: "idle",
       user: null,
     });
+  });
+
+  it("should propagate an injected in-memory failure through the same contract", async () => {
+    authGateway.error = { kind: "network", retryable: true };
+
+    await expect(
+      login({ email: "user@example.com", password: "password" }),
+    ).rejects.toEqual({
+      kind: "network",
+      retryable: true,
+    });
+
+    expectUnauthenticatedState();
   });
 
   it("should map a backend login code before RTK Query rejects", async () => {
@@ -162,7 +174,6 @@ describe("Log In", () => {
     expect(store.getState().auth).toEqual({
       account: null,
       session: null,
-      status: "idle",
       user: null,
     });
   }
@@ -182,7 +193,6 @@ describe("Log In", () => {
     expect(store.getState().auth).toEqual({
       account,
       session,
-      status: "success",
       user,
     });
   }

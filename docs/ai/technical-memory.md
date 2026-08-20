@@ -38,7 +38,7 @@ Do not claim a command passes unless it was run in the current session or a reco
 ## Naming conventions
 
 - Files and folders use kebab-case by default.
-- Component files/folders may use PascalCase, such as `MyComponent.tsx` or `MyComponent/index.tsx`.
+- Shared UI and UX primitives use PascalCase filenames; feature components use kebab-case filenames.
 - Hook files/folders use camelCase, such as `useThing.ts`.
 - Expo Router conventions may keep `_layout.tsx`, `index.tsx`, and route group names.
 - Variables, functions, parameters, and properties use `camelCase`, `UPPER_CASE`, or `PascalCase`.
@@ -59,14 +59,16 @@ Do not claim a command passes unless it was run in the current session or a reco
 ## UI conventions
 
 - Use Expo Router route groups and keep route files thin.
+- Import generated context hooks through `@/app-runtime/app-runtime`; routes and feature components must not import API instances or concrete gateways.
 - Use NativeWind v5 `className` and Tailwind/theme tokens defined CSS-first in `src/global.css` with Tailwind v4 `@theme`/`@utility`.
 - Define automatic dark token values under `@media (prefers-color-scheme: dark)` and keep `NAV_THEME` synchronized through `useColorScheme`.
 - Application-owned components accept and forward `className`. Wrap incompatible third-party native components with `styled()` and map secondary style props there; do not replace desired utilities with `StyleSheet` workarounds.
 - Reuse `src/components/ui/` primitives before creating local systems.
+- Starter does not use gluestack-ui; do not introduce its component/provider patterns unless the user explicitly changes the stack.
 - Use `react-hook-form` for real forms, with `<Controller />` for controlled primitives.
 - Avoid inline arrow functions in JSX returns when reasonably possible; use named handlers.
 - Parent layouts own external spacing; reusable children own internal spacing.
-- Avoid arbitrary Tailwind values inside shared primitives; promote repeated values to tokens/config.
+- Keep raw colors and arbitrary values out of screens and feature components. Confine justified interop or design-system exceptions to shared primitives and promote repeated values to tokens.
 
 ## Localization conventions
 
@@ -79,11 +81,13 @@ Do not claim a command passes unless it was run in the current session or a reco
 
 ## Domain conventions
 
-- Each bounded context under `core/` owns domain entities, use-cases, gateways, adapters, selectors, runtime state, and API facade.
+- Each bounded context under `core/` owns its frontend business vocabulary, models, use-cases, gateways, adapters, selectors, durable state, and API options.
 - In this starter, `core/` means frontend business core for the Expo app, not backend server code.
+- Starter uses strategic DDD and pragmatic Clean Architecture; do not add aggregates, value objects, repositories, or domain services without a concrete business need.
+- Redux Toolkit slices under `domain/` and RTK Query builders under `use-cases/` are intentional Starter conventions.
 - Use-cases live one action per file under action-oriented folders.
 - Gateways define stable contracts and keep implementations replaceable.
-- API DTOs live in `core/<context>/apis/types.ts`.
+- Public application payloads and result shapes live in `core/<context>/apis/types.ts`; raw transport DTOs stay in concrete adapters.
 - Durable collections keyed by id should use `createEntityAdapter`.
 - Test use-cases by dispatching RTK Query endpoints against in-memory adapters.
 - Inject `DateProvider` into time-dependent adapters instead of reading `Date.now()` or constructing the current date directly.
@@ -121,9 +125,17 @@ Unknown. No explicit logging convention was discovered. ESLint allows `console` 
 
 - UI should not import concrete adapters.
 - Screens should rely on context API hooks/selectors and avoid raw infrastructure access.
+- `core/` must not import `src/`, and bounded contexts must not import one another directly; cross-context reactions belong in runtime composition.
 - Domain should remain independent from UI, navigation, storage, and networking details.
 - Avoid generic folders like `helpers`, `misc`, `manager`, or catch-all `utils` without strong justification.
 - NativeWind v5 is currently installed from its preview channel. Keep `react-native-css`, PostCSS, Tailwind CSS v4, and the pinned `lightningcss` override aligned with the official migration guide.
+
+## Frontend skill blueprint maintenance
+
+- [`frontend-core`](../../.agents/skills/frontend-core/SKILL.md) and [`frontend-ui`](../../.agents/skills/frontend-ui/SKILL.md) are the only discoverable frontend code skills.
+- Their versioned blueprints are the default shape for new Starter code.
+- Change a frozen blueprint only alongside an accepted architecture decision and independent forward-testing.
+- Archived frontend skills under `docs/archive/agent-skills-v1/` are historical and non-normative.
 
 ## Environment / config conventions
 

@@ -86,7 +86,6 @@ describe("Log Out", () => {
    * Expects auth state to be cleared after logout.
    */
   function expectClearedAuthState() {
-    expect(store.getState().auth.status).toBe("idle");
     expect(store.getState().auth.user).toBeNull();
     expect(store.getState().auth.session).toBeNull();
     expect(store.getState().auth.account).toBeNull();

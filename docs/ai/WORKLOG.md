@@ -570,3 +570,46 @@ The audit found that `userInterfaceStyle: automatic` was declared while CSS toke
 ### Next
 
 - Smoke-test light/dark switching on native platforms, then commit and push only when requested.
+
+## 2026-08-20 - Reconstruct Starter frontend skills
+
+### Context
+
+The user requested rebuilding the Starter frontend skills from zero so they generate the normalized Starter implementation precisely. The new guidance had to treat `core/` as a frontend business core grounded in strategic DDD and pragmatic Clean Architecture, without attaching Expo to domain or architecture naming.
+
+### Changes
+
+- Normalized Auth around `auth.session` as the sole connection truth, removed dead selectors and RTK Query tags, unified in-memory/fake failure execution, and updated affected behavior specs.
+- Moved shared sleep ownership, aligned Subscription error presentation, normalized the `Textarea` name, corrected theme tokens, and tightened destructive-button text styling.
+- Reduced `src/app-runtime/app-runtime.ts` to the explicit UI hook and `appMode` facade, added the missing onboarding hook, and removed the root-layout re-export.
+- Archived the five previous frontend skills under `docs/archive/agent-skills-v1/` with a non-normative source manifest.
+- Added `frontend-core` and `frontend-ui` with implicit invocation metadata and fourteen frozen `1.0.0` blueprints covering required trees, complete skeletons, invariants, and anti-patterns.
+- Updated routing in `AGENTS.md` and aligned architecture, technical, product-flow, data, API, glossary, validation, decision, current-state, and handoff memory.
+- Kept historical worklog entries unchanged when they referenced the archived skill names.
+
+### Decisions
+
+- Use two frontend skills only: `frontend-core` for the business core and runtime composition, and `frontend-ui` for routes, screens, presentation, styling, localization, and accessibility.
+- Treat the blueprints as frozen generated-code contracts; change them only after an accepted decision and a new independent forward-test.
+- Use React Native primitives, NativeWind v5/Tailwind v4, CVA, and local primitives as Starter's UI stack; do not assume gluestack-ui.
+
+### Validation
+
+- Passed: `pnpm run test` (16 files, 32 tests).
+- Passed: `pnpm run typecheck`.
+- Passed: `pnpm run lint`.
+- Passed: Skill Creator `quick_validate.py` for both new skills with Anaconda Python.
+- Passed: targeted Oxfmt for all modified files and `git diff --check`.
+- Passed: archive integrity, active-skill inventory, blueprint count/version, and stale source-name searches.
+- Passed six isolated forward-tests: Notifications bounded context (38 tests), authenticated Auth email mutation (37 tests), normalized durable collection (34 tests), localized accessible route/form (32 tests), accessibility-only Login audit with no visual change (32 tests), and UI-local logout modal with no `core/` or runtime change (32 tests).
+- Each forward-test passed its full suite, typecheck, Oxlint, ESLint, targeted formatting, diff check, and a boundary review.
+- An independent final audit found and corrected stale Auth/test documentation, the missing UI naming rule, an Oxfmt-sensitive runtime placeholder, and a test-only runtime factory pattern that was too permissive.
+- After those corrections, Notifications reran with direct runtime composition (18 files, 38 tests), Profile reran as the UI naming regression (16 files, 32 tests), and Library independently reproduced normalized state plus direct runtime wiring (17 files, 34 tests).
+- Global `pnpm run format:check` still reports nine pre-existing untouched Markdown files outside this change.
+- Native VoiceOver/TalkBack was not run because no simulator/device automation harness was provided.
+
+### Next
+
+- Review the complete diff.
+- Optionally run native accessibility and appearance smoke tests.
+- Commit and push only when requested.

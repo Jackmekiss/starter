@@ -24,9 +24,8 @@ export function createAuthApiOptions(authGateway: AuthGateway) {
   return {
     baseQuery: fakeBaseQuery<AuthError>(),
     reducerPath: "authApi",
-    tagTypes: ["Auth"],
     endpoints: (
-      builder: EndpointBuilder<AuthApiBaseQueryFn, "Auth", "authApi">,
+      builder: EndpointBuilder<AuthApiBaseQueryFn, never, "authApi">,
     ) => ({
       ...retrieveAccountBuilder(builder, authGateway),
       ...updateAccountBuilder(builder, authGateway),

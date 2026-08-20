@@ -8,7 +8,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-background: var(--background);
   --color-border: var(--border);
-  --color-canvas: var(--secondary);
+  --color-canvas: var(--canvas);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-destructive: var(--destructive);
@@ -40,6 +40,7 @@
   --accent-foreground: hsl(0 0% 20.5%);
   --background: hsl(0 0% 100%);
   --border: hsl(0 0% 92.2%);
+  --canvas: hsl(0 0% 97%);
   --card: hsl(0 0% 100%);
   --card-foreground: hsl(0 0% 14.5%);
   --destructive: hsl(0 84.2% 60.2%);
@@ -64,6 +65,7 @@
     --accent-foreground: hsl(0 0% 98.5%);
     --background: hsl(0 0% 20.5%);
     --border: hsl(0 0% 26.9%);
+    --canvas: hsl(0 0% 14.5%);
     --card: hsl(0 0% 14.5%);
     --card-foreground: hsl(0 0% 98.5%);
     --destructive: hsl(0 62.8% 50.6%);
