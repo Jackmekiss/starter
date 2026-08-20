@@ -16,6 +16,11 @@ interface LoginFormValues {
   password: string;
 }
 
+const EMAIL_LABEL_ID = "login-email-label";
+const EMAIL_ERROR_ID = "login-email-error";
+const PASSWORD_LABEL_ID = "login-password-label";
+const PASSWORD_ERROR_ID = "login-password-error";
+
 /** Submits the login use-case and presents safe localized failures. */
 export function LoginForm() {
   const { t } = useTranslation();
@@ -68,10 +73,19 @@ export function LoginForm() {
         }}
         render={({ field: { onBlur, onChange, ref, value } }) => (
           <View className="gap-2">
-            <Text variant="small">{t("auth__login__email_label")}</Text>
+            <Text nativeID={EMAIL_LABEL_ID} variant="small">
+              {t("auth__login__email_label")}
+            </Text>
             <Input
               ref={ref}
+              aria-describedby={
+                errors.email?.message ? EMAIL_ERROR_ID : undefined
+              }
               aria-invalid={Boolean(errors.email)}
+              aria-labelledby={EMAIL_LABEL_ID}
+              accessibilityHint={errors.email?.message}
+              accessibilityLabel={t("auth__login__email_label")}
+              accessibilityLabelledBy={EMAIL_LABEL_ID}
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect={false}
@@ -84,7 +98,13 @@ export function LoginForm() {
               value={value}
             />
             {errors.email?.message ? (
-              <Text className="text-destructive" variant="muted">
+              <Text
+                accessibilityLiveRegion="polite"
+                accessibilityRole="alert"
+                className="text-destructive"
+                nativeID={EMAIL_ERROR_ID}
+                variant="muted"
+              >
                 {errors.email.message}
               </Text>
             ) : null}
@@ -98,10 +118,19 @@ export function LoginForm() {
         rules={{ required: t("auth__login__password_required") }}
         render={({ field: { onBlur, onChange, ref, value } }) => (
           <View className="gap-2">
-            <Text variant="small">{t("auth__login__password_label")}</Text>
+            <Text nativeID={PASSWORD_LABEL_ID} variant="small">
+              {t("auth__login__password_label")}
+            </Text>
             <Input
               ref={ref}
+              aria-describedby={
+                errors.password?.message ? PASSWORD_ERROR_ID : undefined
+              }
               aria-invalid={Boolean(errors.password)}
+              aria-labelledby={PASSWORD_LABEL_ID}
+              accessibilityHint={errors.password?.message}
+              accessibilityLabel={t("auth__login__password_label")}
+              accessibilityLabelledBy={PASSWORD_LABEL_ID}
               autoCapitalize="none"
               autoComplete="current-password"
               autoCorrect={false}
@@ -114,7 +143,13 @@ export function LoginForm() {
               value={value}
             />
             {errors.password?.message ? (
-              <Text className="text-destructive" variant="muted">
+              <Text
+                accessibilityLiveRegion="polite"
+                accessibilityRole="alert"
+                className="text-destructive"
+                nativeID={PASSWORD_ERROR_ID}
+                variant="muted"
+              >
                 {errors.password.message}
               </Text>
             ) : null}
@@ -133,7 +168,11 @@ export function LoginForm() {
         </Text>
       ) : null}
 
-      <Button disabled={isLoading} onPress={handlePressLogin}>
+      <Button
+        accessibilityState={{ busy: isLoading, disabled: isLoading }}
+        disabled={isLoading}
+        onPress={handlePressLogin}
+      >
         <Text>
           {isLoading ? t("auth__login__submitting") : t("auth__login__submit")}
         </Text>

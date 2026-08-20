@@ -1,6 +1,7 @@
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import Toast from "react-native-toast-message";
 
 import "@/global.css";
@@ -26,10 +27,16 @@ export const unstable_settings = {
  */
 export default function AppLayout() {
   return (
-    <RootAppProviders>
-      <RootNavigator />
-      <StatusBar />
-      <Toast />
-    </RootAppProviders>
+    <KeyboardProvider
+      navigationBarTranslucent
+      preserveEdgeToEdge
+      statusBarTranslucent
+    >
+      <RootAppProviders>
+        <RootNavigator />
+        <StatusBar />
+        <Toast />
+      </RootAppProviders>
+    </KeyboardProvider>
   );
 }
