@@ -60,6 +60,7 @@ Do not claim a command passes unless it was run in the current session or a reco
 
 - Use Expo Router route groups and keep route files thin.
 - Use NativeWind v5 `className` and Tailwind/theme tokens defined CSS-first in `src/global.css` with Tailwind v4 `@theme`/`@utility`.
+- Define automatic dark token values under `@media (prefers-color-scheme: dark)` and keep `NAV_THEME` synchronized through `useColorScheme`.
 - Application-owned components accept and forward `className`. Wrap incompatible third-party native components with `styled()` and map secondary style props there; do not replace desired utilities with `StyleSheet` workarounds.
 - Reuse `src/components/ui/` primitives before creating local systems.
 - Use `react-hook-form` for real forms, with `<Controller />` for controlled primitives.

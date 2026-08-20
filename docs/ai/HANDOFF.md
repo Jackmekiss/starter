@@ -5,38 +5,38 @@
 1. `AGENTS.md`
 2. `docs/ai/INDEX.md`
 3. `docs/ai/CURRENT.md`
-4. `.agents/skills/frontend-domain-layer/SKILL.md`
-5. `core/auth/use-cases/log-out/logout.ts`
-6. `core/subscription/adapters/in-memory/in-memory-subscription-gateway.ts`
+4. `.agents/skills/frontend-ui-conventions/SKILL.md`
+5. `src/global.css`
+6. `src/constants/theme.ts`
 
 ## Situation summary
 
-The audited logout and subscription error-injection gaps are fixed locally.
+Automatic dark mode is implemented locally.
 
-Logout waits for the remote attempt to settle, preserves its typed RTK Query success or rejection, and clears local auth state in `finally`. Every in-memory subscription operation now runs through the same typed-result execution wrapper, and `FakeSubscriptionGateway.error` forwards deterministic failures to that adapter.
+NativeWind v5 resolves dark CSS variables through `prefers-color-scheme`, Expo Router selects `NAV_THEME` from `useColorScheme`, and the Bottom Sheet resolves its imperative background and handle colors from the same scheme. Null or `unspecified` system values fall back to light.
 
 ## Exact continuation point
 
-Review the seven changed source/spec files and checkpoint documentation, then commit and push only when requested.
+Perform native light/dark smoke tests, review the four source files plus checkpoint documentation, then commit and push only when requested.
 
 ## Known constraints
 
-- Offline logout clears local state after the remote adapter settles; the sample HTTP adapter may wait for its configured timeout.
-- Production auth token refresh is still not implemented.
-- RevenueCat has no concrete runtime wiring yet.
+- NativeWind v5 remains a preview dependency.
+- Native simulator/device appearance switching was not run in this session.
+- Production auth token refresh and RevenueCat runtime wiring remain open.
 
 ## Branch and working tree
 
 - Branch: `master`.
-- Expected uncommitted changes: auth logout behavior/spec, subscription fake and in-memory adapters/specs, and checkpoint documentation.
+- Expected uncommitted changes: four theme/runtime source files and checkpoint documentation.
 
 ## Tests / checks last run
 
 - Passed: `pnpm run test` (16 files, 31 tests).
 - Passed: `pnpm run typecheck`.
 - Passed: `pnpm run lint`.
-- Passed: targeted Oxfmt check.
-- Passed: `git diff --check`.
+- Passed: targeted Oxfmt check and `git diff --check`.
+- Passed: Expo Web export with generated dark media-query tokens.
 
 ## Recommended first command
 

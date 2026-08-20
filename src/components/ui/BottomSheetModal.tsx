@@ -6,8 +6,9 @@ import {
 } from "@gorhom/bottom-sheet";
 import { styled } from "nativewind";
 import React, { useCallback, useImperativeHandle, useRef } from "react";
+import { useColorScheme } from "react-native";
 
-import { THEME } from "@/constants/theme";
+import { resolveAppColorScheme, THEME } from "@/constants/theme";
 import { cn } from "@/lib/cn";
 
 const StyledBottomSheetModal = styled(BottomSheetModalComponent, {
@@ -49,11 +50,13 @@ function BottomSheetModal({
   children,
   ref,
   contentClassName,
-  backgroundColor = THEME.light.background,
+  backgroundColor,
   minHeight = 300,
   snapPoints,
   backdropOpacity = 0.4,
 }: Props) {
+  const colorScheme = resolveAppColorScheme(useColorScheme());
+  const theme = THEME[colorScheme];
   const bottomSheetModalRef =
     useRef<React.ComponentRef<typeof StyledBottomSheetModal>>(null);
 
@@ -85,11 +88,11 @@ function BottomSheetModal({
       backdropComponent={renderBackdrop}
       snapPoints={snapPoints}
       handleIndicatorStyle={{
-        backgroundColor: THEME.light.secondary,
+        backgroundColor: theme.secondary,
         width: 60,
         marginVertical: 16,
       }}
-      backgroundStyle={{ backgroundColor }}
+      backgroundStyle={{ backgroundColor: backgroundColor ?? theme.background }}
     >
       <BottomSheetView
         className={cn(

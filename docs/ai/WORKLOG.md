@@ -545,3 +545,28 @@ The audit found that a failed remote logout retained local credentials, while re
 ### Next
 
 - Review and commit/push only when requested, then continue with auth bootstrap and token refresh hardening.
+
+## 2026-08-20 - Implement automatic dark appearance
+
+### Context
+
+The audit found that `userInterfaceStyle: automatic` was declared while CSS tokens, navigation, and Bottom Sheet imperative colors remained light-only.
+
+### Changes
+
+- Added a complete dark token set under the system color-scheme media query.
+- Added a shared resolver for light, dark, null, and `unspecified` React Native appearance values.
+- Synchronized Expo Router's navigation theme with system appearance.
+- Made Bottom Sheet background and handle colors theme-aware while preserving explicit overrides.
+
+### Validation
+
+- Passed: `pnpm run test` (16 files, 31 tests).
+- Passed: `pnpm run typecheck`.
+- Passed: `pnpm run lint`.
+- Passed: targeted Oxfmt check and `git diff --check`.
+- Passed: Expo Web export; generated CSS contains the dark preference media query and token values.
+
+### Next
+
+- Smoke-test light/dark switching on native platforms, then commit and push only when requested.
