@@ -5,33 +5,36 @@
 1. `AGENTS.md`
 2. `docs/ai/INDEX.md`
 3. `docs/ai/CURRENT.md`
-4. `.agents/skills/frontend-ui-conventions/SKILL.md`
-5. `.agents/skills/frontend-ui-conventions/references/styling.md`
+4. `.agents/skills/frontend-domain-layer/SKILL.md`
+5. `core/auth/use-cases/log-out/logout.ts`
+6. `core/subscription/adapters/in-memory/in-memory-subscription-gateway.ts`
 
 ## Situation summary
 
-The NativeWind v5 migration is published in `754c054`. A focused follow-up makes the third-party interop rule explicit in the frontend UI skill entrypoint and its styling reference.
+The audited logout and subscription error-injection gaps are fixed locally.
 
-When a third-party native component ignores `className`, create a local `styled()` adapter and map class props to the component's real style props. Do not use `StyleSheet` merely to bypass missing `className` support.
+Logout waits for the remote attempt to settle, preserves its typed RTK Query success or rejection, and clears local auth state in `finally`. Every in-memory subscription operation now runs through the same typed-result execution wrapper, and `FakeSubscriptionGateway.error` forwards deterministic failures to that adapter.
 
 ## Exact continuation point
 
-Review the two uncommitted skill files after `754c054`, then commit and push only when requested.
+Review the seven changed source/spec files and checkpoint documentation, then commit and push only when requested.
 
 ## Known constraints
 
-- NativeWind v5 is a preview release.
-- Keep theme tokens and custom utilities in `src/global.css`.
-- Use `styled()` for incompatible third-party components and forward `className` from application-owned components.
+- Offline logout clears local state after the remote adapter settles; the sample HTTP adapter may wait for its configured timeout.
+- Production auth token refresh is still not implemented.
+- RevenueCat has no concrete runtime wiring yet.
 
 ## Branch and working tree
 
 - Branch: `master`.
-- Expected uncommitted changes: the frontend UI skill entrypoint, its styling reference, and checkpoint documentation.
+- Expected uncommitted changes: auth logout behavior/spec, subscription fake and in-memory adapters/specs, and checkpoint documentation.
 
 ## Tests / checks last run
 
-- Passed: Skill Creator `quick_validate.py`.
+- Passed: `pnpm run test` (16 files, 31 tests).
+- Passed: `pnpm run typecheck`.
+- Passed: `pnpm run lint`.
 - Passed: targeted Oxfmt check.
 - Passed: `git diff --check`.
 

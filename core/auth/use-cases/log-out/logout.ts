@@ -18,9 +18,10 @@ export function logoutBuilder(
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
-          dispatch(clearAuth());
         } catch {
           // RTK Query owns the transient request failure.
+        } finally {
+          dispatch(clearAuth());
         }
       },
     }),

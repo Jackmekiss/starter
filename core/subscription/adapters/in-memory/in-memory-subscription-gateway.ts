@@ -88,7 +88,10 @@ export class InMemorySubscriptionGateway extends SubscriptionGateway {
   retrieveSubscriptionOfferings(): Promise<
     SubscriptionResult<SubscriptionOffering[]>
   > {
-    return this.executeOperation(() => this.currentSubscriptionOfferings);
+    return this.executeOperation(() => ({
+      ok: true,
+      value: this.currentSubscriptionOfferings,
+    }));
   }
 
   /** Activates a local premium subscription. */
@@ -100,7 +103,13 @@ export class InMemorySubscriptionGateway extends SubscriptionGateway {
         payload.plan,
         this.dateProvider.now(),
       );
-      return { subscription: this.currentSubscription, plan: payload.plan };
+      return {
+        ok: true,
+        value: {
+          subscription: this.currentSubscription,
+          plan: payload.plan,
+        },
+      };
     });
   }
 
@@ -108,26 +117,28 @@ export class InMemorySubscriptionGateway extends SubscriptionGateway {
   restoreSubscriptionPurchases(): Promise<
     SubscriptionResult<SubscriptionActionResult>
   > {
-    if (
-      this.currentSubscription.tier !== "premium" ||
-      !this.currentSubscription.plan
-    ) {
-      return Promise.resolve({
-        ok: false,
-        error: {
-          kind: "not-found",
-          code: "NO_ACTIVE_PURCHASE",
-          retryable: false,
-        },
-      });
-    }
+    return this.executeOperation(() => {
+      if (
+        this.currentSubscription.tier !== "premium" ||
+        !this.currentSubscription.plan
+      ) {
+        return {
+          ok: false,
+          error: {
+            kind: "not-found",
+            code: "NO_ACTIVE_PURCHASE",
+            retryable: false,
+          },
+        };
+      }
 
-    return Promise.resolve({
-      ok: true,
-      value: {
-        subscription: this.currentSubscription,
-        plan: this.currentSubscription.plan,
-      },
+      return {
+        ok: true,
+        value: {
+          subscription: this.currentSubscription,
+          plan: this.currentSubscription.plan,
+        },
+      };
     });
   }
 
@@ -135,30 +146,35 @@ export class InMemorySubscriptionGateway extends SubscriptionGateway {
   openSubscriptionManagement(): Promise<
     SubscriptionResult<SubscriptionActionResult>
   > {
-    return Promise.resolve({
+    return this.executeOperation(() => ({
       ok: true,
       value: {
         subscription: this.currentSubscription,
         plan: this.currentSubscription.plan ?? "annual",
       },
-    });
+    }));
   }
 
   /** Returns the current local entitlement. */
   retrieveSubscriptionStatus(): Promise<
     SubscriptionResult<Subscription | null>
   > {
-    return this.executeOperation(() => this.currentSubscription);
+    return this.executeOperation(() => ({
+      ok: true,
+      value: this.currentSubscription,
+    }));
   }
 
   /** Executes a local operation without leaking implementation failures. */
   private async executeOperation<Value>(
-    operation: () => Value | Promise<Value>,
+    operation: () =>
+      | SubscriptionResult<Value>
+      | Promise<SubscriptionResult<Value>>,
   ): Promise<SubscriptionResult<Value>> {
     if (this.currentError) return { ok: false, error: this.currentError };
 
     try {
-      return { ok: true, value: await operation() };
+      return await operation();
     } catch (error) {
       return { ok: false, error: mapSubscriptionAdapterError(error) };
     }

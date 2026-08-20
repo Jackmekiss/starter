@@ -42,6 +42,17 @@ describe("Subscription Management", () => {
     expectSubscription(subscription);
   });
 
+  it("should propagate an injected adapter failure", async () => {
+    subscriptionGateway.error = { kind: "unavailable", retryable: true };
+
+    await expect(openSubscriptionManagement()).rejects.toEqual({
+      kind: "unavailable",
+      retryable: true,
+    });
+
+    expect(store.getState().subscription.subscription).toBeNull();
+  });
+
   /**
    * Dispatches the subscription management use-case.
    */

@@ -60,6 +60,17 @@ describe("Subscription Restore", () => {
     expect(store.getState().subscription.subscription).toBeNull();
   });
 
+  it("should propagate an injected adapter failure", async () => {
+    subscriptionGateway.error = { kind: "network", retryable: true };
+
+    await expect(restoreSubscriptionPurchases()).rejects.toEqual({
+      kind: "network",
+      retryable: true,
+    });
+
+    expect(store.getState().subscription.subscription).toBeNull();
+  });
+
   /**
    * Dispatches the subscription restore use-case.
    */

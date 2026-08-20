@@ -42,6 +42,25 @@ describe("Log Out", () => {
     expectClearedAuthState();
   });
 
+  it("should clear local auth state when remote logout fails", async () => {
+    const account = accountBuilder().withId("1").build();
+    authGateway.account = account;
+    authGateway.authUser = authUserBuilder()
+      .withId(account.id)
+      .withEmail(account.email)
+      .build();
+
+    await login();
+
+    authGateway.error = { kind: "network", retryable: true };
+
+    await expect(logout()).rejects.toEqual({
+      kind: "network",
+      retryable: true,
+    });
+    expectClearedAuthState();
+  });
+
   /**
    * Dispatches the log-in use-case to create an authenticated state.
    */

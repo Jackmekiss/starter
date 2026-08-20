@@ -8,24 +8,28 @@ Last updated: 2026-08-20
 
 ## Current focus
 
-Explicit NativeWind v5 third-party interop guidance.
+Reliable local logout and uniform subscription fake failures.
 
 ## Current status
 
-Implemented and validated locally. Changes are uncommitted after `754c054`.
+Implemented and validated locally. Changes are uncommitted after `86da542`.
 
-The `frontend-ui-conventions` entrypoint and styling reference now enforce the exact decision: application components forward `className`; incompatible third-party native components use a local NativeWind v5 `styled()` adapter; `StyleSheet` is not an interop workaround.
+Logout now clears durable authentication state after either remote success or failure. The in-memory and fake subscription gateways expose injected typed failures consistently across offerings, purchase, restore, management, and status operations.
 
 ## Next 3 concrete actions
 
-1. Review the focused frontend UI skill diff.
+1. Review the focused auth and subscription diff.
 2. Commit and push only when requested.
-3. Apply the rule to future third-party UI integrations.
+3. Continue the remaining audit priorities, starting with auth bootstrap and token refresh.
 
 ## Relevant files
 
-- `.agents/skills/frontend-ui-conventions/SKILL.md`
-- `.agents/skills/frontend-ui-conventions/references/styling.md`
+- `core/auth/use-cases/log-out/logout.ts`
+- `core/auth/use-cases/log-out/logout.spec.ts`
+- `core/subscription/adapters/in-memory/in-memory-subscription-gateway.ts`
+- `core/subscription/adapters/fake/fake-subscription-gateway.ts`
+- `core/subscription/use-cases/subscription-restore/restore-subscription-purchases.spec.ts`
+- `core/subscription/use-cases/subscription-management/open-subscription-management.spec.ts`
 
 ## Active plan
 
@@ -33,8 +37,10 @@ None.
 
 ## Last validation commands and results
 
-- Passed: Skill Creator `quick_validate.py`.
-- Passed: targeted Oxfmt check on both changed skill files.
+- Passed: `pnpm run test` (16 files, 31 tests).
+- Passed: `pnpm run typecheck`.
+- Passed: `pnpm run lint`.
+- Passed: targeted Oxfmt check.
 - Passed: `git diff --check`.
 
 ## Blockers / open questions
@@ -44,7 +50,6 @@ None.
 
 ## Do-not-forget notes
 
-- NativeWind v5 is still published as a preview release.
-- Keep Tailwind customization in `src/global.css`, not a v3-style JS config.
-- Use `styled()` only at incompatible third-party boundaries; application-owned components should forward `className`.
+- A rejected remote logout must remain visible through RTK Query while local auth state is still cleared.
+- Subscription fake errors must use the same `SubscriptionError` contract for every operation.
 - Do not push until requested.

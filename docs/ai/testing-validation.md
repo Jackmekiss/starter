@@ -4,10 +4,10 @@
 
 | Purpose             | Command                 | Source                             | Verified in this memory setup |
 | ------------------- | ----------------------- | ---------------------------------- | ----------------------------- |
-| Format check        | `pnpm run format:check` | `package.json`                     | Not run                       |
-| Lint                | `pnpm run lint`         | `package.json`                     | Not run                       |
-| Typecheck           | `pnpm run typecheck`    | `package.json`                     | Not run                       |
-| Unit/use-case tests | `pnpm run test`         | `package.json`, `vitest.config.ts` | Not run                       |
+| Format check        | `pnpm run format:check` | `package.json`                     | Targeted Oxfmt passed         |
+| Lint                | `pnpm run lint`         | `package.json`                     | Passed 2026-08-20             |
+| Typecheck           | `pnpm run typecheck`    | `package.json`                     | Passed 2026-08-20             |
+| Unit/use-case tests | `pnpm run test`         | `package.json`, `vitest.config.ts` | 16 files, 31 tests passed     |
 | Broad code check    | `pnpm run check`        | `package.json`                     | Not run                       |
 
 ## Fastest safe validation command

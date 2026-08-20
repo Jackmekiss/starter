@@ -186,7 +186,7 @@ export class InMemoryAuthGateway extends AuthGateway {
 
   /** Completes local logout without deleting fixtures. */
   logout(): Promise<AuthResult<void>> {
-    return Promise.resolve({ ok: true, value: undefined });
+    return this.executeOperation(() => undefined);
   }
 
   /** Clears the local account and identity. */

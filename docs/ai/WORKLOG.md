@@ -520,3 +520,28 @@ The user requested an explicit skill rule for components whose `className` does 
 ### Next
 
 - Review the focused skill diff and commit/push only when requested.
+
+## 2026-08-20 - Guarantee local logout and uniform subscription failures
+
+### Context
+
+The audit found that a failed remote logout retained local credentials, while restore and subscription-management operations bypassed the in-memory adapter's injected error path.
+
+### Changes
+
+- Cleared local auth state in the logout lifecycle regardless of remote success or failure while preserving the RTK Query result.
+- Routed in-memory auth logout through its typed adapter execution wrapper.
+- Routed every in-memory subscription operation through one typed-result execution wrapper.
+- Added `FakeSubscriptionGateway.error` and forwarded it to the in-memory adapter.
+- Added logout, restore, and management failure behavior specs.
+
+### Validation
+
+- Passed: `pnpm run test` (16 files, 31 tests).
+- Passed: `pnpm run typecheck`.
+- Passed: `pnpm run lint`.
+- Passed: targeted Oxfmt check and `git diff --check`.
+
+### Next
+
+- Review and commit/push only when requested, then continue with auth bootstrap and token refresh hardening.

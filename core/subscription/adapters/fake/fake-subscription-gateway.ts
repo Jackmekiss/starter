@@ -8,6 +8,7 @@ import type {
   SubscriptionActionResult,
 } from "@core/subscription/apis/types";
 import type { Subscription } from "@core/subscription/domain/subscription";
+import type { SubscriptionError } from "@core/subscription/domain/subscription-error";
 import type { SubscriptionOffering } from "@core/subscription/domain/subscription-offering";
 import type { SubscriptionResult } from "@core/subscription/domain/subscription-result";
 import type { DateProvider } from "@core/shared/gateways/date-provider";
@@ -20,6 +21,11 @@ export class FakeSubscriptionGateway extends SubscriptionGateway {
   constructor(dateProvider: DateProvider = new DeterministicDateProvider()) {
     super();
     this.inMemoryGateway = new InMemorySubscriptionGateway(dateProvider);
+  }
+
+  /** Injects one failure consistently across every fake subscription operation. */
+  set error(value: SubscriptionError | undefined) {
+    this.inMemoryGateway.error = value;
   }
 
   /** Retrieves simulated paywall offerings. */
