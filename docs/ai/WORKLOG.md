@@ -650,3 +650,25 @@ The user requested every Fifteen UI family missing from Starter, the same visual
 
 - Review the complete diff and run the remaining native smoke tests when a target is available.
 - Commit and push only when requested.
+
+## 2026-08-21 - Add Fifteen-style in-app Storybook access
+
+### Context
+
+The user requested the same Home access pattern used by Fifteen after confirming that the development app may trade Storybook bundle isolation for a navigable in-app route.
+
+### Changes
+
+- Added `pnpm run storybook:in-app`, guarded by `EXPO_PUBLIC_STORYBOOK_ENABLED=true`.
+- Extracted the reusable Storybook root, retained the direct swapped entry, and added the development-only `/storybook` route.
+- Added the localized floating `home.storybook` launcher on Home, matching Fifteen's developer affordance.
+- Updated the Storybook blueprint, UI skill, README, architecture, decision, validation, current-state, and handoff documentation.
+
+### Validation
+
+- Passed: typecheck, lint, Storybook registry generation, direct Storybook export, in-app Storybook export, and normal application export.
+- Passed: browser test from in-memory login to Home launcher, then Storybook with all 19 families.
+
+### Next
+
+- Do not enable `EXPO_PUBLIC_STORYBOOK_ENABLED` for production builds.

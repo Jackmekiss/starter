@@ -8,6 +8,7 @@
     "storybook": "STORYBOOK_ENABLED=true expo start",
     "storybook:android": "STORYBOOK_ENABLED=true expo start --android",
     "storybook:generate": "sb-rn-get-stories --config-path ./.rnstorybook",
+    "storybook:in-app": "EXPO_PUBLIC_STORYBOOK_ENABLED=true expo start",
     "storybook:ios": "STORYBOOK_ENABLED=true expo start --ios",
     "android": "expo run:android",
     "ios": "expo run:ios",

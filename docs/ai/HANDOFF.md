@@ -12,11 +12,11 @@
 
 ## Situation summary
 
-The requested Fifteen design-system port and Storybook setup are complete locally.
+The Fifteen design-system port is committed as `aef3a9e`; the accepted in-app Storybook launcher is complete locally and remains uncommitted.
 
 All 19 Fifteen UI families now exist under `src/components/ui/` with shadcn-style React Native APIs and co-located Storybook stories. Existing primitives were reworked for visual consistency; Gluestack was not copied or installed. Poppins assets, semantic light/dark tokens, focused RN Primitives, typed vendor adapters, accessibility contracts, overlay coordination, and theme-aware imperative styles are wired in the shared implementation.
 
-Storybook 10.4 uses an alternate registered Expo entry, presentation-only providers, generated story discovery, and no application route or runtime store. The normal web bundle remains isolated. The `frontend-ui` skill and frozen blueprints now describe the exact implementation and passed an independent Card/story forward-test.
+Storybook 10.4 keeps an alternate registered Expo entry for direct isolated use and now also has an accepted Fifteen-style in-app mode. `pnpm run storybook:in-app` enables the guarded `/storybook` route and localized Home launcher; it is development-only and intentionally includes Storybook in that app bundle. The `frontend-ui` skill and frozen blueprints describe both modes.
 
 ## Exact continuation point
 
@@ -32,9 +32,9 @@ Review the complete diff. If accepted, commit and push only on explicit request.
 ## Branch and working tree
 
 - Branch: `master`.
-- Baseline commit: `57ac541`.
-- Expected uncommitted changes: UI primitives/stories, Storybook configuration, semantic theme/fonts, dependencies, `frontend-ui` blueprints, and aligned project memory.
-- No commit or push was performed.
+- Baseline commit: `aef3a9e`.
+- Expected uncommitted changes: in-app Storybook route/root, Home launcher, translations, scripts, `frontend-ui` blueprint, and aligned project memory.
+- The baseline design-system commit was pushed; the launcher follow-up was not committed or pushed.
 
 ## Tests / checks last run
 
@@ -45,7 +45,7 @@ Review the complete diff. If accepted, commit and push only on explicit request.
 - Passed: targeted Oxfmt and `git diff --check`.
 - Passed: generated Storybook registry and web export with all eight fonts.
 - Passed: browser runtime smoke test for the 19 UI families, explicit light/dark themes, all eight Poppins weights, and zero console warnings/errors.
-- Passed: normal application web export without Storybook markers.
+- Passed: direct Storybook, in-app Storybook, and normal application web exports; the in-app Home launcher opened Storybook in browser validation.
 
 ## Recommended first command
 

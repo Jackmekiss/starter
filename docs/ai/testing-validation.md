@@ -2,15 +2,16 @@
 
 ## Discovered validation commands
 
-| Purpose              | Command                                                                                                 | Source                             | Verified in this memory setup |
-| -------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------- | ----------------------------- |
-| Format check         | `pnpm run format:check`                                                                                 | `package.json`                     | Targeted Oxfmt passed         |
-| Lint                 | `pnpm run lint`                                                                                         | `package.json`                     | Passed 2026-08-20             |
-| Typecheck            | `pnpm run typecheck`                                                                                    | `package.json`                     | Passed 2026-08-20             |
-| Unit/use-case tests  | `pnpm run test`                                                                                         | `package.json`, `vitest.config.ts` | 16 files, 32 tests passed     |
-| Story registry       | `pnpm run storybook:generate`                                                                           | `package.json`, `.rnstorybook/`    | Passed 2026-08-20             |
-| Storybook web bundle | `STORYBOOK_SERVER=false STORYBOOK_ENABLED=true pnpm exec expo export --platform web --output-dir <tmp>` | Storybook/Expo docs                | Passed 2026-08-20             |
-| Broad code check     | `pnpm run check`                                                                                        | `package.json`                     | Not run                       |
+| Purpose                     | Command                                                                                                 | Source                             | Verified in this memory setup |
+| --------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------- | ----------------------------- |
+| Format check                | `pnpm run format:check`                                                                                 | `package.json`                     | Targeted Oxfmt passed         |
+| Lint                        | `pnpm run lint`                                                                                         | `package.json`                     | Passed 2026-08-20             |
+| Typecheck                   | `pnpm run typecheck`                                                                                    | `package.json`                     | Passed 2026-08-20             |
+| Unit/use-case tests         | `pnpm run test`                                                                                         | `package.json`, `vitest.config.ts` | 16 files, 32 tests passed     |
+| Story registry              | `pnpm run storybook:generate`                                                                           | `package.json`, `.rnstorybook/`    | Passed 2026-08-20             |
+| Storybook web bundle        | `STORYBOOK_SERVER=false STORYBOOK_ENABLED=true pnpm exec expo export --platform web --output-dir <tmp>` | Storybook/Expo docs                | Passed 2026-08-20             |
+| In-app Storybook web bundle | `EXPO_PUBLIC_STORYBOOK_ENABLED=true pnpm exec expo export --platform web --output-dir <tmp>`            | `package.json`, Expo Router        | Passed 2026-08-21             |
+| Broad code check            | `pnpm run check`                                                                                        | `package.json`                     | Not run                       |
 
 ## Fastest safe validation command
 
@@ -53,7 +54,7 @@ For source/UI changes:
 - Submit the login form with invalid fields and mapped backend failures; verify loading, focusable controls, and accessible localized error copy.
 - For subscription work, verify offering retrieval, purchase/restore failure, premium selector behavior, and management unavailable states.
 - For shared UI work, regenerate Storybook discovery, verify the changed story in explicit light/dark modes, and confirm accessible names/states and long copy.
-- For Storybook infrastructure, serve the static export and confirm a non-empty registered root, no console errors, all 19 families, eight Poppins weights, and no Storybook markers in a normal application export.
+- For Storybook infrastructure, serve the static export and confirm a non-empty registered root, no console errors, all 19 families, and eight Poppins weights. For the in-app mode, authenticate with the in-memory fixture, reach Home, and activate the localized `home.storybook` launcher.
 - Exercise camera permission, bottom-sheet gestures, Android hardware back, VoiceOver, and TalkBack on supported native targets when those behaviors change.
 
 For docs-only changes:

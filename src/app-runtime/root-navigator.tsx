@@ -8,6 +8,9 @@ import {
   selectIsConnected,
 } from "@core/auth/adapters/selectors/auth-selectors";
 
+const STORYBOOK_ROUTE_ENABLED =
+  process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === "true";
+
 /**
  * Chooses the active route group from session and onboarding state.
  */
@@ -37,6 +40,9 @@ export function RootNavigator() {
       </Stack.Protected>
       <Stack.Protected guard={isConnected && shouldCompleteOnboarding}>
         <Stack.Screen name="(on-boarding)" />
+      </Stack.Protected>
+      <Stack.Protected guard={STORYBOOK_ROUTE_ENABLED}>
+        <Stack.Screen name="storybook" />
       </Stack.Protected>
     </Stack>
   );

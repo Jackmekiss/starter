@@ -19,6 +19,7 @@
 | Format check          | `pnpm run format:check`       | `package.json`                           | Discovered    |
 | Unit / use-case tests | `pnpm run test`               | `package.json`, `vitest.config.ts`       | Discovered    |
 | Storybook             | `pnpm run storybook`          | `package.json`, `.rnstorybook/`          | Discovered    |
+| Storybook in app      | `pnpm run storybook:in-app`   | `package.json`, `src/app/storybook.tsx`  | Discovered    |
 | Story registry        | `pnpm run storybook:generate` | `package.json`, `.rnstorybook/main.ts`   | Discovered    |
 | Broad check           | `pnpm run check`              | `package.json`                           | Discovered    |
 | Migration             | Unknown                       | No database migration tooling discovered | Not available |
@@ -71,7 +72,7 @@ Do not claim a command passes unless it was run in the current session or a reco
 - Poppins font assets are versioned under `public/fonts/`; native Expo font configuration and web `@font-face` declarations use the same eight files.
 - Imperatively styled vendor adapters consume the mounted navigation theme through `useTheme()` so application and Storybook explicit themes stay synchronized.
 - Mount the exported local `BottomSheetModalProvider`, not Gorhom's provider directly. It preserves the portal/accessibility-guard order, background hiding, and Android top-sheet back handling.
-- Storybook stories are co-located beside shared primitives and run through the swapped `.rnstorybook/index.tsx` entry; presentation providers must not mount Redux, persistence, gateways, or app runtime.
+- Storybook stories are co-located beside shared primitives. `pnpm run storybook` uses the swapped `.rnstorybook/index.tsx` entry; `pnpm run storybook:in-app` opts into a guarded `/storybook` route from Home. The latter is development-only and deliberately gives up bundle isolation.
 - Use `react-hook-form` for real forms, with `<Controller />` for controlled primitives.
 - Avoid inline arrow functions in JSX returns when reasonably possible; use named handlers.
 - Parent layouts own external spacing; reusable children own internal spacing.

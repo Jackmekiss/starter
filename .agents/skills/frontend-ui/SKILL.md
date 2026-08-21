@@ -46,7 +46,7 @@ Preserve visible design and interaction behavior during accessibility-only work 
 - Preserve Starter's Fifteen-derived visual language through shadcn/React Native composition: Poppins, 24-point screen spacing, semantic brand/status tokens, shared radii, and the 19 canonical UI families. Gluestack is the historical design source, never a runtime dependency or implementation model.
 - Build from React Native primitives, `@rn-primitives`, Starter's local primitives, and CVA. Do not introduce gluestack-ui providers, components, theme objects, or APIs.
 - Use NativeWind v5 utility classes and Tailwind v4 tokens; use a local `styled()` adapter for incompatible third-party native components.
-- Keep Storybook presentation-only and out of normal application bundles through the official React Native entry-point swap. Stories do not import the Redux store, persistor, gateways, or runtime internals.
+- Keep direct Storybook presentation-only through the official React Native entry-point swap. The accepted `EXPO_PUBLIC_STORYBOOK_ENABLED=true` in-app development mode may expose the guarded `/storybook` route and its Home launcher; it intentionally trades normal-bundle isolation for Fifteen-style navigation and must never be enabled for production builds. Stories do not import the Redux store, persistor, gateways, or runtime internals.
 - Keep accessible names, roles, states, announcements, and automation exposure accurate without duplicating the accessibility tree.
 - Keep user-visible copy in typed translation catalogs; never display raw backend or exception messages.
 - Treat accepted, non-superseded decisions as normative and forward tests as independent behavioral evidence, not snapshots of incidental markup or styling.

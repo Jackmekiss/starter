@@ -22,5 +22,6 @@
   "auth__password_reset__error__expired": "Ce lien de réinitialisation du mot de passe a expiré.",
   "auth__password_reset__error__invalid": "Ce lien de réinitialisation du mot de passe est invalide.",
   "auth__oauth__error__cancelled": "La connexion a été annulée.",
-  "subscription__restore__error__no_active_purchase": "Aucun achat actif à restaurer n’a été trouvé."
+  "subscription__restore__error__no_active_purchase": "Aucun achat actif à restaurer n’a été trouvé.",
+  "home__storybook__open": "Ouvrir Storybook"
 }

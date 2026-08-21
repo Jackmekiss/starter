@@ -2,7 +2,7 @@
 
 > Blueprint version: `1.0.1`
 
-Use this reference when installing, configuring, extending, or validating Storybook for Starter. Storybook is a presentation-only entry point for the same local components, CSS tokens, fonts, themes, localization, and overlay hosts used by the application. It does not create an Expo Router route and never boots frontend core runtime composition.
+Use this reference when installing, configuring, extending, or validating Storybook for Starter. Direct Storybook is a presentation-only entry point for the same local components, CSS tokens, fonts, themes, localization, and overlay hosts used by the application. Starter also supports an explicit Fifteen-style in-app development route selected with `EXPO_PUBLIC_STORYBOOK_ENABLED=true`.
 
 Follow the installed Storybook types and the official React Native Storybook entry-point-swapping workflow. The pinned versions below form one known-compatible set for Starter's Expo 57 / React Native 0.86 baseline; update them only as one tested compatibility decision.
 
@@ -11,12 +11,15 @@ Follow the installed Storybook types and the official React Native Storybook ent
 ```text
 .rnstorybook/
 ├── index.tsx                    # alternate Storybook view entry
+├── storybook-root.tsx            # reusable Storybook UI for both launch modes
 ├── main.ts                     # story discovery + device addons
 ├── preview.tsx                 # presentation-only decorators and globals
 └── storybook.requires.ts       # generated, tracked, never hand-edited
 
 src/components/
 └── **/*.stories.tsx            # co-located presentation stories
+
+src/app/storybook.tsx            # development-only in-app Storybook route
 
 metro.config.js                 # withStorybook(withNativewind(config))
 package.json                    # Storybook scripts and compatible versions
@@ -43,9 +46,9 @@ Pin this set together:
 
 The community date/slider packages satisfy native controls used by the on-device addons and must remain Expo-compatible. Do not add an addon that has no demonstrated story workflow.
 
-## Entry-Point Swapping
+## Launch Modes
 
-The application keeps its normal Expo Router entry. `@storybook/react-native/withStorybook` swaps the Metro entry only when `STORYBOOK_ENABLED=true` and removes Storybook from normal application bundles.
+The application keeps its normal Expo Router entry. `@storybook/react-native/withStorybook` swaps the Metro entry when `STORYBOOK_ENABLED=true` for the isolated direct mode.
 
 Preserve the existing Metro configuration, then compose wrappers in this order:
 
@@ -59,7 +62,9 @@ module.exports = withStorybook(nativewindConfig, {
 });
 ```
 
-Do not import `.rnstorybook/index` from `src/app/_layout.tsx`, add a Storybook route, branch the root navigator, or evaluate `STORYBOOK_ENABLED` inside application components. Entry swapping is the isolation boundary.
+Keep `.rnstorybook/index.tsx` limited to `registerRootComponent(StorybookRoot)`. It must import its reusable root from `storybook-root.tsx`, never the Expo route.
+
+For the accepted Fifteen-style in-app mode, `pnpm run storybook:in-app` sets `EXPO_PUBLIC_STORYBOOK_ENABLED=true`. A guarded root `storybook` screen then renders `.rnstorybook/storybook-root.tsx`, and Home renders a localized floating launcher with `testID="home.storybook"`. This route is unavailable without the flag. The mode deliberately includes Storybook with the application bundle, so it is development-only and cannot be described as isolated.
 
 ## Scripts
 
@@ -71,6 +76,7 @@ Do not import `.rnstorybook/index` from `src/app/_layout.tsx`, add a Storybook r
     "storybook": "STORYBOOK_ENABLED=true expo start",
     "storybook:android": "STORYBOOK_ENABLED=true expo start --android",
     "storybook:generate": "sb-rn-get-stories --config-path ./.rnstorybook",
+    "storybook:in-app": "EXPO_PUBLIC_STORYBOOK_ENABLED=true expo start",
     "storybook:ios": "STORYBOOK_ENABLED=true expo start --ios"
   }
 }
@@ -101,22 +107,14 @@ export default main;
 
 Use the on-device backgrounds feature as the theme selector. Do not add a second custom toolbar for the same light/dark responsibility.
 
-## Alternate Entry
+## Reusable Root and Alternate Entry
 
-`.rnstorybook/index.tsx`:
+`.rnstorybook/storybook-root.tsx` owns `view.getStorybookUI(...)`; `.rnstorybook/index.tsx` registers that root:
 
 ```tsx
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { registerRootComponent } from "expo";
 
-import { view } from "./storybook.requires";
-
-const StorybookRoot = view.getStorybookUI({
-  storage: {
-    getItem: AsyncStorage.getItem,
-    setItem: AsyncStorage.setItem,
-  },
-});
+import StorybookRoot from "./storybook-root";
 
 registerRootComponent(StorybookRoot);
 ```
@@ -325,9 +323,9 @@ When dependencies are unavailable and installing them is outside the task, do no
 
 ## Invariants
 
-- Storybook is selected only through the official Metro entry-point swap.
+- Direct Storybook is selected through the official Metro entry-point swap; the explicit in-app mode uses the guarded `/storybook` route.
 - The swapped Expo entry calls `registerRootComponent`; it is not a component export or a bare AppRegistry registration.
-- Normal application bundles contain no Storybook entry, route, provider, or conditional branch.
+- The default application mode does not expose the Storybook launcher or route. The explicit in-app development mode intentionally includes Storybook in its app bundle.
 - The preview uses the real global CSS, eight versioned Poppins assets, semantic theme, localization provider, navigation theme, safe-area/gesture, the local composite bottom-sheet provider (portal plus accessibility guard), and toast config.
 - The preview contains no core/runtime state or data adapters.
 - Light/dark background choice drives `NAV_THEME` and `useTheme()` consumers, native `Appearance`, and the web root `data-color-scheme` attribute without leaking state after decorator cleanup.
@@ -337,7 +335,7 @@ When dependencies are unavailable and installing them is outside the task, do no
 
 ## Anti-Patterns
 
-- A `/storybook` Expo Router route or `_layout.tsx` branch.
+- An unconditional Storybook route or Home launcher that bypasses `EXPO_PUBLIC_STORYBOOK_ENABLED`.
 - Importing `RootAppProviders`, Redux, `PersistGate`, store, APIs, gateways, listeners, or runtime internals into Storybook.
 - A Storybook-only palette, font loader, component implementation, toast surface, or localization copy.
 - Calling `Appearance.setColorScheme` on web instead of using the guarded root data attribute.

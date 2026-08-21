@@ -22,5 +22,6 @@
   "auth__password_reset__error__expired": "This password reset link has expired.",
   "auth__password_reset__error__invalid": "This password reset link is invalid.",
   "auth__oauth__error__cancelled": "Sign-in was cancelled.",
-  "subscription__restore__error__no_active_purchase": "No active purchase was found to restore."
+  "subscription__restore__error__no_active_purchase": "No active purchase was found to restore.",
+  "home__storybook__open": "Open Storybook"
 }

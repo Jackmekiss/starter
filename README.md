@@ -22,15 +22,23 @@ Starter ships the Fifteen visual language as local shadcn-style React Native
 primitives: Poppins, semantic light/dark tokens, NativeWind v5, Tailwind CSS v4,
 CVA, Lucide, and RN Primitives. Gluestack is not part of the runtime.
 
-Run the isolated on-device Storybook:
+Run Storybook directly (the isolated entry-point mode):
 
 ```bash
 pnpm run storybook
 ```
 
-Storybook uses an alternate Metro entry point, so it does not add routes,
-providers, or modules to the normal application bundle. After adding or
-renaming a story, refresh its generated registry:
+For the Fifteen-style developer button on Home, run the app in its explicit
+in-app Storybook mode:
+
+```bash
+pnpm run storybook:in-app
+```
+
+Sign in with the in-memory fixture, open Home, then tap the floating book
+button. This opted-in development mode exposes `/storybook` and includes
+Storybook with the application bundle; do not use it for production builds.
+After adding or renaming a story, refresh its generated registry:
 
 ```bash
 pnpm run storybook:generate
