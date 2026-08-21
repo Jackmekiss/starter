@@ -71,6 +71,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
       invalid,
       placeholderClassName,
       size,
+      style,
       variant,
       ...props
     },
@@ -87,7 +88,7 @@ const Input = React.forwardRef<TextInput, InputProps>(
         ref={ref}
         aria-invalid={isInvalid || undefined}
         className={cn(
-          "text-secondary-foreground font-body min-w-0 flex-1 py-1 text-sm leading-5",
+          "text-secondary-foreground font-body min-w-0 w-full py-1 text-sm leading-5",
           !group.withinGroup &&
             inputFrameVariants({
               invalid: isInvalid,
@@ -113,6 +114,8 @@ const Input = React.forwardRef<TextInput, InputProps>(
         )}
         editable={!isDisabled}
         placeholderClassName={cn("text-body-foreground", placeholderClassName)}
+        style={[{ includeFontPadding: false }, style]}
+        textAlignVertical="center"
         {...props}
       />
     );

@@ -47,6 +47,7 @@ const Textarea = React.forwardRef<TextInput, TextareaProps>(
       numberOfLines = Platform.select({ web: 4, native: 6 }),
       placeholderClassName,
       size = "md",
+      style,
       ...props
     },
     ref,
@@ -68,6 +69,7 @@ const Textarea = React.forwardRef<TextInput, TextareaProps>(
         multiline={multiline}
         numberOfLines={numberOfLines}
         placeholderClassName={cn("text-body-foreground", placeholderClassName)}
+        style={[{ includeFontPadding: false }, style]}
         textAlignVertical="top"
         {...props}
       />
