@@ -613,3 +613,40 @@ The user requested rebuilding the Starter frontend skills from zero so they gene
 - Review the complete diff.
 - Optionally run native accessibility and appearance smoke tests.
 - Commit and push only when requested.
+
+## 2026-08-20 - Port Fifteen's design system and add isolated Storybook
+
+### Context
+
+The user requested every Fifteen UI family missing from Starter, the same visual design language implemented with Starter's shadcn-style React Native stack instead of Gluestack, and Storybook documentation for the complete system.
+
+### Changes
+
+- Audited Fifteen's 19 UI families and translated all missing capabilities without adding Gluestack or its provider/API conventions.
+- Added Alert, Badge, CameraView, Checkbox, FormControl, Link, PhoneNumberInput, Progress, Radio, SafeAreaView, ScreenHeader, Switch, and Toast.
+- Reworked the six existing families so Button, Input, Text, Textarea, Icon, and BottomSheetModal share Fifteen's Poppins metrics, semantic tokens, variants, states, and accessibility contracts.
+- Added focused RN Primitives and typed Expo/vendor adapters, eight versioned Poppins faces, synchronized light/dark theme mirrors, and a local composite bottom-sheet provider with portal-safe background hiding and Android back handling.
+- Added one co-located story file for each family and React Native Storybook 10.4 through official Expo entry-point swapping, presentation-only providers, generated discovery, and normal-bundle isolation.
+- Corrected the swapped Expo entry to use `registerRootComponent` after a real browser test exposed a blank static export that bundling alone did not detect.
+- Updated `frontend-ui` and its frozen component, theme, accessibility, routes, and Storybook blueprints; independently forward-tested a new Card and story.
+
+### Decisions
+
+- Preserve Fifteen's complete visual language while keeping local shadcn-style React Native APIs, NativeWind/CVA, and focused RN Primitives.
+- Keep Storybook outside Expo Router and application runtime through entry-point swapping.
+- Keep imperative vendor colors synchronized through the shared navigation theme and own bottom-sheet accessibility/Android dismissal in the local provider.
+
+### Validation
+
+- Passed: `pnpm run test` (16 files, 32 tests), `pnpm run typecheck`, `pnpm run lint`, targeted Oxfmt, and `git diff --check`.
+- Passed: Storybook registry generation and static web export with all 19 families and eight Poppins assets.
+- Passed: in-browser runtime smoke test of every first story, all eight Poppins weights, explicit light/dark switching, vendor theme synchronization, and zero console warnings/errors.
+- Passed: normal application web export with no Storybook entry markers.
+- Passed: Skill Creator `quick_validate.py` and the independent Card/story forward-test for `frontend-ui`.
+- Known baseline: global `pnpm run format:check` still reports the same nine untouched Markdown files.
+- Not run: native VoiceOver/TalkBack, camera permission, gestures, or Android hardware-back validation on a simulator or physical device.
+
+### Next
+
+- Review the complete diff and run the remaining native smoke tests when a target is available.
+- Commit and push only when requested.

@@ -1,4 +1,3 @@
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { ThemeProvider } from "expo-router/react-navigation";
 import { type PropsWithChildren } from "react";
 import { useColorScheme } from "react-native";
@@ -8,6 +7,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
 import { persistor, store } from "@/app-runtime/runtime/store-runtime";
+import { BottomSheetModalProvider } from "@/components/ui/BottomSheetModal";
 import { NAV_THEME, resolveAppColorScheme } from "@/constants/theme";
 import { LocalizationProvider } from "@/localization/localization-provider";
 
@@ -25,16 +25,14 @@ export function RootAppProviders({ children }: RootAppProvidersProps) {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
-        <GestureHandlerRootView>
-          <BottomSheetModalProvider>
-            <PersistGate loading={null} persistor={persistor}>
-              <LocalizationProvider>
-                <ThemeProvider value={NAV_THEME[colorScheme]}>
-                  {children}
-                </ThemeProvider>
-              </LocalizationProvider>
-            </PersistGate>
-          </BottomSheetModalProvider>
+        <GestureHandlerRootView className="flex-1">
+          <PersistGate loading={null} persistor={persistor}>
+            <LocalizationProvider>
+              <ThemeProvider value={NAV_THEME[colorScheme]}>
+                <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+              </ThemeProvider>
+            </LocalizationProvider>
+          </PersistGate>
         </GestureHandlerRootView>
       </SafeAreaProvider>
     </Provider>

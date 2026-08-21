@@ -2,7 +2,10 @@
 
 const { getDefaultConfig } = require("expo/metro-config");
 const { withNativewind } = require("nativewind/metro");
+const { withStorybook } = require("@storybook/react-native/withStorybook");
 
 const config = getDefaultConfig(__dirname);
 
-module.exports = withNativewind(config);
+module.exports = withStorybook(withNativewind(config), {
+  configPath: "./.rnstorybook",
+});

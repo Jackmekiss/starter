@@ -1,537 +1,350 @@
 # Frozen Blueprint: NativeWind, Theme, Variants, and Interop
 
-> Blueprint version: `1.0.0`
+> Blueprint version: `1.1.1`
 
-Use this reference when changing styling infrastructure, theme tokens, shared visual primitives, CVA variants, icons, or third-party native components. This is the canonical Starter shape for React Native, NativeWind v5, and Tailwind CSS v4. Preserve it unless an accepted repository decision explicitly replaces it.
+Use this reference for Starter styling infrastructure, theme tokens, typography, shared visual variants, icons, or third-party native components. It freezes the Fifteen-derived design language after translation to shadcn-style React Native composition. Preserve it unless an accepted repository decision explicitly replaces it.
 
-Accepted, non-superseded repository decisions remain normative. If generated code conflicts with an accepted decision, correct the generated code; do not rewrite this blueprint around incidental implementation output.
+Gluestack is neither a dependency nor an implementation reference after the migration. The visual decisions survive through semantic CSS tokens, local CVA recipes, native primitives, and typed adapters.
 
-## Placeholder Contract
-
-Angle-bracket names are deliberate placeholders:
-
-- **<semantic-token>**: a product-level visual role such as warning, success, or scrim; never a raw feature color.
-- **<Primitive>**: a shared primitive's PascalCase component and filename stem.
-- **<ThirdPartyComponent>** and **<exact-native-style-prop>**: a vendor component and the precise prop it consumes.
-- **<variant>** and **<size>**: a finite CVA option backed by named utilities.
-
-Replace every placeholder, delete unused branches, and preserve the surrounding ownership and data flow. No placeholder may remain in application source.
-
-## Canonical Tree and Ownership
+## Canonical Owners
 
 ```text
+app.json                                      # versioned Poppins assets and native vendor plugins
+metro.config.js                              # NativeWind, plus isolated Storybook wrapper
+public/fonts/
+├── OFL.txt
+├── Poppins_100Thin.ttf
+├── Poppins_300Light.ttf
+├── Poppins_400Regular.ttf
+├── Poppins_500Medium.ttf
+├── Poppins_600SemiBold.ttf
+├── Poppins_700Bold.ttf
+├── Poppins_800ExtraBold.ttf
+└── Poppins_900Black.ttf
 src/
-├── app/
-│   └── _layout.tsx                         [required] imports global.css exactly once
-├── app-runtime/
-│   └── root-app-providers.tsx              [required] selects NAV_THEME from useColorScheme
-├── components/
-│   └── ui/
-│       ├── Button.tsx                      [required baseline] owns button CVA and base role
-│       ├── Icon.tsx                        [required baseline] owns Lucide prop mapping
-│       ├── Input.tsx                       [required baseline] owns control visuals
-│       ├── Text.tsx                        [required baseline] owns typography variants
-│       ├── <Primitive>.tsx                 [conditional] only for a reusable missing primitive
-│       └── <VendorWrapper>.tsx             [conditional] shared third-party interop wrapper
-├── constants/
-│   └── theme.ts                            [required] imperative colors and NAV_THEME mirror
-├── global.css                              [required] CSS-first tokens and utilities
-└── lib/
-    └── cn.ts                               [required] conditional class merge helper
+├── app/_layout.tsx                          # imports global.css once in the app entry
+├── app-runtime/root-app-providers.tsx       # system scheme + navigation theme + toast host
+├── components/ui/
+│   ├── Button.tsx                           # canonical action/variant/size recipe
+│   ├── Icon.tsx                             # Lucide adapter
+│   ├── Text.tsx                             # Poppins body/heading scale
+│   ├── <Primitive>.tsx                      # local shadcn/RN component
+│   └── <VendorWrapper>.tsx                  # typed third-party adapter
+├── constants/theme.ts                       # imperative/native mirror
+├── global.css                               # Tailwind v4 CSS-first tokens
+└── lib/cn.ts                                # clsx + tailwind-merge
 ```
 
-Feature components under **src/components/<context>/** may select primitive variants and arrange layout. They do not own a second token palette, typography system, or button/input implementation. A one-use typed vendor adapter may remain beside its route or feature; a reused adapter belongs in **src/components/ui/**.
+`src/global.css` is the only palette and utility authority. `src/constants/theme.ts` mirrors only values required by imperative native APIs. A feature, route, story, or adapter does not own a second palette.
 
-Do not add **tailwind.config.js** for theme values. Tailwind v4 configuration is CSS-first in **src/global.css**.
+## CSS-First Theme Contract
 
-## Required Theme Skeleton
-
-### src/global.css
-
-Keep the import order, semantic aliases, root values, and dark override shape. Add a token only when it represents a reusable semantic decision, then mirror any value needed by imperative native APIs in **src/constants/theme.ts**.
+Keep this import order:
 
 ```css
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/preflight.css" layer(base);
 @import "tailwindcss/utilities.css";
 @import "nativewind/theme";
+```
 
+Do not add `tailwind.config.js`. Tailwind v4 configuration stays in `global.css`.
+
+### Semantic roles
+
+Expose every CSS variable through `@theme inline` with the `--color-*` alias consumed by NativeWind:
+
+- neutral surfaces: `background`, `foreground`, `body-foreground`, `canvas`, `card`/`card-foreground`, `popover`/`popover-foreground`, `muted`/`muted-foreground`, `secondary`/`secondary-foreground`, `accent`/`accent-foreground`, `border`, `input`, `ring`;
+- structural roles: `border-subtle`, `border-emphasis`, `border-strong`, `divider`, `track`, `control-border`, `control-border-focus`, `control-border-strong`, and `control-subtle`;
+- brand actions: `primary`, `tertiary`, and `brand-secondary`;
+- status actions: `destructive`, `success`, `warning`, and `info`;
+- each colored family has a base, `-soft`, `-border`, and `-foreground` role;
+- status families expose `-emphasis` for outlined feedback; destructive additionally exposes `destructive-status-foreground` for soft error surfaces and `destructive-strong` for the strongest error border.
+- primary and tertiary expose `-strong` for their darkest/lightest durable emphasis role.
+
+Use exact role names rather than hue names or feature names. For example:
+
+```css
 @theme inline {
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
   --color-background: var(--background);
-  --color-border: var(--border);
-  --color-canvas: var(--canvas);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
   --color-foreground: var(--foreground);
-  --color-input: var(--input);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
+  --color-body-foreground: var(--body-foreground);
   --color-primary: var(--primary);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-border: var(--primary-border);
   --color-primary-foreground: var(--primary-foreground);
-  --color-ring: var(--ring);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
+  --color-primary-strong: var(--primary-strong);
+  --color-border-emphasis: var(--border-emphasis);
+  --color-border-strong: var(--border-strong);
+  --color-border-subtle: var(--border-subtle);
+  --color-control-border: var(--control-border);
+  --color-control-border-focus: var(--control-border-focus);
+  --color-control-border-strong: var(--control-border-strong);
+  --color-control-subtle: var(--control-subtle);
+  --color-destructive-emphasis: var(--destructive-emphasis);
+  --color-destructive-status-foreground: var(--destructive-status-foreground);
+  --color-destructive-strong: var(--destructive-strong);
+  --color-divider: var(--divider);
+  --color-info-emphasis: var(--info-emphasis);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-success-border: var(--success-border);
+  --color-success-emphasis: var(--success-emphasis);
+  --color-success-foreground: var(--success-foreground);
+  --color-track: var(--track);
+  --color-warning-emphasis: var(--warning-emphasis);
+  --color-tertiary-strong: var(--tertiary-strong);
+  /* expose every remaining role by the same exact mapping */
+
+  --font-body: Poppins;
+  --font-heading: Poppins;
+  --leading-heading: 1;
+  --tracking-heading: 0.0125rem;
+
   --radius-base: var(--radius);
-  --radius-lg: var(--radius);
-  --radius-md: var(--radius);
-  --radius-sm: var(--radius);
-  --spacing-screen: 1rem;
-}
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-full: 9999px;
 
-@utility border-hairline {
-  border-width: hairlineWidth();
-}
-
-:root {
-  --accent: hsl(0 0% 97%);
-  --accent-foreground: hsl(0 0% 20.5%);
-  --background: hsl(0 0% 100%);
-  --border: hsl(0 0% 92.2%);
-  --canvas: hsl(0 0% 97%);
-  --card: hsl(0 0% 100%);
-  --card-foreground: hsl(0 0% 14.5%);
-  --destructive: hsl(0 84.2% 60.2%);
-  --destructive-foreground: hsl(0 0% 98.5%);
-  --foreground: hsl(0 0% 14.5%);
-  --input: hsl(0 0% 92.2%);
-  --muted: hsl(0 0% 97%);
-  --muted-foreground: hsl(0 0% 55.6%);
-  --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(0 0% 14.5%);
-  --primary: hsl(0 0% 20.5%);
-  --primary-foreground: hsl(0 0% 98.5%);
-  --radius: 0.625rem;
-  --ring: hsl(0 0% 70.8%);
-  --secondary: hsl(0 0% 97%);
-  --secondary-foreground: hsl(0 0% 20.5%);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --accent: hsl(0 0% 26.9%);
-    --accent-foreground: hsl(0 0% 98.5%);
-    --background: hsl(0 0% 20.5%);
-    --border: hsl(0 0% 26.9%);
-    --canvas: hsl(0 0% 14.5%);
-    --card: hsl(0 0% 14.5%);
-    --card-foreground: hsl(0 0% 98.5%);
-    --destructive: hsl(0 62.8% 50.6%);
-    --destructive-foreground: hsl(0 0% 98.5%);
-    --foreground: hsl(0 0% 98.5%);
-    --input: hsl(0 0% 26.9%);
-    --muted: hsl(0 0% 26.9%);
-    --muted-foreground: hsl(0 0% 70.8%);
-    --popover: hsl(0 0% 14.5%);
-    --popover-foreground: hsl(0 0% 98.5%);
-    --primary: hsl(0 0% 98.5%);
-    --primary-foreground: hsl(0 0% 20.5%);
-    --ring: hsl(0 0% 55.6%);
-    --secondary: hsl(0 0% 26.9%);
-    --secondary-foreground: hsl(0 0% 98.5%);
-  }
+  --spacing-screen: 1.5rem;
 }
 ```
 
-The **@theme inline** aliases are semantic utility contracts: **bg-background**, **text-foreground**, **border-border**, **text-muted-foreground**, and similar classes resolve through the active root variables. Keep paired foreground tokens for surfaces that display content.
+The screen spacing contract is 24 points. Screen chrome and page framing use `px-screen`; local component padding still uses the nearest named spacing utility.
 
-### src/constants/theme.ts
+### Canonical light and dark palette
 
-Native navigation and third-party APIs that require concrete values cannot consume CSS utilities. Mirror only that imperative surface here. Keep names and values synchronized with **src/global.css**.
+The following values define the initial Starter theme. Changing them is a product/design decision, not an incidental component edit.
+
+| Role family                                       | Light                                         | Dark                                          |
+| ------------------------------------------------- | --------------------------------------------- | --------------------------------------------- |
+| background / foreground                           | `#ffffff` / `#171717`                         | `#121212` / `#f5f5f5`                         |
+| body foreground                                   | `#525252`                                     | `#d4d4d4`                                     |
+| canvas                                            | `#f6f6f6`                                     | `#181719`                                     |
+| card / card foreground                            | `#ffffff` / `#171717`                         | `#272625` / `#f5f5f5`                         |
+| popover / popover foreground                      | `#ffffff` / `#171717`                         | `#272625` / `#f5f5f5`                         |
+| muted / muted foreground                          | `#f2f1f1` / `#737373`                         | `#414040` / `#d4d4d4`                         |
+| border / input                                    | `#dddcdb` / `#dcdbdb`                         | `#535252` / `#535252`                         |
+| border subtle / emphasis / strong                 | `#d3d3d3` / `#535252` / `#272624`             | `#414040` / `#a3a3a3` / `#e5e5e5`             |
+| control border / focus / strong / subtle          | `#8c8d8d` / `#272624` / `#737474` / `#d5d4d4` | `#737474` / `#e5e5e5` / `#a3a3a3` / `#414040` |
+| divider / track                                   | `#414141` / `#dcdbdb`                         | `#dbdbdc` / `#535252`                         |
+| primary base / soft / border / foreground         | `#234b7e` / `#d4eaf8` / `#7aacd8` / `#ffffff` | `#7aacd8` / `#112b5a` / `#234b7e` / `#06143c` |
+| tertiary base / soft / border / foreground        | `#e78128` / `#ffe9d5` / `#fdb474` / `#272625` | `#fdb474` / `#6c3d13` / `#e78128` / `#272625` |
+| brand-secondary base / soft / border / foreground | `#7e234b` / `#f8d4d6` / `#d87a91` / `#3c0633` | `#d87a91` / `#3c0633` / `#7e234b` / `#f8d4d6` |
+| destructive base / soft / border / foreground     | `#ff2d3f` / `#ffe0d5` / `#ff8d81` / `#ffffff` | `#ff8d81` / `#7a083b` / `#b71641` / `#7a083b` |
+| success base / soft / border / foreground         | `#0b7a2e` / `#cef8cb` / `#61d76f` / `#023a2a` | `#61d76f` / `#023a2a` / `#0b7a2e` / `#cef8cb` |
+| warning base / soft / border / foreground         | `#ff6c2d` / `#ffecd5` / `#ffb781` / `#7a0c08` | `#ffb781` / `#7a0c08` / `#ff6c2d` / `#ffecd5` |
+| info base / soft / border / foreground            | `#1c5fef` / `#d1e5fe` / `#75a8fa` / `#051972` | `#75a8fa` / `#051972` / `#1c5fef` / `#d1e5fe` |
+
+Keep `accent` aligned with the primary soft/emphasis relationship, `ring` with the primary border, and ordinary `secondary` with the neutral muted surface. Emphasis roles are:
+
+- light: `primary-emphasis #112b5a`, `tertiary-emphasis #b4621a`, `destructive-emphasis #b71641`, `success-emphasis #05572f`, `warning-emphasis #b73116`, and `info-emphasis #0e35ac`;
+- dark: `primary-emphasis #d4eaf8`, `tertiary-emphasis #ffe9d5`, `destructive-emphasis #ff8d81`, `success-emphasis #61d76f`, `warning-emphasis #ffb781`, and `info-emphasis #75a8fa`.
+
+Destructive feedback also freezes `destructive-status-foreground` as `#7a083b` in light and `#ffe0d5` in dark, and `destructive-strong` as `#7a083b` in light and `#ff8d81` in dark.
+
+Brand strong roles are `primary-strong #06143c` and `tertiary-strong #6c3d13` in light, then `primary-strong #d4eaf8` and `tertiary-strong #ffe9d5` in dark.
+
+Outlined status feedback uses the action's emphasis role on `bg-background`. Softly filled `solid` feedback uses the action's soft surface and status foreground; filled errors use `destructive-status-foreground`. Solid buttons pair the base with the purpose-built button foreground. Never assume one foreground role works on every treatment; use the role frozen for that visual contract.
+
+Light values live in `:root`. Automatic dark values override them under `@media (prefers-color-scheme: dark) { :root:not([data-color-scheme]) { ... } }`. Repeat the same dark palette under `:root[data-color-scheme="dark"]` so Storybook web can force dark; `data-color-scheme="light"` keeps the root light palette even when the operating system is dark.
+
+## Typography
+
+Poppins is the body and heading family. Version the eight TTF assets under `public/fonts`; do not make CSS depend on a `node_modules` URL, because Metro web export does not copy that local resource reliably. Configure the Expo font plugin with the same `./public/fonts/...` files for weights 100, 300, 400, 500, 600, 700, 800, and 900 on Android and iOS. `global.css` owns eight matching `@font-face` declarations, and both app `_layout.tsx` and Storybook `preview.tsx` import that CSS.
+
+| Weight | Versioned asset                         |
+| ------ | --------------------------------------- |
+| 100    | `public/fonts/Poppins_100Thin.ttf`      |
+| 300    | `public/fonts/Poppins_300Light.ttf`     |
+| 400    | `public/fonts/Poppins_400Regular.ttf`   |
+| 500    | `public/fonts/Poppins_500Medium.ttf`    |
+| 600    | `public/fonts/Poppins_600SemiBold.ttf`  |
+| 700    | `public/fonts/Poppins_700Bold.ttf`      |
+| 800    | `public/fonts/Poppins_800ExtraBold.ttf` |
+| 900    | `public/fonts/Poppins_900Black.ttf`     |
+
+Each declaration uses the `Poppins` family, normal style, `font-display: swap`, its numeric weight, and an absolute public URL such as `url('/fonts/Poppins_400Regular.ttf') format('truetype')`. Keep these declarations in `global.css`; do not duplicate them in Storybook or a screen. Keep the font license beside the versioned assets.
+
+`Text.tsx` owns the finite type variants, heading roles, and `TextClassContext` used by compound controls. Its base copy uses `text-body-foreground`; headings and explicit high-emphasis copy use their semantic foreground roles. Named `h1` through `h4` variants derive their matching role/level automatically; the visual `heading` variant gains semantics only through `headingLevel="1" | ... | "6"`, which derives role and level together. Application code uses `font-body` or `font-heading`, never platform default family names or raw `fontFamily` values. Headings use `leading-heading` and `tracking-heading`; text must still scale and wrap.
+
+Do not load fonts independently in screens, stories, or primitives. The shared CSS import is the web/Storybook font boundary, so stories never silently fall back to a system font.
+
+## Imperative Theme Mirror
+
+`THEME` mirrors only the CSS values required by navigation and vendor props. Keep `Colors` compatibility aliases synchronized, and resolve nullable appearance once:
 
 ```ts
-import { DarkTheme, DefaultTheme } from "expo-router/react-navigation";
-
 import type { ColorSchemeName } from "react-native";
 
-/** Color schemes supported by the Starter design tokens. */
 export type AppColorScheme = "dark" | "light";
 
-/** Resolves nullable or unspecified system appearance to a supported scheme. */
 export function resolveAppColorScheme(
   colorScheme: ColorSchemeName,
 ): AppColorScheme {
   return colorScheme === "dark" ? "dark" : "light";
 }
-
-const tintColorLight = "hsl(0 0% 20.5%)";
-const tintColorDark = "hsl(0 0% 98.5%)";
-
-export const Colors = {
-  light: {
-    text: "hsl(0 0% 14.5%)",
-    background: "hsl(0 0% 100%)",
-    canvas: "hsl(0 0% 97%)",
-    card: "hsl(0 0% 100%)",
-    tint: tintColorLight,
-    icon: "hsl(0 0% 55.6%)",
-    tabIconDefault: "hsl(0 0% 55.6%)",
-    tabIconSelected: tintColorLight,
-    accent: "hsl(0 0% 97%)",
-    border: "hsl(0 0% 92.2%)",
-  },
-  dark: {
-    text: "hsl(0 0% 98.5%)",
-    background: "hsl(0 0% 20.5%)",
-    canvas: "hsl(0 0% 14.5%)",
-    card: "hsl(0 0% 14.5%)",
-    tint: tintColorDark,
-    icon: "hsl(0 0% 70.8%)",
-    tabIconDefault: "hsl(0 0% 55.6%)",
-    tabIconSelected: tintColorDark,
-    accent: "hsl(0 0% 26.9%)",
-    border: "hsl(0 0% 26.9%)",
-  },
-};
-
-export const THEME = {
-  light: {
-    canvas: "hsl(0 0% 97%)",
-    background: "hsl(0 0% 100%)",
-    foreground: "hsl(0 0% 14.5%)",
-    card: "hsl(0 0% 100%)",
-    cardForeground: "hsl(0 0% 14.5%)",
-    popover: "hsl(0 0% 100%)",
-    popoverForeground: "hsl(0 0% 14.5%)",
-    primary: "hsl(0 0% 20.5%)",
-    primaryForeground: "hsl(0 0% 98.5%)",
-    secondary: "hsl(0 0% 97%)",
-    secondaryForeground: "hsl(0 0% 20.5%)",
-    muted: "hsl(0 0% 97%)",
-    mutedForeground: "hsl(0 0% 55.6%)",
-    accent: "hsl(0 0% 97%)",
-    accentForeground: "hsl(0 0% 20.5%)",
-    destructive: "hsl(0 84.2% 60.2%)",
-    border: "hsl(0 0% 92.2%)",
-    input: "hsl(0 0% 92.2%)",
-    ring: "hsl(0 0% 70.8%)",
-    radius: "0.625rem",
-  },
-  dark: {
-    canvas: "hsl(0 0% 14.5%)",
-    background: "hsl(0 0% 20.5%)",
-    foreground: "hsl(0 0% 98.5%)",
-    card: "hsl(0 0% 14.5%)",
-    cardForeground: "hsl(0 0% 98.5%)",
-    popover: "hsl(0 0% 14.5%)",
-    popoverForeground: "hsl(0 0% 98.5%)",
-    primary: "hsl(0 0% 98.5%)",
-    primaryForeground: "hsl(0 0% 20.5%)",
-    secondary: "hsl(0 0% 26.9%)",
-    secondaryForeground: "hsl(0 0% 98.5%)",
-    muted: "hsl(0 0% 26.9%)",
-    mutedForeground: "hsl(0 0% 70.8%)",
-    accent: "hsl(0 0% 26.9%)",
-    accentForeground: "hsl(0 0% 98.5%)",
-    destructive: "hsl(0 62.8% 50.6%)",
-    border: "hsl(0 0% 26.9%)",
-    input: "hsl(0 0% 26.9%)",
-    ring: "hsl(0 0% 55.6%)",
-    radius: "0.625rem",
-  },
-};
-
-export const NAV_THEME: Record<AppColorScheme, typeof DefaultTheme> = {
-  light: {
-    ...DefaultTheme,
-    colors: {
-      background: THEME.light.background,
-      border: THEME.light.border,
-      card: THEME.light.card,
-      notification: THEME.light.destructive,
-      primary: THEME.light.primary,
-      text: THEME.light.foreground,
-    },
-  },
-  dark: {
-    ...DarkTheme,
-    colors: {
-      background: THEME.dark.background,
-      border: THEME.dark.border,
-      card: THEME.dark.card,
-      notification: THEME.dark.destructive,
-      primary: THEME.dark.primary,
-      text: THEME.dark.foreground,
-    },
-  },
-};
 ```
 
-`Colors` is part of the current complete Starter file for specialized compatibility aliases. Do not introduce another palette: keep every member synchronized with `THEME`, and prefer `THEME[colorScheme]` for new imperative integrations.
-
-### Root wiring
-
-**src/app/\_layout.tsx** imports CSS once, before application components:
+The navigation provider uses:
 
 ```tsx
-import "@/global.css";
-```
-
-**src/app-runtime/root-app-providers.tsx** owns the system-scheme bridge. Keep the current provider order; this is the relevant fragment:
-
-```tsx
-import { ThemeProvider } from "expo-router/react-navigation";
-import { useColorScheme } from "react-native";
-
-import { NAV_THEME, resolveAppColorScheme } from "@/constants/theme";
-
 const colorScheme = resolveAppColorScheme(useColorScheme());
 
 <ThemeProvider value={NAV_THEME[colorScheme]}>{children}</ThemeProvider>;
 ```
 
-Use this same resolved key for imperative colors:
+`NAV_THEME` maps navigation background, border, card, notification, primary, and text to the corresponding `THEME` roles. Never hard-code a navigation, toast, sheet, camera overlay, or vendor input color.
 
-```tsx
-const colorScheme = resolveAppColorScheme(useColorScheme());
-const theme = THEME[colorScheme];
+## Class Composition
 
-<ThirdPartyComponent backgroundStyle={{ backgroundColor: theme.background }} />;
-```
-
-The final inline object is acceptable because the vendor requires an imperative style prop. It is not a substitute for styling application-owned React Native views with NativeWind.
-
-## Class Composition and CVA
-
-### src/lib/cn.ts
+Keep the shared helper:
 
 ```ts
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-/**
- * Merges conditional class names and resolves Tailwind conflicts.
- */
+/** Merges conditional classes and resolves Tailwind conflicts. */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 ```
 
-Use **cn** for base classes, conditional states, platform additions, CVA output, and caller overrides. Forward **className** last so the caller can intentionally resolve ordinary Tailwind conflicts.
+Owned components accept `className` and place it after base/CVA/state classes through `cn` so callers can resolve ordinary utility conflicts. CVA owns only finite product variants and sizes.
 
-### Local primitive skeleton
+## Canonical Button Matrix
 
-Keep finite visual choices in CVA and interaction semantics on the underlying React Native control:
+`Button` keeps shadcn composition—`Pressable`, `TextClassContext`, explicit compound children, and CVA—while expressing Fifteen's visual contract.
 
-```tsx
-import { cva, type VariantProps } from "class-variance-authority";
-import { Pressable } from "react-native";
+Actions:
 
-import { cn } from "@/lib/cn";
+- `primary`: primary base/foreground for solid, primary border/base text for outline/link;
+- `tertiary`: tertiary base/foreground for solid, tertiary border/emphasis for outline/link;
+- `negative`: destructive base/foreground for solid, destructive border/base text for outline/link.
 
-import type { ComponentProps } from "react";
+Sizes:
 
-const controlVariants = cva(
-  "flex-row items-center justify-center rounded-md border",
-  {
-    variants: {
-      size: {
-        default: "h-10 px-4",
-        icon: "h-10 w-10",
-        sm: "h-9 px-3",
-      },
-      variant: {
-        default: "border-primary bg-primary",
-        outline: "border-border bg-background",
-      },
-    },
-    defaultVariants: {
-      size: "default",
-      variant: "default",
-    },
-  },
-);
+| Size             | Height    | Horizontal padding |
+| ---------------- | --------- | ------------------ |
+| `xs`             | 32        | 14 (`px-3.5`)      |
+| `sm`             | 36        | 16 (`px-4`)        |
+| `default` / `md` | 40        | 20 (`px-5`)        |
+| `lg`             | 44        | 24 (`px-6`)        |
+| `xl`             | 48        | 28 (`px-7`)        |
+| `icon`           | 40 square | 0                  |
 
-/** Props supported by the shared control primitive. */
-type ControlProps = ComponentProps<typeof Pressable> &
-  VariantProps<typeof controlVariants>;
+The core action variants are `solid`, `outline`, and `link`; outline uses a two-point border. Preserve existing shadcn compatibility variants such as `default`, `destructive`, `secondary`, and `ghost` when callers use them. Historical aliases may normalize into the canonical variants, but do not expose a Gluestack recipe or `tva` surface.
 
-/** Pressable control primitive with shared visual variants. */
-export function Control({
-  className,
-  disabled,
-  size,
-  variant,
-  ...props
-}: ControlProps) {
-  return (
-    <Pressable
-      accessibilityRole="button"
-      className={cn(
-        controlVariants({ size, variant }),
-        disabled && "opacity-50",
-        className,
-      )}
-      disabled={disabled}
-      {...props}
-    />
-  );
-}
-```
+All button actions are pill-shaped with `rounded-full`. Text sizes progress from `text-xs` through `text-xl`; icon sizes are 14, 16, 18, 20, and 24 points for `xs`, `sm`, `md`/default, `lg`, and `xl` respectively, while icon-only buttons use 20. Compound exports may include text, icon, spinner, and group helpers. Busy/disabled semantics remain native, and decorative child icons do not duplicate the accessible name.
 
-Extend an existing local primitive before making a screen-local variant system. Parent layout owns external spacing; a reusable primitive owns only its internal layout and visual states.
+## Focused Native Primitives
+
+Use the installed `@rn-primitives` 1.5.2 family for native state and interaction:
+
+- `@rn-primitives/checkbox`;
+- `@rn-primitives/label`;
+- `@rn-primitives/progress`;
+- `@rn-primitives/radio-group`;
+- `@rn-primitives/switch`;
+- compatible `@rn-primitives/slot` for as-child composition.
+
+Local components own design tokens, sizes, indicators, form-control integration, and accessibility details. Checkbox, radio items, progress, and switches require localized `accessibilityLabel` values; switch also requires a localized `valueLabel`. Checkbox remains standalone and exports its finite label-size recipe for caller-owned visible copy rather than adopting a Gluestack compound label. Do not reimplement checked, indeterminate, roving selection, thumb, or progress state machines with generic `Pressable` views. Inspect installed public types before composing; React Native Reusables conventions inform the shape but installed packages define the actual API.
 
 ## Typed Third-Party Interop
 
-Use NativeWind v5 **styled()** only when a third-party native component does not forward class props. First create a narrow typed adapter that exposes exactly the supported native props, then map each class prop to the exact style prop expected by the vendor.
+Use NativeWind v5 `styled()` only when a third-party native component does not forward `className`. Map only verified style props.
+
+### Camera and safe area
 
 ```tsx
-import { styled } from "nativewind";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+const CameraView = styled(ExpoCameraView, {
+  className: "style",
+});
 
-import type { ScrollViewProps } from "react-native";
+const SafeAreaView = styled(NativeSafeAreaView, {
+  className: "style",
+});
+```
 
-/** Minimal surface exposed by the local NativeWind adapter. */
-type KeyboardAwareScrollViewAdapterProps = Pick<
-  ScrollViewProps,
-  | "children"
-  | "contentContainerStyle"
-  | "keyboardDismissMode"
-  | "keyboardShouldPersistTaps"
-  | "showsVerticalScrollIndicator"
-  | "style"
-> & {
-  bottomOffset?: number;
-};
+These are shared, typed adapters in `src/components/ui/CameraView.tsx` and `SafeAreaView.tsx`. Preserve vendor refs and supported props without widening to `any`.
 
-/** Forwards supported scroll props to the third-party keyboard-aware view. */
-function KeyboardAwareScrollViewAdapter(
-  props: KeyboardAwareScrollViewAdapterProps,
-) {
-  return <KeyboardAwareScrollView {...props} />;
-}
+### Phone number input
 
-const StyledKeyboardAwareScrollView = styled(KeyboardAwareScrollViewAdapter, {
+`PhoneNumberInput` wraps `rn-international-phone-number` as a controlled component. It may use imperative style objects because the vendor requires them, but every color comes from `THEME[useTheme().dark ? "dark" : "light"]`. The wrapper owns formatting/vendor normalization; the feature form owns validation, copy, submission, and business rules.
+
+### Other vendors
+
+```tsx
+const StyledVendor = styled(TypedVendorAdapter, {
   className: "style",
   contentContainerClassName: "contentContainerStyle",
 });
 ```
 
-A vendor-specific secondary target remains explicit:
-
-```tsx
-const StyledBottomSheetModal = styled(BottomSheetModalComponent, {
-  backgroundClassName: "backgroundStyle",
-});
-```
-
-Do not use **styled()** around application-owned components merely to avoid forwarding **className**. Fix the owned component. Do not use **StyleSheet.create()** as a className bridge.
+Name each supported target explicitly. Do not wrap application-owned components with `styled()`; fix their `className` forwarding instead. Do not use `StyleSheet.create()` as a NativeWind bridge.
 
 ## Icon Paint Channels
 
-Freeze the current Starter Lucide wrapper exactly: NativeWind targets **style** and maps only CSS height and width to Lucide's **size** prop. It does not add an explicit paint-property mapping.
+Keep the Starter Lucide adapter narrow: map CSS height and width to Lucide's `size` through the `style` target. Do not add speculative color/fill/stroke mappings. The owning primitive provides its semantic text class, and the inspected Lucide surface consumes it through the existing adapter.
 
-```tsx
-import { styled } from "nativewind";
+For another icon library, inspect its installed types and implementation. Reproduce only verified component-specific paint channels; never copy a generic icon mapping across libraries.
 
-import { cn } from "@/lib/cn";
+## Toast and Overlay Styling
 
-import type { LucideIcon, LucideProps } from "lucide-react-native";
+`Toast.tsx` owns `toastConfig` and the imperative `useToast` surface. Toast actions are `error`, `info`, `muted`, `success`, and `warning`; surfaces use the corresponding semantic soft/border/foreground roles and the shared `rounded-2xl`/shadow language.
 
-/**
- * Props accepted by the shared Lucide icon wrapper.
- */
-type IconProps = LucideProps & {
-  as: LucideIcon;
-};
+Mount exactly one host in the application provider tree and one in the isolated Storybook provider tree. Bottom-sheet backgrounds, handles, and other imperative overlay props resolve from `THEME` through `useTheme()`, which consumes the shared `NAV_THEME` provider. Presentation components use NativeWind utilities for owned inner views.
 
-/** NativeWind interop target that forwards class styles to Lucide props. */
-function IconImpl({ as: IconComponent, ...props }: IconProps) {
-  return <IconComponent {...props} />;
-}
+## Storybook Theme Bridge
 
-const StyledIcon = styled(IconImpl, {
-  className: {
-    target: "style",
-    nativeStyleMapping: {
-      height: "size",
-      width: "size",
-    },
-  },
-});
+Storybook imports `global.css` because Expo Router's app entry is bypassed. Its background toolbar maps light/dark choices to `NAV_THEME`, while background values come from `THEME`. Imperative components read that provider with `useTheme()`. On native, also apply the selection through `Appearance.setColorScheme` and restore the previous value or `"unspecified"` so NativeWind follows it. React Native Web does not implement that setter: set and restore `data-color-scheme` on `document.documentElement` instead.
 
-/**
- * Themed icon primitive used by buttons, tabs, and compact controls.
- */
-function Icon({
-  as: IconComponent,
-  className,
-  size = 14,
-  ...props
-}: IconProps) {
-  return (
-    <StyledIcon
-      as={IconComponent}
-      className={cn("text-foreground", className)}
-      size={size}
-      {...props}
-    />
-  );
-}
-
-export { Icon };
-```
-
-For a different icon API, inspect the installed component's public types and implementation before adding interop. Only when that inspected component truly requires a secondary **fill**, **stroke**, or other paint prop may a local wrapper reproduce its exact configuration:
-
-```tsx
-const StyledVendorIcon = styled(InspectedVendorIconAdapter, {
-  className: {
-    target: "<inspected-style-target>",
-    nativeStyleMapping: {
-      "<inspected-style-channel>": "<inspected-vendor-paint-prop>",
-    },
-  },
-});
-```
-
-- Keep the Starter Lucide **text-foreground** class and height/width-to-size mapping as shown; do not add **color**, **fill**, or **stroke** mappings speculatively.
-- For another library, use the utility and mapping that its inspected paint channel actually consumes.
-- Reproduce a verified component-specific mapping; do not impose a generic fill/stroke adapter across icon libraries.
-- Remove the conditional placeholder adapter entirely when the component already accepts NativeWind classes correctly.
-- Keep icon size inherited from the owning primitive when that primitive already defines it.
+Do not invent a Storybook-only palette or stylesheet. See [storybook-blueprint.md](storybook-blueprint.md).
 
 ## Invariants
 
-- NativeWind v5 utility classes are the default for owned React Native UI.
-- Tailwind v4 tokens and custom utilities live in **src/global.css**; semantic names describe roles, not hues or screens.
-- Light values live in **:root** and automatic dark values override them under **prefers-color-scheme: dark**.
-- **THEME** and **NAV_THEME** mirror CSS tokens needed by imperative APIs.
-- **resolveAppColorScheme(useColorScheme())** is the single nullable-scheme normalization pattern.
-- Existing local primitives and CVA variants are extended before new component systems are introduced.
-- Owned components accept and forward **className**. Typed **styled()** adapters are local to incompatible third-party components and name every mapped prop.
-- Raw colors and arbitrary dimensions do not appear in routes or feature components.
+- NativeWind v5 utilities are the default for owned React Native UI.
+- Tailwind v4 semantic tokens live only in `global.css`.
+- The Fifteen-derived palette is expressed as role tokens, not raw component colors.
+- Poppins, the radius scale, and 24-point screen spacing are shared foundations.
+- Every colored family provides the surface/border/foreground roles its variants consume in light and dark.
+- Automatic dark applies only without an explicit root data attribute; Storybook web light/dark uses `data-color-scheme` and native uses `Appearance`.
+- `THEME`, `Colors`, and `NAV_THEME` mirror only imperative CSS roles and stay synchronized.
+- Existing local shadcn-style primitives and CVA recipes are extended before another component system is introduced.
+- `@rn-primitives` owns interactive state; local wrappers own the visual contract.
+- Typed `styled()` adapters remain local to incompatible vendors and map exact verified props.
 
 ## Anti-Patterns
 
-- Adding Tailwind v3 configuration, a parallel JavaScript token object, or gluestack-ui provider/component conventions.
-- Hard-coding light values in a screen, navigation option, toast, overlay, or icon.
-- Using conditional raw colors instead of semantic light/dark tokens.
-- Repeating arbitrary utilities such as custom hex colors, widths, radii, type sizes, tracking, or line heights instead of promoting a token.
-- Building class strings manually, allowing **undefined** fragments, or concatenating conflicting variants instead of using **cn** and CVA.
-- Wrapping an owned component with **styled()**, mapping a class prop to a guessed vendor target, or exposing the vendor's entire untyped prop surface.
-- Using **StyleSheet** to make NativeWind work on a third-party component.
-- Adding speculative **color**, **fill**, or **stroke** mappings without inspecting the vendor, or copying one icon library's mapping into another.
+- Adding Gluestack, `tva`, a Gluestack provider, or copied Gluestack token scales.
+- Adding Tailwind v3 configuration, a parallel JavaScript palette, or story-only theme values.
+- Raw colors or repeated arbitrary radii/type/spacing values in routes, feature components, stories, or owned primitives.
+- Treating `primary` as a generic status color instead of using destructive/success/warning/info roles.
+- Using one foreground token indiscriminately on both solid and soft surfaces without contrast review.
+- Hand-building conflicting class strings instead of `cn` and CVA.
+- Wrapping owned components with `styled()`, guessing a vendor target, or exposing an untyped vendor surface.
+- Reimplementing focused native control behavior with generic views.
+- Loading Poppins independently per screen or falling back silently to another design-system font.
 
-## Validation and Review Checklist
+## Validation Checklist
 
-- [ ] The final diff uses only the canonical owners above; no screen-local palette or primitive system was added.
-- [ ] **src/global.css** keeps its import order, **@theme inline** aliases, root values, and dark overrides.
-- [ ] Every new semantic token has both light and dark values and a paired foreground where content needs one.
-- [ ] Every token consumed imperatively is synchronized in **THEME** and, when applicable, **NAV_THEME** or the existing **Colors** compatibility export.
-- [ ] The app imports **global.css** once and navigation selects **NAV_THEME[resolveAppColorScheme(useColorScheme())]**.
-- [ ] CVA owns finite variants; **cn** composes base, state, platform, and caller classes.
-- [ ] Owned components forward **className**; each third-party adapter is typed and maps to exact native props.
-- [ ] The Starter Lucide wrapper maps only height/width to size; any other icon paint mapping reproduces an inspected vendor requirement exactly.
-- [ ] Light and dark surfaces, text, borders, focus rings, disabled states, destructive states, navigation chrome, and overlays were reviewed.
-- [ ] No unresolved angle-bracket placeholder remains.
-- [ ] Run typecheck and relevant lint after source changes. Targeted `pnpm exec oxfmt <changed-files> --check` must pass; run global `pnpm run format:check` and report unrelated baseline failures without editing out-of-scope docs. For this reference alone, inspect Markdown and verify the file/link scope.
+- [ ] `global.css` keeps import order, `@theme inline` aliases, light root values, guarded automatic dark overrides, and the identical explicit dark selector.
+- [ ] Each new role has light/dark values and the required soft/border/foreground counterparts.
+- [ ] Every imperatively consumed value is synchronized in `THEME` and applicable compatibility/navigation exports.
+- [ ] Poppins weights are registered through Expo and typography uses `font-body`/`font-heading`.
+- [ ] A Storybook-enabled web export contains all eight files under its `fonts` assets and reports no unresolved/local-resource CSS warning.
+- [ ] Screen framing uses `px-screen` and reusable components use the shared radius scale.
+- [ ] Button actions, variants, sizes, text/icon colors, disabled, and busy states remain coherent.
+- [ ] Focused controls compose installed `@rn-primitives` packages rather than recreating state.
+- [ ] Owned components forward `className`; vendor adapters are typed and map verified props.
+- [ ] Light/dark surfaces, status contrast, navigation, overlays, Storybook backgrounds, and imperative vendor props were reviewed.
+- [ ] Typecheck, relevant lint, targeted Oxfmt, and changed Storybook stories pass.
 
 ## Independent Forward Validation
 
-When this frozen blueprint changes, run an independent generation scenario in an isolated temporary workspace. Derive the prompt and acceptance checks from requested visual behavior and accepted repository decisions: CSS-first semantic tokens, synchronized imperative theme values, current system-scheme navigation, CVA/local primitive ownership, and inspected third-party interop. Do not give the evaluator the current implementation, expected diff, intended answer, or previous generation output. Review light/dark behavior and architectural invariants, not textual similarity to this reference.
+When this blueprint changes, run an isolated generation scenario from a realistic UI request and this skill. Do not give the evaluator the current app implementation, an intended diff, or textual expectations. Evaluate semantic-token reuse, light/dark behavior, Poppins/radius/spacing foundations, local CVA ownership, focused native primitives, typed interop, accessibility, and story coverage. For font/theme infrastructure, require a web export containing all eight versioned Poppins assets with no unresolved/local-resource CSS warning, verify explicit web light/dark through the restored root data attribute, and verify native appearance restoration separately. Make only corrections supported by observable gaps.

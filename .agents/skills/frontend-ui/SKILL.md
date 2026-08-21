@@ -1,6 +1,6 @@
 ---
 name: frontend-ui
-description: "Implement, refactor, or audit Starter's Expo and React Native presentation layer: Expo Router routes and screens, runtime-facade consumption, feature components and shared primitives, React Hook Form, typed error presentation, i18next localization, NativeWind v5 with Tailwind CSS v4 and CVA, light/dark themes, third-party style interop, and accessibility for VoiceOver, TalkBack, Appium, or XCUITest. Do not use for backend work or core-only bounded-context, gateway, adapter, Redux, or RTK Query API design."
+description: "Implement, refactor, document, add Storybook stories for, or audit Starter's Expo and React Native presentation layer: Expo Router screens, the Fifteen-derived shadcn design system, Storybook on device, runtime-facade consumption, forms and typed errors, localization, NativeWind v5/Tailwind v4/CVA, themes, third-party interop, and native accessibility. Do not use for backend work or core-only bounded-context, gateway, adapter, Redux, or RTK Query API design."
 ---
 
 # Frontend UI
@@ -20,7 +20,7 @@ Preserve visible design and interaction behavior during accessibility-only work 
 
 ## Workflow
 
-1. Inspect the owning route, component, existing UI primitives, runtime facade, translations, and theme tokens.
+1. Inspect the owning route, component, existing UI primitives and stories, runtime facade, translations, and theme tokens.
 2. Read [ownership-data-flow.md](references/ownership-data-flow.md) to decide screen, section, primitive, and core ownership.
 3. Read only the references required by the task:
    - routes or screen orchestration: [routes-screens-blueprint.md](references/routes-screens-blueprint.md)
@@ -29,6 +29,7 @@ Preserve visible design and interaction behavior during accessibility-only work 
    - NativeWind, CVA, theme, or third-party interop: [nativewind-theme-blueprint.md](references/nativewind-theme-blueprint.md)
    - translation runtime or copy: [localization-blueprint.md](references/localization-blueprint.md)
    - accessibility or native automation semantics: [accessibility-blueprint.md](references/accessibility-blueprint.md)
+   - Storybook configuration, stories, provider isolation, or visual review: [storybook-blueprint.md](references/storybook-blueprint.md)
 4. Reuse the runtime facade and existing primitives before adding new presentation infrastructure.
 5. Keep the change as local as its responsibility allows; use `frontend-core` only when business behavior or runtime core wiring must change.
 6. Derive any changed UI test from the requested outcome and accepted decisions before asserting rendered behavior; do not copy expectations from implementation output.
@@ -42,19 +43,22 @@ Preserve visible design and interaction behavior during accessibility-only work 
 - Keep generic primitives prop-driven; feature sections may own simple selectors, local navigation, formatting, and interaction state.
 - Use `react-hook-form` with `Controller` for real controlled forms.
 - Consume mutations with `.unwrap()` and pass unknown failures to the bounded context's presentation resolver.
-- Build from React Native primitives plus Starter's local primitives and CVA; do not introduce gluestack-ui providers or components by default.
+- Preserve Starter's Fifteen-derived visual language through shadcn/React Native composition: Poppins, 24-point screen spacing, semantic brand/status tokens, shared radii, and the 19 canonical UI families. Gluestack is the historical design source, never a runtime dependency or implementation model.
+- Build from React Native primitives, `@rn-primitives`, Starter's local primitives, and CVA. Do not introduce gluestack-ui providers, components, theme objects, or APIs.
 - Use NativeWind v5 utility classes and Tailwind v4 tokens; use a local `styled()` adapter for incompatible third-party native components.
+- Keep Storybook presentation-only and out of normal application bundles through the official React Native entry-point swap. Stories do not import the Redux store, persistor, gateways, or runtime internals.
 - Keep accessible names, roles, states, announcements, and automation exposure accurate without duplicating the accessibility tree.
 - Keep user-visible copy in typed translation catalogs; never display raw backend or exception messages.
 - Treat accepted, non-superseded decisions as normative and forward tests as independent behavioral evidence, not snapshots of incidental markup or styling.
 
 ## Scope Boundary
 
-This skill owns `src/app/**`, `src/components/**`, presentation hooks, localization, translations, theme constants, and CSS. `src/app/_layout.tsx` is presentation-owned unless a change also alters API, gateway, middleware, or store composition; then use `frontend-core` first.
+This skill owns `src/app/**`, `src/components/**`, `.rnstorybook/**`, presentation hooks, localization, translations, theme constants, CSS, and presentation-only Storybook wiring in package/Metro/TypeScript/tooling configuration. `src/app/_layout.tsx` is presentation-owned unless a change also alters API, gateway, middleware, or store composition; then use `frontend-core` first.
 
 ## Validation
 
 - Exercise loading, empty, success, failure, disabled, and retry states affected by the change.
 - Verify light/dark behavior when theme tokens or imperative colors change.
+- Exercise changed primitives in Storybook across meaningful variants, sizes, disabled/invalid/busy states, long copy, and light/dark backgrounds; regenerate the tracked Storybook registry after story discovery changes.
 - Verify accessibility semantics and that accessibility-only diffs contain no unrequested visual changes.
-- Run `pnpm run typecheck` and relevant lint/tests. Require `pnpm exec oxfmt <changed-files> --check` for every modified file, then run global `pnpm run format:check` as a regression check; distinguish unrelated baseline failures and do not rewrite out-of-scope docs to make it green.
+- Run `pnpm run typecheck` and relevant lint/tests. For Storybook infrastructure changes, also generate the registry and perform a Storybook-enabled export or equivalent isolated bundle check. Require `pnpm exec oxfmt <changed-files> --check` for every modified file, then run global `pnpm run format:check` as a regression check; distinguish unrelated baseline failures and do not rewrite out-of-scope docs to make it green.

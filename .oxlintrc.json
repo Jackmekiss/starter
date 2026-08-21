@@ -1,6 +1,9 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "ignorePatterns": ["core/shared/adapters/core-api/generated/**"],
+  "ignorePatterns": [
+    "core/shared/adapters/core-api/generated/**",
+    ".rnstorybook/storybook.requires.ts"
+  ],
   "plugins": ["typescript", "react", "jsx-a11y", "import"],
   "rules": {
     "eqeqeq": ["error", "always"],
@@ -28,6 +31,18 @@
     "typescript/no-non-null-assertion": "error"
   },
   "overrides": [
+    {
+      "files": [
+        "src/components/ui/Checkbox.tsx",
+        "src/components/ui/FormControl.tsx",
+        "src/components/ui/Progress.tsx",
+        "src/components/ui/Radio.tsx",
+        "src/components/ui/Switch.tsx"
+      ],
+      "rules": {
+        "import/namespace": "off"
+      }
+    },
     {
       "files": ["scripts/**/*.{js,ts}"],
       "rules": {

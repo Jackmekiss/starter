@@ -239,6 +239,19 @@ const scriptsConfig = defineConfig([
   },
 ]);
 
+const storybookConfig = defineConfig([
+  {
+    name: "storybook/config",
+    files: [".rnstorybook/**/*.{ts,tsx}", "metro.config.js"],
+    rules: {
+      "import-x/no-extraneous-dependencies": [
+        "error",
+        { devDependencies: true },
+      ],
+    },
+  },
+]);
+
 const prettierConfig = defineConfig([
   // Prettier plugin
   {
@@ -264,6 +277,10 @@ export default defineConfig([
     name: "generated/core-api-sdk/ignore",
     ignores: ["packages/core/src/shared/adapters/core-api/generated/**"],
   },
+  {
+    name: "generated/storybook/ignore",
+    ignores: [".rnstorybook/storybook.requires.ts"],
+  },
   // JavaScript config
   ...jsConfig,
   // React config
@@ -274,6 +291,8 @@ export default defineConfig([
   ...documentationConfig,
   // Scripts config
   ...scriptsConfig,
+  // Storybook config
+  ...storybookConfig,
   // Disable ESLint rules delegated to Oxlint
   ...oxlintPlugin.buildFromOxlintConfigFile("./.oxlintrc.json"),
   // Prettier config

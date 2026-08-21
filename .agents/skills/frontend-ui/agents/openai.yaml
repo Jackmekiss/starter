@@ -1,6 +1,6 @@
 interface:
   display_name: "Frontend UI"
-  short_description: "Build accessible Starter Expo interfaces"
-  default_prompt: "Use $frontend-ui to implement this screen or component with Starter's UI conventions."
+  short_description: "Build Starter UI primitives, screens, and stories"
+  default_prompt: "Use $frontend-ui to implement this Starter screen, component, or Storybook story with the canonical design system."
 policy:
   allow_implicit_invocation: true

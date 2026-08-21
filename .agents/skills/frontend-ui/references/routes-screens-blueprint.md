@@ -1,6 +1,6 @@
 # Routes and Screens Blueprint
 
-> Blueprint version: `1.0.0`
+> Blueprint version: `1.0.1`
 
 Use this frozen blueprint for Expo Router files, route groups, root providers, protected navigation, screen-level requests, and screen composition. Adapt the Markdown skeletons; do not install or generate a second router structure.
 
@@ -131,7 +131,6 @@ Global providers belong in one composition component. Preserve the Starter's pro
 
 ```tsx
 // src/app-runtime/root-app-providers.tsx
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { ThemeProvider } from "expo-router/react-navigation";
 import { type PropsWithChildren } from "react";
 import { useColorScheme } from "react-native";
@@ -141,6 +140,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
 import { persistor, store } from "@/app-runtime/runtime/store-runtime";
+import { BottomSheetModalProvider } from "@/components/ui/BottomSheetModal";
 import { NAV_THEME, resolveAppColorScheme } from "@/constants/theme";
 import { LocalizationProvider } from "@/localization/localization-provider";
 
@@ -158,16 +158,14 @@ export function RootAppProviders({ children }: RootAppProvidersProps) {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
-        <GestureHandlerRootView>
-          <BottomSheetModalProvider>
-            <PersistGate loading={null} persistor={persistor}>
-              <LocalizationProvider>
-                <ThemeProvider value={NAV_THEME[colorScheme]}>
-                  {children}
-                </ThemeProvider>
-              </LocalizationProvider>
-            </PersistGate>
-          </BottomSheetModalProvider>
+        <GestureHandlerRootView className="flex-1">
+          <PersistGate loading={null} persistor={persistor}>
+            <LocalizationProvider>
+              <ThemeProvider value={NAV_THEME[colorScheme]}>
+                <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+              </ThemeProvider>
+            </LocalizationProvider>
+          </PersistGate>
         </GestureHandlerRootView>
       </SafeAreaProvider>
     </Provider>
@@ -175,7 +173,7 @@ export function RootAppProviders({ children }: RootAppProvidersProps) {
 }
 ```
 
-`RootAppProviders` is runtime composition, so its internal store import is allowed. Presentation routes and components still consume generated hooks only through the public facade.
+`RootAppProviders` is runtime composition, so its internal store import is allowed. Keep localization and theme outside the local bottom-sheet provider: Gorhom's host renders stored portal nodes at that boundary, so providers mounted below it do not reach sheet content. Presentation routes and components still consume generated hooks only through the public facade.
 
 ## Protected Root Navigator
 

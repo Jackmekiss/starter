@@ -12,11 +12,11 @@
 
 ## Situation summary
 
-The requested frontend skill reconstruction is complete locally.
+The requested Fifteen design-system port and Storybook setup are complete locally.
 
-Starter source was first normalized around one Auth connection truth, typed gateway results, explicit runtime exports, consistent Subscription error presentation, shared time ownership, UI naming, and theme tokens. The five old skills were then archived and replaced by `frontend-core` and `frontend-ui`, each backed by seven frozen `1.0.0` blueprints and implicit invocation metadata.
+All 19 Fifteen UI families now exist under `src/components/ui/` with shadcn-style React Native APIs and co-located Storybook stories. Existing primitives were reworked for visual consistency; Gluestack was not copied or installed. Poppins assets, semantic light/dark tokens, focused RN Primitives, typed vendor adapters, accessibility contracts, overlay coordination, and theme-aware imperative styles are wired in the shared implementation.
 
-Living architecture, product-flow, contract, glossary, validation, and decision memory now describe the normalized implementation. Historical worklog entries retain their original names.
+Storybook 10.4 uses an alternate registered Expo entry, presentation-only providers, generated story discovery, and no application route or runtime store. The normal web bundle remains isolated. The `frontend-ui` skill and frozen blueprints now describe the exact implementation and passed an independent Card/story forward-test.
 
 ## Exact continuation point
 
@@ -24,16 +24,16 @@ Review the complete diff. If accepted, commit and push only on explicit request.
 
 ## Known constraints
 
-- The six forward-tests and targeted correction reruns ran in temporary copies and were intentionally not merged into Starter; they validate generation behavior rather than add sample features.
-- Native VoiceOver/TalkBack was not exercised on a simulator or device because no automation harness was provided.
+- Native VoiceOver/TalkBack, Android hardware back, camera permission, and gesture behavior were not exercised on a simulator or physical device.
+- Browser validation covered Storybook mounting, all 19 first stories, Poppins weights, light/dark switching, vendor themes, and console errors.
 - Global `format:check` retains nine pre-existing failures in untouched Markdown files.
 - Production auth token refresh, startup retry/error UX, and RevenueCat configuration remain open.
 
 ## Branch and working tree
 
 - Branch: `master`.
-- Baseline commit: `3d63942`.
-- Expected uncommitted changes: source normalization, five archived skills, two new skills with fourteen references, and aligned project memory.
+- Baseline commit: `57ac541`.
+- Expected uncommitted changes: UI primitives/stories, Storybook configuration, semantic theme/fonts, dependencies, `frontend-ui` blueprints, and aligned project memory.
 - No commit or push was performed.
 
 ## Tests / checks last run
@@ -41,9 +41,11 @@ Review the complete diff. If accepted, commit and push only on explicit request.
 - Passed: `pnpm run test` (16 files, 32 tests).
 - Passed: `pnpm run typecheck`.
 - Passed: `pnpm run lint`.
-- Passed: both Skill Creator quick validations.
+- Passed: `frontend-ui` Skill Creator quick validation and isolated Card/story forward-test.
 - Passed: targeted Oxfmt and `git diff --check`.
-- Passed: all six isolated forward-tests and the corrected Notifications/Profile/Library reruns with their own tests, typecheck, Oxlint, ESLint, formatting, and boundary review.
+- Passed: generated Storybook registry and web export with all eight fonts.
+- Passed: browser runtime smoke test for the 19 UI families, explicit light/dark themes, all eight Poppins weights, and zero console warnings/errors.
+- Passed: normal application web export without Storybook markers.
 
 ## Recommended first command
 

@@ -2,24 +2,26 @@
 
 ## Commands
 
-| Purpose               | Command                 | Source                                   | Status        |
-| --------------------- | ----------------------- | ---------------------------------------- | ------------- |
-| Package manager       | `pnpm@11.7.0`           | `package.json`                           | Discovered    |
-| Install               | `pnpm install`          | `README.md`, package manager metadata    | Discovered    |
-| Dev server            | `pnpm run start`        | `package.json`                           | Discovered    |
-| Expo start            | `pnpm expo start`       | `README.md`                              | Discovered    |
-| Android run           | `pnpm run android`      | `package.json`                           | Discovered    |
-| iOS run               | `pnpm run ios`          | `package.json`                           | Discovered    |
-| Web run               | `pnpm run web`          | `package.json`                           | Discovered    |
-| Build                 | Unknown                 | No build script found                    | Not available |
-| Typecheck             | `pnpm run typecheck`    | `package.json`                           | Discovered    |
-| Lint                  | `pnpm run lint`         | `package.json`                           | Discovered    |
-| Lint fix              | `pnpm run lint:fix`     | `package.json`                           | Discovered    |
-| Format                | `pnpm run format`       | `package.json`                           | Discovered    |
-| Format check          | `pnpm run format:check` | `package.json`                           | Discovered    |
-| Unit / use-case tests | `pnpm run test`         | `package.json`, `vitest.config.ts`       | Discovered    |
-| Broad check           | `pnpm run check`        | `package.json`                           | Discovered    |
-| Migration             | Unknown                 | No database migration tooling discovered | Not available |
+| Purpose               | Command                       | Source                                   | Status        |
+| --------------------- | ----------------------------- | ---------------------------------------- | ------------- |
+| Package manager       | `pnpm@11.7.0`                 | `package.json`                           | Discovered    |
+| Install               | `pnpm install`                | `README.md`, package manager metadata    | Discovered    |
+| Dev server            | `pnpm run start`              | `package.json`                           | Discovered    |
+| Expo start            | `pnpm expo start`             | `README.md`                              | Discovered    |
+| Android run           | `pnpm run android`            | `package.json`                           | Discovered    |
+| iOS run               | `pnpm run ios`                | `package.json`                           | Discovered    |
+| Web run               | `pnpm run web`                | `package.json`                           | Discovered    |
+| Build                 | Unknown                       | No build script found                    | Not available |
+| Typecheck             | `pnpm run typecheck`          | `package.json`                           | Discovered    |
+| Lint                  | `pnpm run lint`               | `package.json`                           | Discovered    |
+| Lint fix              | `pnpm run lint:fix`           | `package.json`                           | Discovered    |
+| Format                | `pnpm run format`             | `package.json`                           | Discovered    |
+| Format check          | `pnpm run format:check`       | `package.json`                           | Discovered    |
+| Unit / use-case tests | `pnpm run test`               | `package.json`, `vitest.config.ts`       | Discovered    |
+| Storybook             | `pnpm run storybook`          | `package.json`, `.rnstorybook/`          | Discovered    |
+| Story registry        | `pnpm run storybook:generate` | `package.json`, `.rnstorybook/main.ts`   | Discovered    |
+| Broad check           | `pnpm run check`              | `package.json`                           | Discovered    |
+| Migration             | Unknown                       | No database migration tooling discovered | Not available |
 
 Do not claim a command passes unless it was run in the current session or a recorded worklog entry says so.
 
@@ -64,7 +66,12 @@ Do not claim a command passes unless it was run in the current session or a reco
 - Define automatic dark token values under `@media (prefers-color-scheme: dark)` and keep `NAV_THEME` synchronized through `useColorScheme`.
 - Application-owned components accept and forward `className`. Wrap incompatible third-party native components with `styled()` and map secondary style props there; do not replace desired utilities with `StyleSheet` workarounds.
 - Reuse `src/components/ui/` primitives before creating local systems.
-- Starter does not use gluestack-ui; do not introduce its component/provider patterns unless the user explicitly changes the stack.
+- The 19 shared UI families are Alert, Badge, BottomSheetModal, Button, CameraView, Checkbox, FormControl, Icon, Input, Link, PhoneNumberInput, Progress, Radio, SafeAreaView, ScreenHeader, Switch, Text, Textarea, and Toast.
+- Starter translates Fifteen's visual language into local shadcn-style React Native composition; it does not install Gluestack or expose Gluestack compound props.
+- Poppins font assets are versioned under `public/fonts/`; native Expo font configuration and web `@font-face` declarations use the same eight files.
+- Imperatively styled vendor adapters consume the mounted navigation theme through `useTheme()` so application and Storybook explicit themes stay synchronized.
+- Mount the exported local `BottomSheetModalProvider`, not Gorhom's provider directly. It preserves the portal/accessibility-guard order, background hiding, and Android top-sheet back handling.
+- Storybook stories are co-located beside shared primitives and run through the swapped `.rnstorybook/index.tsx` entry; presentation providers must not mount Redux, persistence, gateways, or app runtime.
 - Use `react-hook-form` for real forms, with `<Controller />` for controlled primitives.
 - Avoid inline arrow functions in JSX returns when reasonably possible; use named handlers.
 - Parent layouts own external spacing; reusable children own internal spacing.
@@ -129,6 +136,7 @@ Unknown. No explicit logging convention was discovered. ESLint allows `console` 
 - Domain should remain independent from UI, navigation, storage, and networking details.
 - Avoid generic folders like `helpers`, `misc`, `manager`, or catch-all `utils` without strong justification.
 - NativeWind v5 is currently installed from its preview channel. Keep `react-native-css`, PostCSS, Tailwind CSS v4, and the pinned `lightningcss` override aligned with the official migration guide.
+- Keep the pinned Storybook 10.4 package set and its React Native controls dependencies aligned with Expo 57; validate upgrades as one compatibility change.
 
 ## Frontend skill blueprint maintenance
 

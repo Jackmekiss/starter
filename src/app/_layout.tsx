@@ -7,6 +7,7 @@ import Toast from "react-native-toast-message";
 import "@/global.css";
 import { RootAppProviders } from "@/app-runtime/root-app-providers";
 import { RootNavigator } from "@/app-runtime/root-navigator";
+import { toastConfig } from "@/components/ui/Toast";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,7 +34,7 @@ export default function AppLayout() {
       <RootAppProviders>
         <RootNavigator />
         <StatusBar />
-        <Toast />
+        <Toast config={toastConfig} />
       </RootAppProviders>
     </KeyboardProvider>
   );

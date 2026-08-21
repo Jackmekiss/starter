@@ -46,3 +46,4 @@ function Icon({
 }
 
 export { Icon };
+export type { IconProps };
