@@ -2,8 +2,6 @@ import { Stack } from "expo-router";
 
 import { useRetrieveAccountQuery } from "@/app-runtime/runtime/auth-runtime";
 import { useAppReadiness } from "@/hooks/app-shell/useAppReadiness";
-import { useSelector } from "@/hooks/redux-hooks";
-import { selectCurrentAccount } from "@core/auth/adapters/selectors/auth-selectors";
 
 const STORYBOOK_ROUTE_ENABLED =
   process.env.EXPO_PUBLIC_STORYBOOK_ENABLED === "true";
@@ -12,7 +10,6 @@ const STORYBOOK_ROUTE_ENABLED =
  * Chooses the active route group from session and onboarding state.
  */
 export function RootNavigator() {
-  const account = useSelector(selectCurrentAccount);
   // const isConnected = useSelector(selectIsConnected);
   const isConnected = true;
   const { isLoading: isRetrievingAccount } = useRetrieveAccountQuery(
