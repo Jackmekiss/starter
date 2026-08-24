@@ -61,7 +61,8 @@ For docs-only changes:
 
 - Confirm `docs/ai/INDEX.md` links to all memory files.
 - Confirm `CURRENT.md` and `HANDOFF.md` reflect the latest operational state.
-- Confirm `WORKLOG.md` has an append-only entry.
+- Record only meaningful progress in `WORKLOG.md`; rotate older entries before the active file exceeds
+  its 200-line budget.
 - Confirm `AGENTS.md` references the memory system.
 - Confirm no secrets, env values, raw transcripts, or large source snippets were written.
 

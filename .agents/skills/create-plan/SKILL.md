@@ -19,7 +19,8 @@ Use this skill when work is large enough that future sessions need a self-contai
 3. Create `plans/<feature-slug>.md`.
 4. Make the plan self-contained and executable.
 5. Update `docs/ai/CURRENT.md` to point to the active plan.
-6. Update `docs/ai/HANDOFF.md` with how to continue.
+6. Update `docs/ai/HANDOFF.md` only when work is interrupted and continuation is not obvious from
+   `CURRENT.md` and the plan.
 
 ## Rules
 
@@ -28,6 +29,7 @@ Use this skill when work is large enough that future sessions need a self-contai
 - Track progress as work happens.
 - Keep durable decisions in `docs/ai/DECISIONS.md` or `docs/adr/*.md`, not only in the plan.
 - Keep durable product/domain facts in the relevant `docs/ai/` memory file.
+- Never copy branch names, commit hashes, dirty state, or changed-file inventories into project memory.
 - Do not store secrets, raw transcripts, or large code snippets in plans.
 
 ## Plan template

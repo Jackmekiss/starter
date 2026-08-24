@@ -20,9 +20,9 @@ Unknown.
 
 ## Core entities
 
-| Entity | Purpose | Key fields | Relationships | Notes |
-|---|---|---|---|---|
-| Unknown | Project-specific durable data entities have not been confirmed yet. | Unknown | Unknown | Replace this row when schema or domain entities are confirmed. |
+| Entity  | Purpose                                                             | Key fields | Relationships | Notes                                                          |
+| ------- | ------------------------------------------------------------------- | ---------- | ------------- | -------------------------------------------------------------- |
+| Unknown | Project-specific durable data entities have not been confirmed yet. | Unknown    | Unknown       | Replace this row when schema or domain entities are confirmed. |
 
 ## Relationships
 

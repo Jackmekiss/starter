@@ -8,11 +8,8 @@ Available skills:
 
 - `frontend-core`: Starter's frontend DDD and Clean Architecture conventions for bounded contexts under `core/`, RTK Query use-cases, Redux-owned durable state, gateways, adapters, typed errors, behavior specs, and `src/app-runtime/` composition
 - `frontend-ui`: Starter's Expo Router routes, screens, components, forms, runtime-hook consumption, localization, NativeWind styling, themes, accessibility semantics, and accessibility audits
-- `resume-project`: restart after time away by reading project memory, git state, and continuation context before editing
-- `checkpoint`: update current state, handoff, worklog, active plans, and relevant durable memory before stopping
-- `update-project-memory`: classify new durable context and update the most specific memory file
+- `project-memory`: resume work, checkpoint an interruption, remember durable context, or initialize project memory through four explicit modes
 - `create-plan`: create an executable `plans/<feature-slug>.md` for multi-step, risky, or multi-session work
-- `initialize-project-memory`: reset project-instance memory when this starter becomes a new project
 
 Use the matching skill when the task needs deeper guidance.
 Codex may also activate these skills automatically when the request matches their descriptions.
@@ -33,13 +30,9 @@ Always-on repository rules:
 ## Project memory and continuity
 
 - This repo uses `docs/ai/` as the source of truth for project memory.
-- At the start of any non-trivial task, read:
-  - `docs/ai/INDEX.md`
-  - `docs/ai/product-memory.md`
-  - `docs/ai/architecture-map.md`
-  - `docs/ai/technical-memory.md`
-  - `docs/ai/CURRENT.md`
-  - `docs/ai/HANDOFF.md`
+- At the start of non-trivial work, read `docs/ai/INDEX.md` and `docs/ai/CURRENT.md`.
+- Read `docs/ai/HANDOFF.md` only when `CURRENT.md` reports interrupted work.
+- Load product, architecture, technical, flow, data, API, or testing memory only when the task needs it.
 - If an active plan is referenced, read it.
 - If debugging, read `docs/ai/FAILED_ATTEMPTS.md`.
 - If changing user-facing behavior, also read:
@@ -48,9 +41,10 @@ Always-on repository rules:
 - If changing data/API behavior, also read:
   - `docs/ai/data-model.md`
   - `docs/ai/api-contracts.md`
-- Before stopping, compacting context, or handing off, run the checkpoint procedure.
-- When durable context is discovered, update the correct project memory file.
-- When this starter becomes a new project, use `initialize project memory for <project name>`.
+- Before stopping with meaningful unfinished work, use `project-memory` in Checkpoint mode.
+- When durable context is discovered, use `project-memory` in Remember mode.
+- When this starter becomes a new project, use `project-memory` in Initialize mode.
 - Keep memory files concise, versioned, and free of secrets.
 - Use `Unknown` rather than inventing missing facts.
 - Do not mix product memory with current task state.
+- Never copy branch, commit, dirty state, or changed-file lists into project memory; inspect Git directly.

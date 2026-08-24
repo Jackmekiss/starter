@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Memory"
+  short_description: "Resume, checkpoint, remember, or initialize"
+  default_prompt: "Use $project-memory to resume this repository from its concise project memory."
+policy:
+  allow_implicit_invocation: true

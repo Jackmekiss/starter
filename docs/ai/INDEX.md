@@ -1,103 +1,50 @@
 # Project Memory Index
 
-## Purpose
+`docs/ai/` stores concise, repo-versioned context for humans and fresh agent sessions. Git owns
+branch, commit, dirty state, and changed files; memory never copies them.
 
-`docs/ai/` is the repo-versioned memory system for Starter. It gives returning humans and fresh Codex sessions enough durable context to understand the product shape, domain model, architecture, conventions, current state, decisions, and safe continuation points without relying on chat history.
+## Start Here
 
-Keep this folder concise. Prefer paths, short summaries, and cross-links over copied source code.
+1. Read `AGENTS.md`, this index, and `CURRENT.md`.
+2. Read `HANDOFF.md` only when Current reports interrupted work.
+3. Load only the task-relevant stable memory or active plan.
+4. Use `project-memory` for Resume, Checkpoint, Remember, or Initialize workflows.
 
-## Quick start for a returning human
+## Owners
 
-1. Read [CURRENT.md](CURRENT.md) for the current dashboard.
-2. Read [HANDOFF.md](HANDOFF.md) for the safest continuation point.
-3. Read [WORKLOG.md](WORKLOG.md) for recent chronological context.
-4. Read [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md) for unresolved product and technical gaps.
-5. Read the active `plans/*.md` file if `CURRENT.md` references one.
+| File                       | Owns                                                                 |
+| -------------------------- | -------------------------------------------------------------------- |
+| `product-memory.md`        | Stable product facts and constraints                                 |
+| `domain-glossary.md`       | Business vocabulary                                                  |
+| `user-flows.md`            | User-visible behavior                                                |
+| `architecture-map.md`      | Existing code ownership and dependency boundaries                    |
+| `technical-memory.md`      | Cross-cutting toolchain, runtime, environment, and operational facts |
+| `data-model.md`            | Durable state and relationships                                      |
+| `api-contracts.md`         | Gateways and integration contracts                                   |
+| `testing-validation.md`    | Repeatable validation strategy                                       |
+| `CURRENT.md`               | Focus, active plan, blockers, and next actions                       |
+| `HANDOFF.md`               | Non-obvious continuation context for interrupted work only           |
+| `WORKLOG.md`               | Recent meaningful chronology                                         |
+| `worklog-archive/`         | Older immutable Worklog history                                      |
+| `DECISIONS.md` / `../adr/` | Accepted rationale                                                   |
+| `FAILED_ATTEMPTS.md`       | Reusable failed approaches                                           |
+| `OPEN_QUESTIONS.md`        | Unresolved facts or choices                                          |
 
-## Quick start for a fresh Codex session
+## Budgets and Rotation
 
-1. Read [../../AGENTS.md](../../AGENTS.md).
-2. Read this index.
-3. Read [product-memory.md](product-memory.md), [architecture-map.md](architecture-map.md), [technical-memory.md](technical-memory.md), [CURRENT.md](CURRENT.md), and [HANDOFF.md](HANDOFF.md).
-4. If changing user-facing behavior, also read [user-flows.md](user-flows.md) and [domain-glossary.md](domain-glossary.md).
-5. If changing data/API behavior, also read [data-model.md](data-model.md) and [api-contracts.md](api-contracts.md).
-6. If debugging, also read [FAILED_ATTEMPTS.md](FAILED_ATTEMPTS.md).
-7. Inspect `git status --short`, `git branch --show-current`, and recent commits before editing.
+Keep Index below 60 lines; Current and Handoff below 40; Technical Memory around 100–150 maximum;
+and active Worklog around 200. When Worklog grows, archive older entries by year and quarter while
+keeping roughly the latest 10–20 entries active.
 
-## Memory map
+## Starter Reset
 
-| File | Purpose | Update when |
-|---|---|---|
-| [product-memory.md](product-memory.md) | Stable product, audience, product rules, and product constraints. | Durable product/domain facts change. |
-| [domain-glossary.md](domain-glossary.md) | Shared vocabulary for domain terms and lifecycle states. | New durable terms appear or meanings change. |
-| [user-flows.md](user-flows.md) | User-facing flows, states, and relevant files. | User-visible behavior, screens, or flow logic changes. |
-| [architecture-map.md](architecture-map.md) | High-level technical map and boundaries. | Directory responsibilities, architecture, runtime, or integration boundaries change. |
-| [technical-memory.md](technical-memory.md) | Commands, conventions, code patterns, and validation expectations. | Tooling, scripts, conventions, or project procedures change. |
-| [data-model.md](data-model.md) | Durable entities, schema status, relationships, and integrity rules. | Domain entities, database schema, persistence, or ownership rules change. |
-| [api-contracts.md](api-contracts.md) | API, gateway, integration, webhook, and contract boundaries. | API endpoints, gateway contracts, integrations, or error contracts change. |
-| [testing-validation.md](testing-validation.md) | Repeatable validation strategy and known checks. | Tests, validation commands, QA expectations, or flaky tests change. |
-| [CURRENT.md](CURRENT.md) | Short operational dashboard for the current state. | Work starts, stops, changes focus, or reaches a meaningful checkpoint. |
-| [HANDOFF.md](HANDOFF.md) | Fresh-session continuation context. | Before stopping, compacting, or handing off meaningful work. |
-| [WORKLOG.md](WORKLOG.md) | Append-only chronological work history. | Each meaningful session or checkpoint. |
-| [DECISIONS.md](DECISIONS.md) | Durable decisions and rationale, or ADR index. | A decision should survive future sessions. |
-| [FAILED_ATTEMPTS.md](FAILED_ATTEMPTS.md) | Real failed approaches, gotchas, and traps. | A failed path or debugging trap is discovered. |
-| [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md) | Centralized unresolved questions. | Unknowns appear or are answered. |
-| [_templates/](_templates/) | Reset templates used when this starter becomes a new project. | The initialization workflow or memory taxonomy changes. |
-| [../adr/README.md](../adr/README.md) | ADR process notes. | Formal architecture decision process changes. |
-| [../../plans/README.md](../../plans/README.md) | Plan creation and maintenance procedure. | Planning workflow changes. |
+Initialize a derived product through `project-memory` Initialize mode. Preserve `AGENTS.md`,
+architecture, technical/testing memory, plans procedure, ADR procedure, and skills. Reset
+project-instance facts, Current, Handoff, decisions, failures, questions, plans, product-specific
+ADRs, and active or archived Worklog history from `docs/ai/_templates/`.
 
-## Starter reset policy
+## Rules
 
-Use `initialize project memory for <project name>` when a repo derived from this starter becomes a new project.
-
-Keep these files because they describe reusable starter conventions or reset machinery:
-
-- `docs/ai/INDEX.md`
-- `docs/ai/architecture-map.md`
-- `docs/ai/technical-memory.md`
-- `docs/ai/testing-validation.md`
-- `docs/adr/README.md`
-- `plans/README.md`
-- `AGENTS.md`
-- `.agents/skills/**`
-
-Reusable starter knowledge lives in `architecture-map.md`, `technical-memory.md`, `testing-validation.md`, and the `frontend-*` skills. Do not create a separate starter-only memory file for initialized projects.
-
-Reset these files from `docs/ai/_templates/` because they describe a concrete project instance:
-
-- `docs/ai/product-memory.md`
-- `docs/ai/domain-glossary.md`
-- `docs/ai/user-flows.md`
-- `docs/ai/data-model.md`
-- `docs/ai/api-contracts.md`
-- `docs/ai/CURRENT.md`
-- `docs/ai/HANDOFF.md`
-- `docs/ai/OPEN_QUESTIONS.md`
-
-Reset history for a new project:
-
-- Replace `docs/ai/WORKLOG.md` with the initialized worklog template.
-- Replace `docs/ai/DECISIONS.md` with the initialized decisions template.
-- Replace `docs/ai/FAILED_ATTEMPTS.md` with the initialized failed-attempts template.
-- Remove or archive task-specific `plans/*.md`.
-- Remove or archive ADR files under `docs/adr/*.md`, except `docs/adr/README.md`.
-
-## Maintenance rules
-
-- Keep stable product/domain memory separate from current operational state.
-- Keep `CURRENT.md` and `HANDOFF.md` short and rewrite them when state changes.
-- Keep `WORKLOG.md` append-only.
-- Use `DECISIONS.md` for compact durable decisions; use `docs/adr/*.md` when a decision needs a full ADR.
-- Update the most specific memory file instead of duplicating the same fact everywhere.
-- Cross-link paths when context spans multiple files.
-- Use `Unknown` with a short note when the repo does not provide enough evidence.
-- Record validation commands and whether they were run or not run.
-- Before stopping, run the checkpoint procedure in `.agents/skills/checkpoint/SKILL.md`.
-
-## Do not store here
-
-- Secrets, credentials, tokens, private keys, raw env values, or private URLs.
-- Raw chat transcripts.
-- Large code snippets or generated source dumps.
-- Temporary TODOs that belong in an active plan or issue.
-- Product speculation that is not supported by repo files or user-provided context.
+Store each fact once in its most specific owner and cross-link instead of copying. Skills own coding
+procedures; memory describes the repository. Use `Unknown` rather than speculation. Never store
+secrets, raw environment values, transcripts, large source excerpts, or transient logs.
