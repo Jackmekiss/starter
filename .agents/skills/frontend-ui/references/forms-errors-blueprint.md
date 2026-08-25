@@ -1,6 +1,6 @@
 # Forms and Errors Blueprint
 
-> Blueprint version: `1.0.0`
+> Blueprint version: `1.3.0`
 
 Use this frozen blueprint for controlled React Native forms, client validation, RTK Query mutation submission, typed presentation error resolution, and accessible field/submission feedback. The concrete login skeleton matches Starter's current primitives and contracts; adapt its names and rules rather than generating a parallel form system.
 
@@ -464,7 +464,6 @@ Add or change the resolver with `frontend-core` when the domain error contract c
 ## Validation and Review Checklist
 
 - [ ] Requested form/error behavior and accepted, non-superseded repository decisions remain normative; copied validation from another form does not override them.
-- [ ] Form expectations and error cases were forward-tested independently from requested behavior and accepted decisions, never copied from implementation output.
 - [ ] Values, defaults, field rules, and payload conversion match the requested action exactly.
 - [ ] Every controlled native field uses `Controller`, forwards `ref`, and has one state owner.
 - [ ] The generated mutation hook imports from `@/app-runtime/app-runtime` and submission uses `.unwrap()`.

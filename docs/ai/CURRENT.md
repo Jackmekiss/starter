@@ -20,4 +20,4 @@ native VoiceOver/TalkBack or hardware-back validation remain `Unknown`.
 
 1. Initialize project memory when deriving a named product.
 2. Select `frontend-core` before `frontend-ui` for the next vertical slice.
-3. Run native accessibility and device-specific smoke tests when targets are available.
+3. Perform focused native accessibility and device checks when targets are available.

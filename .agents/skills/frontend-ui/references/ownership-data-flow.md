@@ -1,6 +1,6 @@
 # UI Ownership and Data Flow
 
-> Blueprint version: `1.0.1`
+> Blueprint version: `1.3.0`
 
 This is the frozen ownership contract for Starter's Expo presentation layer. Use it before deciding whether code belongs in a route, a feature section, a local primitive, or a frontend bounded context. The examples are Markdown skeletons to adapt in place; they are not generators or assets.
 
@@ -236,7 +236,7 @@ A feature section may call one relevant query or mutation hook when its loading/
 ## Validation and Review Checklist
 
 - [ ] Requested behavior and accepted, non-superseded repository decisions remain normative; a nearby example does not silently override them.
-- [ ] Behavioral review or tests were designed independently from the request and accepted decisions, not reverse-engineered from the implementation output.
+- [ ] Behavioral review were designed independently from the request and accepted decisions, not reverse-engineered from the implementation output.
 - [ ] Every file is in the path owned by its responsibility.
 - [ ] Every generated hook used by `src/app/**` or `src/components/**` is imported from `@/app-runtime/app-runtime`; internal runtime composition is not forced through that facade.
 - [ ] No route or component constructs or imports runtime internals, gateways, APIs, or the store.

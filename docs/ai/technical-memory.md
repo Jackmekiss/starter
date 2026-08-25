@@ -13,7 +13,6 @@ blueprint versions belong to the linked skills, not here.
 | Direct Storybook            | `pnpm storybook`                         |
 | In-app Storybook            | `pnpm storybook:in-app`                  |
 | Generate Storybook registry | `pnpm storybook:generate`                |
-| Tests                       | `pnpm test`                              |
 | Typecheck                   | `pnpm typecheck`                         |
 | Lint                        | `pnpm lint`                              |
 | Format check                | `pnpm format:check`                      |
@@ -31,7 +30,6 @@ current task or a factual Worklog entry records it.
 - Aliases resolve `@/*` to `src/*`, `@core/*` to `core/*`, and `@@/*` to the repository root.
 - Redux Toolkit stores durable bounded-context state. RTK Query owns request lifecycles and async
   application actions.
-- Behavior specs exercise RTK Query endpoints with the real store and deterministic adapters.
 - Time-dependent adapters receive a `DateProvider`.
 - No backend, migration system, deployment pipeline, or production monitoring owner exists here.
 
@@ -75,7 +73,7 @@ current task or a factual Worklog entry records it.
 ## Normative Owners
 
 - [frontend-core](../../.agents/skills/frontend-core/SKILL.md) owns frontend DDD, use cases, state,
-  gateways, adapters, errors, behavior specs, and runtime wiring.
+  gateways, adapters, errors, and runtime wiring.
 - [frontend-ui](../../.agents/skills/frontend-ui/SKILL.md) owns routes, components, forms, styling,
   localization, accessibility, and Storybook.
 - [architecture-map.md](architecture-map.md) describes current file ownership.

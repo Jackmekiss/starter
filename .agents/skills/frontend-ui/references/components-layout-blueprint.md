@@ -1,6 +1,6 @@
 # Components and Layout Blueprint
 
-> Blueprint version: `1.2.2`
+> Blueprint version: `1.3.0`
 
 Use this frozen blueprint when composing Starter screens, feature sections, or shared UI primitives. Starter's design system uses React Native, shadcn-style local composition, NativeWind v5, Tailwind CSS v4, CVA, and focused `@rn-primitives` packages.
 
@@ -401,8 +401,6 @@ Render `outline` feedback on `bg-background` with the action's emphasis role. Re
 - [ ] Layout uses `px-screen` at screen boundaries and remains stable with long/scaled text.
 - [ ] Native roles, names, states, touch targets, focus, live regions, and hidden content are correct.
 - [ ] Stories cover meaningful variants and states and follow [storybook-blueprint.md](storybook-blueprint.md).
-- [ ] Typecheck, relevant lint/tests, targeted Oxfmt, Storybook registry generation when applicable, and a Storybook-enabled bundle check pass.
+- [ ] Typecheck, relevant lint, targeted Oxfmt, Storybook registry generation when applicable, and a Storybook-enabled bundle check pass.
 
 ## Independent Forward Validation
-
-When this blueprint changes, test it in an isolated temporary workspace with a realistic request for a new reusable primitive. Give the evaluator this skill and the request, not the current app implementation or a prescribed diff. Review ownership, naming, semantic-token reuse, public composition, accessibility, and Storybook coverage. Correct only gaps demonstrated by the resulting artifact.

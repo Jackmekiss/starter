@@ -1,6 +1,6 @@
 ---
 name: frontend-core
-description: "Implement or refactor Starter's frontend business core and runtime composition: pragmatic frontend DDD and Clean Architecture, bounded contexts under core/, RTK Query use-case builders, Redux durable state and selectors, typed Results and application errors, gateways and adapters, behavior specs, and src/app-runtime wiring. Use for frontend business capabilities that touch core/, external data boundaries, durable state, or runtime API/store integration. Do not use for backend/server architecture, database schema, or presentation-only screen and component work."
+description: "Implement or refactor Starter's frontend business core and runtime composition: pragmatic frontend DDD and Clean Architecture, bounded contexts under core/, RTK Query use-case builders, Redux durable state and selectors, typed Results and application errors, gateways and adapters, and src/app-runtime wiring. Use for frontend business capabilities that touch core/, external data boundaries, durable state, or runtime API/store integration. Do not use for backend/server architecture, database schema, or presentation-only screen and component work."
 ---
 
 # Frontend Core
@@ -28,10 +28,8 @@ Starter uses a pragmatic frontend adaptation of DDD and Clean Architecture. Do n
    - queries, mutations, or API options: [rtk-query-use-case-blueprint.md](references/rtk-query-use-case-blueprint.md)
    - Redux state or read models: [state-selectors-blueprint.md](references/state-selectors-blueprint.md)
    - concrete adapter selection, APIs, hooks, or store mounting: [runtime-wiring-blueprint.md](references/runtime-wiring-blueprint.md)
-   - core behavior tests: [behavior-spec-blueprint.md](references/behavior-spec-blueprint.md)
 5. Implement the smallest complete vertical slice. Extend an existing context instead of recreating its skeleton.
-6. Derive an independent forward behavior spec from the requested outcome and accepted decisions; do not copy expectations from the implementation under test.
-7. Validate the behavior and every changed boundary.
+6. Validate every changed boundary through static checks and focused inspection.
 
 ## Non-Negotiable Boundaries
 
@@ -42,8 +40,8 @@ Starter uses a pragmatic frontend adaptation of DDD and Clean Architecture. Do n
 - Return typed context `Result` values from fallible gateways and convert them with `toRtkQueryResult` in `queryFn`.
 - Keep transient request failures in RTK Query. Update durable Redux state only after successful fulfillment unless failure is itself durable product truth.
 - Instantiate concrete gateways, RTK Query APIs, middleware, hooks, and store wiring in `src/app-runtime/`.
-- Test use cases through their RTK Query API and a real Starter store.
-- Treat accepted, non-superseded decisions as normative and forward specs as independent evidence of requested behavior, not snapshots of incidental implementation.
+- Do not add automated tests or test-only infrastructure.
+- Treat accepted, non-superseded decisions as normative.
 
 ## Scope Boundary
 
@@ -53,7 +51,6 @@ This skill owns `core/**`, `core/init-redux-store.ts`, and core-facing `src/app-
 
 Run the narrowest relevant checks first, then broaden according to risk:
 
-- `pnpm run test`
 - `pnpm run typecheck`
 - `pnpm run lint`
 - targeted `pnpm exec oxfmt <changed-files> --check` (required for every modified file)

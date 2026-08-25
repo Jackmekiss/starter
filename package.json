@@ -13,7 +13,6 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "test": "vitest run",
     "lint": "pnpm run lint:ox && pnpm run lint:eslint",
     "lint:fix": "pnpm run lint:ox:fix && pnpm run lint:eslint:fix",
     "lint:ox": "oxlint .",
@@ -112,8 +111,7 @@
     "prettier-plugin-tailwindcss": "^0.8.1",
     "storybook": "10.4.6",
     "tailwindcss": "^4.3.3",
-    "typescript": "~6.0.3",
-    "vitest": "^4.1.9"
+    "typescript": "~6.0.3"
   },
   "packageManager": "pnpm@11.7.0"
 }

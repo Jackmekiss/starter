@@ -1,6 +1,6 @@
 # Bounded Context Blueprint
 
-> Blueprint version: `1.0.0`
+> Blueprint version: `1.3.0`
 
 Use this frozen blueprint only when creating a new frontend bounded context. For an existing context, add only the files required by the requested capability and follow its established names.
 
@@ -32,7 +32,6 @@ core/<context>/
 ├── gateways/<context>-gateway.ts
 ├── use-cases/<action>/
 │   ├── <verb-entity>.ts
-│   └── <verb-entity>.spec.ts
 └── adapters/
     ├── errors/<context>-error-mapper.ts
     ├── in-memory/in-memory-<context>-gateway.ts
@@ -50,7 +49,7 @@ Required for this complete baseline:
 - one typed fallible gateway contract;
 - one query or mutation use case;
 - durable state owned by the context;
-- one behavior spec through RTK Query and the Starter store;
+- one manual behavior checks through RTK Query and the Starter store;
 - one in-memory implementation;
 - runtime API creation and store mounting.
 
@@ -117,7 +116,7 @@ export abstract class <Context>Gateway {
 4. Implement the in-memory adapter.
 5. Implement the RTK Query use case and API options.
 6. Add the durable slice and selectors when the resolved value must outlive the request consumer.
-7. Write the behavior spec.
+7. Write the manual behavior checks.
 8. Wire the context in `src/app-runtime/` and `core/init-redux-store.ts`.
 9. Add a remote/SDK, fake, authenticated, or presentation adapter only when required.
 
@@ -127,7 +126,7 @@ export abstract class <Context>Gateway {
 - Adapter files live under a named concern, never directly in `adapters/`.
 - The gateway describes business operations, not a generic `request()` or RTK `BaseQueryFn`.
 - API options receive the abstract gateway; runtime selects the concrete implementation.
-- The first behavior spec proves both returned behavior and owned durable state.
+- The first manual behavior checks proves both returned behavior and owned durable state.
 - No route or component is required for a core-only request.
 
 ## Anti-Patterns

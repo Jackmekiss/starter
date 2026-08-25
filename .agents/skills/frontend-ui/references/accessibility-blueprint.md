@@ -1,6 +1,6 @@
 # Frozen Blueprint: Accessible React Native Presentation
 
-> Blueprint version: `1.0.1`
+> Blueprint version: `1.3.0`
 
 Use this reference while implementing or auditing routes, components, forms, overlays, dynamic feedback, images, or custom gestures for VoiceOver, TalkBack, React Native Web, Appium, and XCUITest. Accessibility is part of each owning component; it is not a separate visual system.
 
@@ -45,7 +45,7 @@ src/
 
 There is no required central accessibility helper or parallel accessibility component tree. Shared primitives own invariant semantics; feature call sites own purpose-specific names, hints, values, states, relationships, and any test IDs required by an existing automation contract. Routes own screen-level headings, loading/empty/error gates, and navigation meaning.
 
-Do not invent an Appium, Detox, or XCUITest directory or runner merely for a component change. The Starter currently has no discovered e2e command; add tests only in an established or explicitly requested harness.
+Do not invent an Appium, Detox, or XCUITest directory or runner merely for a component change. The Starter currently has no discovered e2e command; do not add an automation harness to this Starter.
 
 ## Preserve the UI
 
@@ -449,8 +449,5 @@ When a harness exists, assert role/type, accessible name, enabled/selected state
 - [ ] Appium/XCUITest can find and native-tap the semantic element by a stable ID; buttons are not generic native elements.
 - [ ] The accessibility-only diff contains no unrequested visual or unrelated behavior changes.
 - [ ] No angle-bracket placeholder remains.
-- [ ] Run typecheck, relevant lint, and existing relevant tests after source changes. Targeted `pnpm exec oxfmt <changed-files> --check` must pass; run global `pnpm run format:check` and report unrelated baseline failures without editing out-of-scope docs. Do not add component-only tests to this Starter.
 
 ## Independent Forward Validation
-
-When this frozen blueprint changes, test it through an independent accessibility task in an isolated temporary workspace. Build the prompt and acceptance criteria from the requested accessible behavior and accepted repository decisions: accurate names/roles/state, field and root error relationships, one announcement, modal isolation, gesture equivalence, preserved visuals, and native automation exposure. Do not reveal the current implementation, expected diff, intended fix, or prior output to the evaluator. Inspect the resulting accessibility tree and behavior, not wording similarity to this reference.

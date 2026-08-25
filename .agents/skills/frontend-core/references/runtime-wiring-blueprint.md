@@ -1,13 +1,13 @@
 # Runtime Wiring Blueprint
 
-> Blueprint version: `1.0.1`
+> Blueprint version: `1.3.0`
 
 Use this frozen blueprint when adding or changing concrete gateway selection, RTK Query API creation, hook exports, middleware, persistence, store mounting, or the frontend composition root.
 
 Account onboarding remains durable Account truth. Runtime exports
 `useCompleteOnboardingMutation`, while navigation reads the Account selector. Do not compose a
 Zustand session store, hydration flag, or separate `shouldCreateAccount` value. In-memory and fake
-fixtures used to open the neutral Starter begin as `completed`; provisioning behavior specs seed
+fixtures used to open the neutral Starter begin as `completed`; provisioning manual behavior checks seed
 `pending` explicitly.
 
 ## Placeholders
@@ -135,7 +135,7 @@ export interface Apis {
 }
 ```
 
-The store factory keeps APIs optional for isolated behavior specs:
+The store factory keeps APIs optional for isolated manual behavior checks:
 
 ```ts
 /** Creates the root reducer from enabled APIs and domain slices. */
@@ -208,8 +208,8 @@ Keep the existing `appMode` export exactly once; add only the explicit hooks for
 
 - `core/` exports API options, never a globally configured React API instance.
 - Runtime owns concrete implementation choice and React hook generation.
-- Keep standard runtime composition direct; verify its wiring structurally and cover durable reset behavior through the context's core behavior specs unless the request explicitly requires a runtime integration harness.
-- Store factories remain usable by tests with a subset of APIs and no persistence.
+- Keep standard runtime composition direct; verify its wiring structurally and cover durable reset behavior through the context's core manual behavior checks unless the request explicitly requires a runtime integration harness.
+- Store factories remain usable by focused local tooling with a subset of APIs and no persistence.
 - UI consumes a stable facade containing explicit `appMode` and hook exports only.
 - A new context's reducer, API reducer, middleware, reset behavior, and hook exports are wired together in one change.
 
@@ -222,5 +222,4 @@ Keep the existing `appMode` export exactly once; add only the explicit hooks for
 - A second persisted auth/connection flag beside Redux auth state.
 - Clearing mutable transport auth for a public request and racing a protected request.
 - `export *` from a runtime module or any `_layout.tsx` runtime re-export.
-- Exporting a test-only runtime factory, adding `src/app-runtime` specs, or widening Vitest discovery merely to prove the standard API/listener/store wiring.
 - Publishing API instances, store, persistor, listeners, gateway factories, or session providers through the UI facade.

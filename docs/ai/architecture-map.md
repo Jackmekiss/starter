@@ -45,7 +45,8 @@
 - Transient request failures remain in RTK Query; durable slices only store failures when the failure itself is product truth shared across flows.
 - Authenticated concrete adapters should read credentials from an injected current-session provider rather than accept transport credentials through use-cases or business gateways.
 - Adapter files are grouped by named concern such as `errors/`, `fake/`, `http/`, `in-memory/`, `presentation/`, `selectors/`, or another concrete transport.
-- Time-dependent adapters receive the shared `DateProvider`; runtime composition injects `RealDateProvider` and behavior specs may inject `DeterministicDateProvider`.
+- Time-dependent adapters receive the shared `DateProvider`; runtime composition injects
+  `RealDateProvider` and deterministic local adapters may inject `DeterministicDateProvider`.
 
 ## Dependency direction rules
 

@@ -1,5 +1,11 @@
 # Worklog
 
+## 2026-08-25 — Remove Automated Tests
+
+- Removed executable specs, Vitest configuration, the test script, and the direct runner dependency.
+- Realigned active frontend skills, architecture memory, and validation guidance around static and
+  focused manual checks.
+
 ## 2026-08-25 — Account-Owned Onboarding
 
 - Reduced Account onboarding to durable `pending | completed` truth and a dedicated idempotent

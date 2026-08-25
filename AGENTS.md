@@ -6,7 +6,7 @@ Product guidance for Starter lives in `docs/ai/product-memory.md`.
 
 Available skills:
 
-- `frontend-core`: Starter's frontend DDD and Clean Architecture conventions for bounded contexts under `core/`, RTK Query use-cases, Redux-owned durable state, gateways, adapters, typed errors, behavior specs, and `src/app-runtime/` composition
+- `frontend-core`: Starter's frontend DDD and Clean Architecture conventions for bounded contexts under `core/`, RTK Query use-cases, Redux-owned durable state, gateways, adapters, typed errors, and `src/app-runtime/` composition
 - `frontend-ui`: Starter's Expo Router routes, screens, components, forms, runtime-hook consumption, localization, NativeWind styling, themes, accessibility semantics, and accessibility audits
 - `project-memory`: resume work, checkpoint an interruption, remember durable context, or initialize project memory through four explicit modes
 - `create-plan`: create an executable `plans/<feature-slug>.md` for multi-step, risky, or multi-session work
@@ -29,7 +29,7 @@ Always-on repository rules:
 
 ## Proportional native validation
 
-- Default to targeted formatting, lint, typecheck, and tests for ordinary changes.
+- Default to targeted formatting, lint, and typecheck for ordinary changes. This repository intentionally has no automated tests.
 - Build native iOS/Android bundles when a change affects Metro, Reanimated, Storybook, native configuration, or a native dependency.
 - Launch an iOS or Android simulator only when the user explicitly asks, before a release, or when the behavior cannot be validated reliably without a device runtime.
 - Do not launch simulators routinely after every UI change; explain when an exceptional native check is necessary.

@@ -1,6 +1,6 @@
 # Errors, Results, and Adapters Blueprint
 
-> Blueprint version: `1.0.0`
+> Blueprint version: `1.3.0`
 
 Use this frozen blueprint whenever a gateway operation can fail or a concrete transport, SDK, storage system, clock, or session source is introduced.
 
@@ -111,11 +111,11 @@ Backend codes, HTTP status mapping, response decoding, SDK exception classes, an
 ## In-Memory Adapter Execution Skeleton
 
 ```ts
-/** In-memory <context> behavior used by local runtime and behavior specs. */
+/** In-memory <context> behavior used by local runtime and manual behavior checks. */
 export class InMemory<Context>Gateway extends <Context>Gateway {
   private currentError?: <Context>Error;
 
-  /** Sets a deterministic failure for behavior specs. */
+  /** Sets a deterministic failure for manual behavior checks. */
   set error(value: <Context>Error | undefined) {
     this.currentError = value;
   }
@@ -197,7 +197,7 @@ export class Fake<Context>Gateway extends <Context>Gateway {
 }
 ```
 
-If different operations intentionally have different delays, keep those delays beside the corresponding method instead of forcing one field. In every case, declare the fake's actual constructor and make runtime/tests follow that signature; gateway substitutability does not imply constructor substitutability.
+If different operations intentionally have different delays, keep those delays beside the corresponding method instead of forcing one field. In every case, declare the fake's actual constructor and make runtime and manual checks follow that signature; gateway substitutability does not imply constructor substitutability.
 
 ## Concrete Adapter Skeleton
 
@@ -237,7 +237,7 @@ Inject the provider into the concrete adapter and read it immediately before eac
 
 ## Time-Dependent Adapter Pattern
 
-Inject the existing `DateProvider`. Runtime uses `RealDateProvider`; in-memory adapters and specs use `DeterministicDateProvider`. Do not call `Date.now()` or construct the current date directly in time-dependent adapter behavior.
+Inject the existing `DateProvider`. Runtime uses `RealDateProvider`; in-memory adapters and manual checks use `DeterministicDateProvider`. Do not call `Date.now()` or construct the current date directly in time-dependent adapter behavior.
 
 ## Presentation Adapter Pattern
 

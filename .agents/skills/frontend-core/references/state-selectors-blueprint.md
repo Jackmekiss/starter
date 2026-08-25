@@ -1,6 +1,6 @@
 # State and Selectors Blueprint
 
-> Blueprint version: `1.0.0`
+> Blueprint version: `1.3.0`
 
 Use this frozen blueprint when a bounded context owns durable frontend truth or exposes stable reads derived from Redux state.
 
@@ -11,7 +11,7 @@ Use this frozen blueprint when a bounded context owns durable frontend truth or 
 - `<Entities>`: plural collection name
 - `<readModel>` / `<ReadModel>`: stable derived value shared by consumers
 
-## Ownership Test
+## Ownership Check
 
 Keep state in the bounded context when it must survive a screen, be shared across flows, be persisted or synchronized, or drive a real product decision. Keep focus, open/closed state, form fields, animation/playback progress, temporary selection, and other mounted interaction mechanics in the UI.
 

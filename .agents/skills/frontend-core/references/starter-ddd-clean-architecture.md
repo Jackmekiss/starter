@@ -1,6 +1,6 @@
 # Starter DDD and Clean Architecture
 
-> Blueprint version: `1.0.0`
+> Blueprint version: `1.3.0`
 
 This is the frozen architectural contract for Starter's frontend core. It describes the repository's pragmatic implementation, not a generic backend Clean Architecture.
 
@@ -96,7 +96,7 @@ Does it exist only for one mounted interaction or visual presentation?
 
 ## Required and Conditional Areas
 
-For a new fallible, stateful context, the complete baseline requires domain models, error/result contracts, a slice, public API types, gateway, API options, at least one use case and behavior spec, an in-memory adapter, selectors, runtime API creation, and store mounting.
+For a new fallible, stateful context, the complete baseline requires domain models, error/result contracts, a slice, public API types, gateway, API options, at least one use case and manual behavior checks, an in-memory adapter, selectors, runtime API creation, and store mounting.
 
 Add only when required:
 

@@ -32,8 +32,7 @@ Preserve visible design and interaction behavior during accessibility-only work 
    - Storybook configuration, stories, provider isolation, or visual review: [storybook-blueprint.md](references/storybook-blueprint.md)
 4. Reuse the runtime facade and existing primitives before adding new presentation infrastructure.
 5. Keep the change as local as its responsibility allows; use `frontend-core` only when business behavior or runtime core wiring must change.
-6. Derive any changed UI test from the requested outcome and accepted decisions before asserting rendered behavior; do not copy expectations from implementation output.
-7. Validate semantics, presentation states, typing, lint, and formatting.
+6. Validate semantics, presentation states, typing, lint, and formatting.
 
 ## Non-Negotiable Boundaries
 
@@ -51,7 +50,8 @@ Preserve visible design and interaction behavior during accessibility-only work 
 - Keep direct Storybook presentation-only through the official React Native entry-point swap. The accepted `EXPO_PUBLIC_STORYBOOK_ENABLED=true` in-app development mode may expose the guarded `/storybook` route and its Home launcher; it intentionally trades normal-bundle isolation for Fifteen-style navigation and must never be enabled for production builds. Stories do not import the Redux store, persistor, gateways, or runtime internals.
 - Keep accessible names, roles, states, announcements, and automation exposure accurate without duplicating the accessibility tree.
 - Keep user-visible copy in typed translation catalogs; never display raw backend or exception messages.
-- Treat accepted, non-superseded decisions as normative and forward tests as independent behavioral evidence, not snapshots of incidental markup or styling.
+- Do not add automated tests or test-only infrastructure.
+- Treat accepted, non-superseded decisions as normative.
 
 ## Scope Boundary
 
@@ -63,4 +63,4 @@ This skill owns `src/app/**`, `src/components/**`, `.rnstorybook/**`, presentati
 - Verify light/dark behavior when theme tokens or imperative colors change.
 - Exercise changed primitives in Storybook across meaningful variants, sizes, disabled/invalid/busy states, long copy, and light/dark backgrounds; regenerate the tracked Storybook registry after story discovery changes.
 - Verify accessibility semantics and that accessibility-only diffs contain no unrequested visual changes.
-- Run `pnpm run typecheck` and relevant lint/tests. For Storybook infrastructure changes, also generate the registry and perform a Storybook-enabled export or equivalent isolated bundle check. Require `pnpm exec oxfmt <changed-files> --check` for every modified file, then run global `pnpm run format:check` as a regression check; distinguish unrelated baseline failures and do not rewrite out-of-scope docs to make it green.
+- Run `pnpm run typecheck` and relevant lint. For Storybook infrastructure changes, also generate the registry and perform a Storybook-enabled export or equivalent isolated bundle check. Require `pnpm exec oxfmt <changed-files> --check` for every modified file, then run global `pnpm run format:check` as a regression check; distinguish unrelated baseline failures and do not rewrite out-of-scope docs to make it green.

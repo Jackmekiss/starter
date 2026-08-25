@@ -1,6 +1,6 @@
 # Routes and Screens Blueprint
 
-> Blueprint version: `1.0.3`
+> Blueprint version: `1.3.0`
 
 Use this frozen blueprint for Expo Router files, route groups, root providers, protected navigation, screen-level requests, and screen composition. Adapt the Markdown skeletons; do not install or generate a second router structure.
 
@@ -421,7 +421,6 @@ Let a feature section call one relevant hook, selector, or local router action w
 - Give icon-only navigation controls an explicit localized `accessibilityLabel` and accurate `accessibilityRole`.
 - Expose `busy`, `disabled`, `selected`, `expanded`, and modal state when applicable.
 - Announce newly rendered loading, error, and empty status without nesting duplicate accessible text under one redundant accessible parent.
-- Preserve visible text as the automation-facing name when possible; add stable test identifiers only when the automation contract requires them.
 - Keep hidden/inactive route content out of the accessibility tree rather than visually hiding an interactive screen.
 - Respect safe areas, dynamic text, keyboard focus, and platform back behavior.
 
@@ -454,7 +453,6 @@ Let a feature section call one relevant hook, selector, or local router action w
 ## Validation and Review Checklist
 
 - [ ] Requested navigation behavior and accepted, non-superseded repository decisions remain normative over incidental current implementation details.
-- [ ] Route and screen expectations were forward-tested independently from requested behavior and accepted decisions, never copied from the implementation output.
 - [ ] Route paths, group names, `index.tsx`, and `_layout.tsx` match Expo Router conventions.
 - [ ] `AppLayout`, `RootAppProviders`, and `RootNavigator` retain their separate responsibilities.
 - [ ] Protected guards are mutually exclusive for disconnected, connected/onboarded, and connected/incomplete states.
