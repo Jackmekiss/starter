@@ -1,6 +1,6 @@
 # Routes and Screens Blueprint
 
-> Blueprint version: `1.0.1`
+> Blueprint version: `1.0.2`
 
 Use this frozen blueprint for Expo Router files, route groups, root providers, protected navigation, screen-level requests, and screen composition. Adapt the Markdown skeletons; do not install or generate a second router structure.
 
@@ -108,11 +108,7 @@ export const unstable_settings = {
  */
 export default function AppLayout() {
   return (
-    <KeyboardProvider
-      navigationBarTranslucent
-      preserveEdgeToEdge
-      statusBarTranslucent
-    >
+    <KeyboardProvider>
       <RootAppProviders>
         <RootNavigator />
         <StatusBar />
@@ -123,7 +119,11 @@ export default function AppLayout() {
 }
 ```
 
-Module-level splash setup is an Expo lifecycle requirement, not business orchestration. Keep feature initialization out of this file.
+Module-level splash setup is an Expo lifecycle requirement, not business orchestration. Keep feature
+initialization out of this file. Expo SDK 54+ makes Android edge-to-edge mandatory, and the current
+Keyboard Controller detects that native state. Do not pass `navigationBarTranslucent`,
+`statusBarTranslucent`, or `preserveEdgeToEdge`; they are redundant and ignored. Handle system-bar
+overlap through the existing safe-area boundaries.
 
 ## Root Providers
 
@@ -402,6 +402,8 @@ Let a feature section call one relevant hook, selector, or local router action w
 
 - Expo Router's filesystem is the route source of truth.
 - The root layout composes; `RootAppProviders` provides; `RootNavigator` guards.
+- `KeyboardProvider` relies on Expo's mandatory Android edge-to-edge state without redundant
+  translucency or preservation props.
 - Protected groups derive from durable selectors and remain mutually exclusive.
 - Routes and components import generated query/mutation hooks and any `appMode` access from `@/app-runtime/app-runtime`; internal `src/app-runtime/**` composition may import its owning runtime directly.
 - A route owns whole-screen states and major section order, not domain behavior or infrastructure.

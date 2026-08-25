@@ -26,11 +26,7 @@ export const unstable_settings = {
  */
 export default function AppLayout() {
   return (
-    <KeyboardProvider
-      navigationBarTranslucent
-      preserveEdgeToEdge
-      statusBarTranslucent
-    >
+    <KeyboardProvider>
       <RootAppProviders>
         <RootNavigator />
         <StatusBar />
