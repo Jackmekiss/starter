@@ -1,6 +1,6 @@
 # Components and Layout Blueprint
 
-> Blueprint version: `1.3.0`
+> Blueprint version: `1.3.1`
 
 Use this frozen blueprint when composing Starter screens, feature sections, or shared UI primitives. Starter's design system uses React Native, shadcn-style local composition, NativeWind v5, Tailwind CSS v4, CVA, and focused `@rn-primitives` packages.
 
@@ -121,16 +121,17 @@ The catalog defines responsibilities, not permission to fork APIs. Inspect the e
 ### Button spinner motion
 
 `ButtonSpinner` owns loader-presence motion for every button while preserving its existing
-`ActivityIndicator` prop contract. Conditional mounting animates opacity, scale, and occupied width
-for 200 milliseconds on Reanimated's UI thread: entrance uses `ease-out-back`, and exit uses the
-inverse `ease-in-back`. The occupied width includes the button's contextual gap so adjacent text
-moves continuously instead of jumping.
+`ActivityIndicator` prop contract. Conditional mounting animates opacity, scale, occupied width,
+and gap compensation for 200 milliseconds on Reanimated's UI thread: entrance uses
+`ease-out-back`, and exit uses `ease-in-back` while opacity eases inward.
 
-The owning `Button` supplies that gap only when the spinner accompanies content. A spinner used
-alone contributes no gap and remains centered. The animation must not change the button height,
-touch target, or disabled semantics. Configure both keyframes with Reanimated's
-`ReduceMotion.System` policy. Keep one interactive Button story that mounts and unmounts the
-spinner, plus an icon-sized spinner-only example.
+The owning `Button` keeps its real size-dependent flex gap. While the spinner width is closed,
+`ButtonSpinner` offsets that gap with a negative trailing margin; it releases the compensation as
+the width opens and restores it while exiting. This moves adjacent text continuously without
+replacing the button's normal gap contract. A spinner used alone receives no compensation and
+remains centered. The animation must not change the button height, touch target, or disabled
+semantics. Apply `ReduceMotion.System` to every timing animation. Keep one interactive Button story
+that mounts and unmounts the spinner, plus an icon-sized spinner-only example.
 
 ## Layout Contract
 

@@ -9,13 +9,19 @@ import {
 } from "react-native";
 import Animated, {
   Easing,
-  Keyframe,
   ReduceMotion,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+  type EntryExitAnimationFunction,
 } from "react-native-reanimated";
 
 import { Icon, type IconProps } from "@/components/ui/Icon";
 import { Text, TextClassContext } from "@/components/ui/Text";
 import { cn } from "@/lib/cn";
+
+const BUTTON_SPINNER_SIZE = 20;
+const BUTTON_SPINNER_TRANSITION_DURATION = 200;
 
 const buttonVariants = cva(
   cn(
@@ -201,15 +207,15 @@ type ButtonProps = React.ComponentProps<typeof Pressable> & ButtonVariantProps;
 
 /** Visual values inherited by compound button children. */
 interface ButtonContextValue extends ButtonVariantProps {
+  hasMultipleChildren: boolean;
   iconClassName: string;
-  spinnerGap: number;
 }
 
 const ButtonContext = React.createContext<ButtonContextValue>({
   action: "primary",
+  hasMultipleChildren: false,
   iconClassName: "text-primary-foreground",
   size: "default",
-  spinnerGap: 0,
   variant: "default",
 });
 
@@ -222,11 +228,19 @@ function Button({
   variant = "default",
   ...props
 }: ButtonProps) {
-  const spinnerGap = resolveAnimatedSpinnerGap(children, size);
+  const hasMultipleChildren =
+    typeof children !== "function" &&
+    React.Children.toArray(children).length > 1;
   const textClassName = buttonTextVariants({ action, size, variant });
   const contextValue = React.useMemo(
-    () => ({ action, iconClassName: textClassName, size, spinnerGap, variant }),
-    [action, size, spinnerGap, textClassName, variant],
+    () => ({
+      action,
+      hasMultipleChildren,
+      iconClassName: textClassName,
+      size,
+      variant,
+    }),
+    [action, hasMultipleChildren, size, textClassName, variant],
   );
 
   return (
@@ -237,7 +251,6 @@ function Button({
           className={cn(
             props.disabled && "opacity-40",
             buttonVariants({ action, size, variant }),
-            spinnerGap > 0 && "gap-0",
             className,
           )}
           {...props}
@@ -274,83 +287,102 @@ function resolveButtonIconSize(size: ButtonVariantProps["size"]) {
   return 18;
 }
 
-/** Resolves the animated spacing for the standard spinner-and-content pair. */
-function resolveAnimatedSpinnerGap(
-  children: ButtonProps["children"],
-  size: ButtonVariantProps["size"],
-) {
-  if (typeof children === "function") return 0;
-
-  const renderedChildren = React.Children.toArray(children);
-  const hasSpinner = renderedChildren.some(
-    (child) => React.isValidElement(child) && child.type === ButtonSpinner,
-  );
-
-  if (!hasSpinner || renderedChildren.length !== 2) return 0;
-  return size === "lg" || size === "xl" ? 12 : 8;
-}
-
-/** Resolves a deterministic native spinner diameter for width animation. */
-function resolveButtonSpinnerSize(size: ButtonVariantProps["size"]) {
-  return size === "xl" ? 36 : 20;
-}
-
 /** Busy indicator with animated presence and button-aware occupied width. */
-function ButtonSpinner(props: React.ComponentProps<typeof ActivityIndicator>) {
-  const { size, spinnerGap } = React.useContext(ButtonContext);
-  const spinnerSize = resolveButtonSpinnerSize(size);
-  const occupiedWidth = spinnerSize + spinnerGap;
-  const entering = React.useMemo(
-    () =>
-      new Keyframe({
-        0: { opacity: 0, transform: [{ scale: 0.8 }], width: 0 },
-        100: {
-          easing: Easing.out(Easing.back()),
+const ButtonSpinner = React.forwardRef<
+  React.ElementRef<typeof ActivityIndicator>,
+  React.ComponentPropsWithoutRef<typeof ActivityIndicator>
+>((props, ref) => {
+  const { hasMultipleChildren, size: parentSize } =
+    React.useContext(ButtonContext);
+  const progress = useSharedValue(0);
+  const spinnerSize = resolveButtonSpinnerSize(props.size);
+  const parentGap = hasMultipleChildren ? resolveButtonGap(parentSize) : 0;
+  const exiting = React.useMemo<EntryExitAnimationFunction>(
+    () => () => {
+      "worklet";
+
+      const exitEasing = Easing.in(Easing.back());
+      const opacityEasing = Easing.in(Easing.ease);
+
+      return {
+        initialValues: {
+          marginRight: 0,
           opacity: 1,
           transform: [{ scale: 1 }],
-          width: occupiedWidth,
+          width: spinnerSize,
         },
-      })
-        .duration(200)
-        .reduceMotion(ReduceMotion.System),
-    [occupiedWidth],
+        animations: {
+          marginRight: withTiming(-parentGap, {
+            duration: BUTTON_SPINNER_TRANSITION_DURATION,
+            easing: exitEasing,
+            reduceMotion: ReduceMotion.System,
+          }),
+          opacity: withTiming(0, {
+            duration: BUTTON_SPINNER_TRANSITION_DURATION,
+            easing: opacityEasing,
+            reduceMotion: ReduceMotion.System,
+          }),
+          transform: [
+            {
+              scale: withTiming(0, {
+                duration: BUTTON_SPINNER_TRANSITION_DURATION,
+                easing: exitEasing,
+                reduceMotion: ReduceMotion.System,
+              }),
+            },
+          ],
+          width: withTiming(0, {
+            duration: BUTTON_SPINNER_TRANSITION_DURATION,
+            easing: exitEasing,
+            reduceMotion: ReduceMotion.System,
+          }),
+        },
+      };
+    },
+    [parentGap, spinnerSize],
   );
-  const exiting = React.useMemo(
-    () =>
-      new Keyframe({
-        0: {
-          opacity: 1,
-          transform: [{ scale: 1 }],
-          width: occupiedWidth,
-        },
-        100: {
-          easing: Easing.in(Easing.back()),
-          opacity: 0,
-          transform: [{ scale: 0.8 }],
-          width: 0,
-        },
-      })
-        .duration(200)
-        .reduceMotion(ReduceMotion.System),
-    [occupiedWidth],
-  );
+
+  React.useEffect(() => {
+    progress.set(
+      withTiming(1, {
+        duration: BUTTON_SPINNER_TRANSITION_DURATION,
+        easing: Easing.out(Easing.back()),
+        reduceMotion: ReduceMotion.System,
+      }),
+    );
+  }, [progress]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    marginRight: -parentGap * (1 - progress.value),
+    opacity: Math.min(1, Math.max(0, progress.value)),
+    transform: [{ scale: progress.value }],
+    width: spinnerSize * progress.value,
+  }));
 
   return (
     <Animated.View
-      collapsable={false}
-      entering={entering}
+      className="items-center justify-center overflow-visible"
       exiting={exiting}
       pointerEvents="none"
-      style={{
-        alignItems: "flex-start",
-        height: spinnerSize,
-        justifyContent: "center",
-        width: occupiedWidth,
-      }}
+      style={animatedStyle}
     >
-      <ActivityIndicator size={spinnerSize} {...props} />
+      <ActivityIndicator ref={ref} {...props} />
     </Animated.View>
   );
+});
+
+/** Resolves the native ActivityIndicator width used by its named sizes. */
+function resolveButtonSpinnerSize(
+  size: React.ComponentProps<typeof ActivityIndicator>["size"],
+) {
+  if (typeof size === "number") return size;
+  return size === "large" ? 36 : BUTTON_SPINNER_SIZE;
+}
+
+/** Resolves the horizontal gap contributed by the parent button size. */
+function resolveButtonGap(size: ButtonVariantProps["size"]) {
+  if (size === "lg" || size === "xl") return 12;
+  return size ? 8 : 0;
 }
 
 /** Props accepted by a related group of buttons. */
@@ -375,6 +407,8 @@ function ButtonGroup({
     />
   );
 }
+
+ButtonSpinner.displayName = "ButtonSpinner";
 
 export {
   Button,
