@@ -1,6 +1,6 @@
 # Components and Layout Blueprint
 
-> Blueprint version: `1.2.1`
+> Blueprint version: `1.2.2`
 
 Use this frozen blueprint when composing Starter screens, feature sections, or shared UI primitives. Starter's design system uses React Native, shadcn-style local composition, NativeWind v5, Tailwind CSS v4, CVA, and focused `@rn-primitives` packages.
 
@@ -117,6 +117,20 @@ Add a primitive only after reuse or a clear design-system responsibility justifi
 | Toast            | react-native-toast-message surface + hook             | status tones; `outline`/`solid`; title/description/action/close; live-region semantics                              |
 
 The catalog defines responsibilities, not permission to fork APIs. Inspect the existing component before changing names or aliases, and keep current callers source-compatible unless an accepted decision authorizes a migration.
+
+### Button spinner motion
+
+`ButtonSpinner` owns loader-presence motion for every button while preserving its existing
+`ActivityIndicator` prop contract. Conditional mounting animates opacity, scale, and occupied width
+for 200 milliseconds on Reanimated's UI thread: entrance uses `ease-out-back`, and exit uses the
+inverse `ease-in-back`. The occupied width includes the button's contextual gap so adjacent text
+moves continuously instead of jumping.
+
+The owning `Button` supplies that gap only when the spinner accompanies content. A spinner used
+alone contributes no gap and remains centered. The animation must not change the button height,
+touch target, or disabled semantics. Configure both keyframes with Reanimated's
+`ReduceMotion.System` policy. Keep one interactive Button story that mounts and unmounts the
+spinner, plus an icon-sized spinner-only example.
 
 ## Layout Contract
 
@@ -345,6 +359,8 @@ Render `outline` feedback on `bg-background` with the action's emphasis role. Re
 - Checkbox, radio items, progress, and switches require caller-supplied localized accessible names; switch also requires its localized spoken value.
 - Icon-only actions require localized accessible names; decorative icons are hidden.
 - Disabled, busy, invalid, selected, expanded, checked, and indeterminate states remain accurate.
+- Button loader motion stays centralized in `ButtonSpinner`; screens never animate individual
+  loaders or compensate for their width.
 - Touch targets remain practical even when the visible control is compact.
 - Status is not conveyed by color alone.
 - Async updates use the narrowest live region that conveys the change.

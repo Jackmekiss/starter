@@ -27,6 +27,14 @@ Always-on repository rules:
 - Do not leak UI state into domain models.
 - A bounded context should own durable product truth; the UI should own temporary interaction mechanics.
 
+## Proportional native validation
+
+- Default to targeted formatting, lint, typecheck, and tests for ordinary changes.
+- Build native iOS/Android bundles when a change affects Metro, Reanimated, Storybook, native configuration, or a native dependency.
+- Launch an iOS or Android simulator only when the user explicitly asks, before a release, or when the behavior cannot be validated reliably without a device runtime.
+- Do not launch simulators routinely after every UI change; explain when an exceptional native check is necessary.
+- Do not run automatic Web validation for this Expo Starter. A future Web application will be owned separately.
+
 ## Project memory and continuity
 
 - This repo uses `docs/ai/` as the source of truth for project memory.

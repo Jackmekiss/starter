@@ -1,4 +1,5 @@
 import { Check } from "lucide-react-native";
+import { useState } from "react";
 import { ScrollView, View } from "react-native";
 
 import {
@@ -86,6 +87,11 @@ export const Sizes: Story = {
 /** Common enabled, icon, disabled, and busy states. */
 export const States: Story = {
   render: ButtonStatesStory,
+};
+
+/** Interactive entrance and exit of the shared button spinner. */
+export const LoaderTransition: Story = {
+  render: ButtonLoaderTransitionStory,
 };
 
 /** Renders the controllable button story. */
@@ -176,6 +182,40 @@ function ButtonStatesStory() {
       >
         <ButtonSpinner />
         <ButtonText>Loading</ButtonText>
+      </Button>
+      <Button
+        accessibilityLabel="Loading"
+        accessibilityState={{ busy: true, disabled: true }}
+        disabled
+        onPress={handlePress}
+        size="icon"
+      >
+        <ButtonSpinner />
+      </Button>
+    </ButtonGroup>
+  );
+}
+
+/** Demonstrates both spinner directions without changing button dimensions. */
+function ButtonLoaderTransitionStory() {
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <ButtonGroup orientation="vertical" className="items-start">
+      <Button
+        accessibilityState={{ busy: loading, disabled: loading }}
+        className="w-56"
+        disabled={loading}
+        onPress={handlePress}
+      >
+        {loading ? <ButtonSpinner /> : null}
+        <ButtonText>Save changes</ButtonText>
+      </Button>
+      <Button
+        onPress={() => setLoading((currentLoading) => !currentLoading)}
+        variant="outline"
+      >
+        <ButtonText>{loading ? "Hide loader" : "Show loader"}</ButtonText>
       </Button>
     </ButtonGroup>
   );

@@ -7,6 +7,11 @@ import {
   View,
   type ViewProps,
 } from "react-native";
+import Animated, {
+  Easing,
+  Keyframe,
+  ReduceMotion,
+} from "react-native-reanimated";
 
 import { Icon, type IconProps } from "@/components/ui/Icon";
 import { Text, TextClassContext } from "@/components/ui/Text";
@@ -197,27 +202,31 @@ type ButtonProps = React.ComponentProps<typeof Pressable> & ButtonVariantProps;
 /** Visual values inherited by compound button children. */
 interface ButtonContextValue extends ButtonVariantProps {
   iconClassName: string;
+  spinnerGap: number;
 }
 
 const ButtonContext = React.createContext<ButtonContextValue>({
   action: "primary",
   iconClassName: "text-primary-foreground",
   size: "default",
+  spinnerGap: 0,
   variant: "default",
 });
 
 /** Pressable button primitive with Fifteen actions and shadcn composition. */
 function Button({
   action = "primary",
+  children,
   className,
   size = "default",
   variant = "default",
   ...props
 }: ButtonProps) {
+  const spinnerGap = resolveAnimatedSpinnerGap(children, size);
   const textClassName = buttonTextVariants({ action, size, variant });
   const contextValue = React.useMemo(
-    () => ({ action, iconClassName: textClassName, size, variant }),
-    [action, size, textClassName, variant],
+    () => ({ action, iconClassName: textClassName, size, spinnerGap, variant }),
+    [action, size, spinnerGap, textClassName, variant],
   );
 
   return (
@@ -228,10 +237,13 @@ function Button({
           className={cn(
             props.disabled && "opacity-40",
             buttonVariants({ action, size, variant }),
+            spinnerGap > 0 && "gap-0",
             className,
           )}
           {...props}
-        />
+        >
+          {children}
+        </Pressable>
       </TextClassContext.Provider>
     </ButtonContext.Provider>
   );
@@ -262,11 +274,82 @@ function resolveButtonIconSize(size: ButtonVariantProps["size"]) {
   return 18;
 }
 
-/** Busy indicator sized consistently with the current button. */
+/** Resolves the animated spacing for the standard spinner-and-content pair. */
+function resolveAnimatedSpinnerGap(
+  children: ButtonProps["children"],
+  size: ButtonVariantProps["size"],
+) {
+  if (typeof children === "function") return 0;
+
+  const renderedChildren = React.Children.toArray(children);
+  const hasSpinner = renderedChildren.some(
+    (child) => React.isValidElement(child) && child.type === ButtonSpinner,
+  );
+
+  if (!hasSpinner || renderedChildren.length !== 2) return 0;
+  return size === "lg" || size === "xl" ? 12 : 8;
+}
+
+/** Resolves a deterministic native spinner diameter for width animation. */
+function resolveButtonSpinnerSize(size: ButtonVariantProps["size"]) {
+  return size === "xl" ? 36 : 20;
+}
+
+/** Busy indicator with animated presence and button-aware occupied width. */
 function ButtonSpinner(props: React.ComponentProps<typeof ActivityIndicator>) {
-  const { size } = React.useContext(ButtonContext);
+  const { size, spinnerGap } = React.useContext(ButtonContext);
+  const spinnerSize = resolveButtonSpinnerSize(size);
+  const occupiedWidth = spinnerSize + spinnerGap;
+  const entering = React.useMemo(
+    () =>
+      new Keyframe({
+        0: { opacity: 0, transform: [{ scale: 0.8 }], width: 0 },
+        100: {
+          easing: Easing.out(Easing.back()),
+          opacity: 1,
+          transform: [{ scale: 1 }],
+          width: occupiedWidth,
+        },
+      })
+        .duration(200)
+        .reduceMotion(ReduceMotion.System),
+    [occupiedWidth],
+  );
+  const exiting = React.useMemo(
+    () =>
+      new Keyframe({
+        0: {
+          opacity: 1,
+          transform: [{ scale: 1 }],
+          width: occupiedWidth,
+        },
+        100: {
+          easing: Easing.in(Easing.back()),
+          opacity: 0,
+          transform: [{ scale: 0.8 }],
+          width: 0,
+        },
+      })
+        .duration(200)
+        .reduceMotion(ReduceMotion.System),
+    [occupiedWidth],
+  );
+
   return (
-    <ActivityIndicator size={size === "xl" ? "large" : "small"} {...props} />
+    <Animated.View
+      collapsable={false}
+      entering={entering}
+      exiting={exiting}
+      pointerEvents="none"
+      style={{
+        alignItems: "flex-start",
+        height: spinnerSize,
+        justifyContent: "center",
+        width: occupiedWidth,
+      }}
+    >
+      <ActivityIndicator size={spinnerSize} {...props} />
+    </Animated.View>
   );
 }
 
