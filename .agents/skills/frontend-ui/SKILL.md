@@ -43,10 +43,10 @@ Preserve visible design and interaction behavior during accessibility-only work 
 - Keep generic primitives prop-driven; feature sections may own simple selectors, local navigation, formatting, and interaction state.
 - Use `react-hook-form` with `Controller` for real controlled forms.
 - Consume mutations with `.unwrap()` and pass unknown failures to the bounded context's presentation resolver.
-- Preserve Starter's Fifteen-derived visual language through shadcn/React Native composition: Poppins, 24-point screen spacing, semantic brand/status tokens, shared radii, and the 19 canonical UI families. Gluestack is the historical design source, never a runtime dependency or implementation model.
+- Preserve Starter's shadcn/React Native design system: Poppins, 24-point screen spacing, semantic brand/status tokens, shared radii, and the 19 canonical UI families.
 - Select Poppins weights through the explicit `font-body-*` face utilities frozen in the theme
   blueprint; generic weight utilities do not select custom font files reliably on native.
-- Build from React Native primitives, `@rn-primitives`, Starter's local primitives, and CVA. Do not introduce gluestack-ui providers, components, theme objects, or APIs.
+- Build from React Native primitives, `@rn-primitives`, Starter's local primitives, and CVA. Keep design-system composition, themes, variants, and public APIs locally owned.
 - Use NativeWind v5 utility classes and Tailwind v4 tokens; use a local `styled()` adapter for incompatible third-party native components.
 - Keep direct Storybook presentation-only through the official React Native entry-point swap. The accepted `EXPO_PUBLIC_STORYBOOK_ENABLED=true` in-app development mode may expose the guarded `/storybook` route and its Home launcher; it intentionally trades normal-bundle isolation for Fifteen-style navigation and must never be enabled for production builds. Stories do not import the Redux store, persistor, gateways, or runtime internals.
 - Keep accessible names, roles, states, announcements, and automation exposure accurate without duplicating the accessibility tree.

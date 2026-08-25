@@ -1,8 +1,8 @@
 # Components and Layout Blueprint
 
-> Blueprint version: `1.2.0`
+> Blueprint version: `1.2.1`
 
-Use this frozen blueprint when composing Starter screens, feature sections, or shared UI primitives. Starter preserves Fifteen's visual language, but implements it with React Native, shadcn-style local composition, NativeWind v5, Tailwind CSS v4, CVA, and focused `@rn-primitives` packages. Gluestack is not part of the runtime or public API.
+Use this frozen blueprint when composing Starter screens, feature sections, or shared UI primitives. Starter's design system uses React Native, shadcn-style local composition, NativeWind v5, Tailwind CSS v4, CVA, and focused `@rn-primitives` packages.
 
 The code blocks are adaptation skeletons. Replace placeholders, inspect installed public types, and preserve the nearest established public contract when extending an existing component.
 
@@ -309,7 +309,7 @@ Its public contract requires a localized phone-input `accessibilityLabel`, a loc
 - `FormControlInput` requires a localized native `accessibilityLabel` even when the visible web label is connected by IDs. It also connects description/message IDs and invalid/disabled/required state.
 - `Switch` requires a localized `accessibilityLabel` for the control and a localized spoken `valueLabel` such as the translated on/off value; do not synthesize English inside the primitive.
 - `Checkbox`, `RadioGroupItem`, and `Progress` each require a localized `accessibilityLabel`; visible copy does not replace the native name contract.
-- `Checkbox` remains a standalone shadcn control. The caller composes its visible label and may reuse exported `checkboxLabelVariants` for Fifteen's `sm`/`md`/`lg` label scale. Do not add a Gluestack-style compound label anatomy.
+- `Checkbox` remains a standalone shadcn control. The caller composes its visible label and may reuse exported `checkboxLabelVariants` for the canonical `sm`/`md`/`lg` label scale. Keep label composition outside the control instead of adding a compound label anatomy.
 
 ## Toast Contract
 
@@ -353,7 +353,7 @@ Render `outline` feedback on `bg-background` with the action's emphasis role. Re
 ## Invariants
 
 - Screens compose sections; sections own cohesive blocks; feature cards render explicit values; UI primitives remain generic.
-- The 19 canonical families preserve one visual language while using React Native/shadcn composition, never Gluestack.
+- The 19 canonical families preserve one visual language through local React Native/shadcn composition.
 - Every Poppins weight selects its explicit `font-body-*` family; generic `fontWeight` utilities do
   not select custom Poppins faces on native.
 - Poppins, 24-point screen spacing, shared radii, semantic brand/status tokens, and light/dark values come from the central theme.
@@ -364,7 +364,7 @@ Render `outline` feedback on `bg-background` with the action's emphasis role. Re
 
 ## Anti-Patterns
 
-- Adding a Gluestack package, provider, component, token object, `tva` recipe, or copied Gluestack compound API.
+- Adding a second UI runtime, provider, token object, foreign variant recipe, or copied compound API instead of extending the local design system.
 - A `components/ui` primitive importing business vocabulary, translations, router, selectors, generated hooks, or runtime infrastructure.
 - Rebuilding a canonical primitive inside a feature or adding a competing palette/type scale.
 - Broad props such as `data`, `payload`, `config`, or `screenModel` when explicit props define the contract.

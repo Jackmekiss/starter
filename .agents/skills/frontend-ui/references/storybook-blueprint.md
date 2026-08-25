@@ -1,6 +1,6 @@
 # Frozen Blueprint: React Native Storybook
 
-> Blueprint version: `1.0.2`
+> Blueprint version: `1.0.3`
 
 Use this reference when installing, configuring, extending, or validating Storybook for Starter. Direct Storybook is a presentation-only entry point for the same local components, CSS tokens, fonts, themes, localization, and overlay hosts used by the application. Starter also supports an explicit Fifteen-style in-app development route selected with `EXPO_PUBLIC_STORYBOOK_ENABLED=true`.
 
@@ -342,7 +342,7 @@ When dependencies are unavailable and installing them is outside the task, do no
 - Global mocking of business infrastructure merely to render a shared primitive.
 - Manual edits to `storybook.requires.ts` or blanket tooling ignores.
 - Stories that assert internal class strings, duplicate every permutation, contain production business fixtures, or silently skip accessibility states.
-- Adding Gluestack to render historical component stories.
+- Adding a second UI runtime or provider only to render component stories.
 - Leaving a long-running Storybook server as the only automated validation.
 
 ## Validation

@@ -1,10 +1,10 @@
 # Frozen Blueprint: NativeWind, Theme, Variants, and Interop
 
-> Blueprint version: `1.2.0`
+> Blueprint version: `1.2.1`
 
 Use this reference for Starter styling infrastructure, theme tokens, typography, shared visual variants, icons, or third-party native components. It freezes the Fifteen-derived design language after translation to shadcn-style React Native composition. Preserve it unless an accepted repository decision explicitly replaces it.
 
-Gluestack is neither a dependency nor an implementation reference after the migration. The visual decisions survive through semantic CSS tokens, local CVA recipes, native primitives, and typed adapters.
+Semantic CSS tokens, local CVA recipes, native primitives, and typed adapters are the complete implementation reference for the design system.
 
 ## Canonical Owners
 
@@ -247,7 +247,7 @@ Sizes:
 | `xl`             | 48        | 28 (`px-7`)        |
 | `icon`           | 40 square | 0                  |
 
-The core action variants are `solid`, `outline`, and `link`; outline uses a two-point border. Preserve existing shadcn compatibility variants such as `default`, `destructive`, `secondary`, and `ghost` when callers use them. Historical aliases may normalize into the canonical variants, but do not expose a Gluestack recipe or `tva` surface.
+The core action variants are `solid`, `outline`, and `link`; outline uses a two-point border. Preserve existing shadcn compatibility variants such as `default`, `destructive`, `secondary`, and `ghost` when callers use them. Historical aliases may normalize into the canonical local CVA variants without exposing another variant surface.
 
 All button actions are pill-shaped with `rounded-full`. Text sizes progress from `text-xs` through `text-xl`; icon sizes are 14, 16, 18, 20, and 24 points for `xs`, `sm`, `md`/default, `lg`, and `xl` respectively, while icon-only buttons use 20. Compound exports may include text, icon, spinner, and group helpers. Busy/disabled semantics remain native, and decorative child icons do not duplicate the accessible name.
 
@@ -262,7 +262,7 @@ Use the installed `@rn-primitives` 1.5.2 family for native state and interaction
 - `@rn-primitives/switch`;
 - compatible `@rn-primitives/slot` for as-child composition.
 
-Local components own design tokens, sizes, indicators, form-control integration, and accessibility details. Checkbox, radio items, progress, and switches require localized `accessibilityLabel` values; switch also requires a localized `valueLabel`. Checkbox remains standalone and exports its finite label-size recipe for caller-owned visible copy rather than adopting a Gluestack compound label. Do not reimplement checked, indeterminate, roving selection, thumb, or progress state machines with generic `Pressable` views. Inspect installed public types before composing; React Native Reusables conventions inform the shape but installed packages define the actual API.
+Local components own design tokens, sizes, indicators, form-control integration, and accessibility details. Checkbox, radio items, progress, and switches require localized `accessibilityLabel` values; switch also requires a localized `valueLabel`. Checkbox remains standalone and exports its finite label-size recipe for caller-owned visible copy. Do not reimplement checked, indeterminate, roving selection, thumb, or progress state machines with generic `Pressable` views. Inspect installed public types before composing; React Native Reusables conventions inform the shape but installed packages define the actual API.
 
 ## Typed Third-Party Interop
 
@@ -330,7 +330,7 @@ Do not invent a Storybook-only palette or stylesheet. See [storybook-blueprint.m
 
 ## Anti-Patterns
 
-- Adding Gluestack, `tva`, a Gluestack provider, or copied Gluestack token scales.
+- Adding a second UI runtime, provider, variant engine, or copied token scale instead of extending the local shadcn design system.
 - Adding Tailwind v3 configuration, a parallel JavaScript palette, or story-only theme values.
 - Raw colors or repeated arbitrary radii/type/spacing values in routes, feature components, stories, or owned primitives.
 - Treating `primary` as a generic status color instead of using destructive/success/warning/info roles.
