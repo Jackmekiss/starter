@@ -1,11 +1,11 @@
 # Current
 
-Last updated: 2026-08-24
+Last updated: 2026-08-25
 
 ## Focus
 
-Starter is a normalized Expo template with frontend Core, its shadcn-style React Native design
-system, and direct or in-app Storybook. Project memory uses the concise V2 workflow.
+Starter is a normalized Expo template with frontend Core, Account-owned two-state onboarding,
+its shadcn-style React Native design system, and direct or in-app Storybook.
 
 ## Active Plan
 

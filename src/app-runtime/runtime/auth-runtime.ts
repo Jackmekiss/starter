@@ -8,7 +8,6 @@ import { HttpAuthGateway } from "@core/auth/adapters/http/http-auth-gateway";
 import { InMemoryAuthGateway } from "@core/auth/adapters/in-memory/in-memory-auth-gateway";
 import { createAuthApiOptions } from "@core/auth/apis/auth-api";
 import { clearAuth } from "@core/auth/domain/slice";
-import { RealDateProvider } from "@core/shared/adapters/date/real-date-provider";
 
 import type { AuthGateway } from "@core/auth/gateways/auth-gateway";
 
@@ -16,8 +15,6 @@ import type { AuthGateway } from "@core/auth/gateways/auth-gateway";
  * Creates the auth gateway implementation for the current app runtime mode.
  */
 function createAuthGateway(): AuthGateway {
-  const dateProvider = new RealDateProvider();
-
   if (appMode === "http") {
     return new HttpAuthGateway({
       baseUrl: process.env.EXPO_PUBLIC_AUTH_API_URL ?? "",
@@ -26,10 +23,10 @@ function createAuthGateway(): AuthGateway {
   }
 
   if (appMode === "fake") {
-    return new FakeAuthGateway(3000, dateProvider);
+    return new FakeAuthGateway(3000);
   }
 
-  return new InMemoryAuthGateway(dateProvider);
+  return new InMemoryAuthGateway();
 }
 
 export const authApi = createApi(createAuthApiOptions(createAuthGateway()));
@@ -44,9 +41,6 @@ authSessionListenerMiddleware.startListening({
 });
 
 export const {
-  useRetrieveAccountQuery,
-  useUpdateAccountMutation,
-  useCompleteOnboardingMutation,
   useLoginMutation,
   useLoginWithGoogleMutation,
   useLoginWithAppleMutation,

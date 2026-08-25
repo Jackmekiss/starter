@@ -1,8 +1,15 @@
 # RTK Query Use-Case Blueprint
 
-> Blueprint version: `1.0.0`
+> Blueprint version: `1.0.1`
 
 Starter models application actions as injected RTK Query endpoint builders. Use this frozen blueprint for queries, mutations, API option assembly, and public application DTOs.
+
+## Canonical Account Onboarding Mutation
+
+Account onboarding is a semantic, idempotent operation, not a generic profile patch. The Account
+model requires `onboardingStatus: "pending" | "completed"`; its gateway exposes
+`completeOnboarding(): Promise<AccountResult<Account>>`, and the mutation stores the returned Account
+only after fulfillment. `UpdateAccountPayload` must never accept an onboarding override.
 
 ## Placeholders
 

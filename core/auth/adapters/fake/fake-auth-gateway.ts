@@ -1,6 +1,5 @@
 import { InMemoryAuthGateway } from "@core/auth/adapters/in-memory/in-memory-auth-gateway";
 import { AuthGateway } from "@core/auth/gateways/auth-gateway";
-import { DeterministicDateProvider } from "@core/shared/adapters/date/deterministic-date-provider";
 import { sleep } from "@core/shared/adapters/time/sleep";
 
 import type {
@@ -9,91 +8,68 @@ import type {
   RegisterPayload,
   RequestPasswordResetPayload,
   ResetPasswordPayload,
-  UpdateAccountPayload,
 } from "@core/auth/apis/types";
-import type { Account } from "@core/auth/domain/account";
 import type { AuthError } from "@core/auth/domain/auth-error";
 import type { AuthResult } from "@core/auth/domain/auth-result";
-import type { DateProvider } from "@core/shared/gateways/date-provider";
 
-/** Fake auth gateway that adds latency to the in-memory adapter. */
+/** Latency wrapper around the canonical in-memory auth adapter. */
 export class FakeAuthGateway extends AuthGateway {
-  private readonly inMemoryGateway: InMemoryAuthGateway;
+  private readonly delegate = new InMemoryAuthGateway();
 
-  /** Configures deterministic latency while keeping production demo defaults. */
-  constructor(
-    private readonly latencyMilliseconds = 3000,
-    dateProvider: DateProvider = new DeterministicDateProvider(),
-  ) {
+  /** Creates the instance with its required dependencies. */
+  constructor(private readonly latencyMilliseconds = 3000) {
     super();
-    this.inMemoryGateway = new InMemoryAuthGateway(dateProvider);
   }
 
-  /** Injects one failure consistently across every fake auth operation. */
+  /** Injects the deterministic error returned by subsequent operations. */
   set error(value: AuthError | undefined) {
-    this.inMemoryGateway.error = value;
+    this.delegate.error = value;
   }
 
-  /** Retrieves the simulated account. */
-  retrieveAccount(): Promise<AuthResult<Account | null>> {
-    return this.executeOperation(() => this.inMemoryGateway.retrieveAccount());
-  }
-
-  /** Applies simulated account changes. */
-  updateAccount(payload: UpdateAccountPayload): Promise<AuthResult<Account>> {
-    return this.executeOperation(() =>
-      this.inMemoryGateway.updateAccount(payload),
-    );
-  }
-
-  /** Creates a simulated registered session. */
+  /** Registers the requested value. */
   register(payload: RegisterPayload): Promise<AuthResult<AuthContext>> {
-    return this.executeOperation(() => this.inMemoryGateway.register(payload));
+    return this.execute(() => this.delegate.register(payload));
   }
 
-  /** Authenticates against the simulated account. */
+  /** Authenticates the current user. */
   login(payload: LoginPayload): Promise<AuthResult<AuthContext>> {
-    return this.executeOperation(() => this.inMemoryGateway.login(payload));
+    return this.execute(() => this.delegate.login(payload));
   }
 
-  /** Simulates Google sign-in. */
+  /** Authenticates the current user. */
   loginWithGoogle(): Promise<AuthResult<AuthContext>> {
-    return this.executeOperation(() => this.inMemoryGateway.loginWithGoogle());
+    return this.execute(() => this.delegate.loginWithGoogle());
   }
 
-  /** Simulates Apple sign-in. */
+  /** Authenticates the current user. */
   loginWithApple(): Promise<AuthResult<AuthContext>> {
-    return this.executeOperation(() => this.inMemoryGateway.loginWithApple());
+    return this.execute(() => this.delegate.loginWithApple());
   }
 
-  /** Simulates requesting a password reset. */
+  /** Requests password reset. */
   requestPasswordReset(
     payload: RequestPasswordResetPayload,
   ): Promise<AuthResult<void>> {
-    return this.executeOperation(() =>
-      this.inMemoryGateway.requestPasswordReset(payload),
-    );
+    return this.execute(() => this.delegate.requestPasswordReset(payload));
   }
 
-  /** Simulates completing a password reset. */
+  /** Resets password. */
   resetPassword(payload: ResetPasswordPayload): Promise<AuthResult<void>> {
-    return this.executeOperation(() =>
-      this.inMemoryGateway.resetPassword(payload),
-    );
+    return this.execute(() => this.delegate.resetPassword(payload));
   }
 
-  /** Simulates logout. */
+  /** Ends the current authenticated session. */
   logout(): Promise<AuthResult<void>> {
-    return this.executeOperation(() => this.inMemoryGateway.logout());
+    return this.execute(() => this.delegate.logout());
   }
 
-  /** Simulates permanent account deletion. */
+  /** Delegates identity deletion after the configured latency. */
   deleteAccount(): Promise<AuthResult<void>> {
-    return this.executeOperation(() => this.inMemoryGateway.deleteAccount());
+    return this.execute(() => this.delegate.deleteAccount());
   }
 
-  /** Applies fake latency and the injected failure before running an operation. */
-  private async executeOperation<Value>(
+  /** Executes one operation through its typed error boundary. */
+  private async execute<Value>(
     operation: () => Promise<AuthResult<Value>>,
   ): Promise<AuthResult<Value>> {
     await sleep(this.latencyMilliseconds);

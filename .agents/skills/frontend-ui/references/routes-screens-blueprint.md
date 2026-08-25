@@ -1,6 +1,6 @@
 # Routes and Screens Blueprint
 
-> Blueprint version: `1.0.2`
+> Blueprint version: `1.0.3`
 
 Use this frozen blueprint for Expo Router files, route groups, root providers, protected navigation, screen-level requests, and screen composition. Adapt the Markdown skeletons; do not install or generate a second router structure.
 
@@ -177,48 +177,75 @@ export function RootAppProviders({ children }: RootAppProvidersProps) {
 
 ## Protected Root Navigator
 
-Route guards derive from durable selectors. Because `RootNavigator` is internal `src/app-runtime/**` composition, its bootstrap hook comes directly from the owning runtime module; the public facade rule applies to routes and components.
+Route guards derive from durable selectors. Because `RootNavigator` is internal `src/app-runtime/**` composition, its bootstrap hook comes directly from the owning runtime module; the public facade rule applies to routes and components. Account owns the durable onboarding status; never introduce a parallel Zustand/session flag.
 
 ```tsx
 // src/app-runtime/root-navigator.tsx
 import { Stack } from "expo-router";
+import { useEffect } from "react";
 
-import { useRetrieveAccountQuery } from "@/app-runtime/runtime/auth-runtime";
+import { useProvisionAccountMutation } from "@/app-runtime/runtime/account-runtime";
+import { resolveRootNavigationState } from "@/app-runtime/runtime/root-navigation-state";
+import { AccountBootstrapError } from "@/components/app-shell/AccountBootstrapError";
 import { useAppReadiness } from "@/hooks/app-shell/useAppReadiness";
 import { useSelector } from "@/hooks/redux-hooks";
+import { selectCurrentAccount } from "@core/account/adapters/selectors/account-selectors";
 import {
-  selectCurrentAccount,
+  selectCurrentUser,
   selectIsConnected,
 } from "@core/auth/adapters/selectors/auth-selectors";
 
-/**
- * Chooses the active route group from session and onboarding state.
- */
+/** Chooses the active route group from session and durable Account state. */
 export function RootNavigator() {
   const account = useSelector(selectCurrentAccount);
+  const currentUser = useSelector(selectCurrentUser);
   const isConnected = useSelector(selectIsConnected);
-  const { isLoading: isRetrievingAccount } = useRetrieveAccountQuery(
-    undefined,
-    {
-      skip: !isConnected,
-      refetchOnMountOrArgChange: true,
-    },
-  );
+  const [provisionAccount, provisioning] = useProvisionAccountMutation();
+  const currentUserId = currentUser?.id;
 
-  useAppReadiness(isRetrievingAccount);
+  useEffect(() => {
+    if (!isConnected || !currentUserId) return;
 
-  const shouldCompleteOnboarding =
-    isConnected && account !== null && account.onboardingStatus !== "completed";
+    provisionAccount()
+      .unwrap()
+      .catch(() => undefined);
+  }, [currentUserId, isConnected, provisionAccount]);
+
+  const isProvisioningAccount =
+    isConnected && (provisioning.isUninitialized || provisioning.isLoading);
+
+  const navigationState = resolveRootNavigationState({
+    account,
+    isConnected,
+    isPreparingAccount: isProvisioningAccount,
+  });
+
+  useAppReadiness(navigationState === "splash");
+
+  if (navigationState === "splash") return null;
+
+  if (navigationState === "account-error") {
+    return (
+      <AccountBootstrapError
+        isRetrying={provisioning.isLoading}
+        onRetry={() => {
+          provisionAccount()
+            .unwrap()
+            .catch(() => undefined);
+        }}
+      />
+    );
+  }
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={!isConnected}>
+      <Stack.Protected guard={navigationState === "auth"}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
-      <Stack.Protected guard={isConnected && !shouldCompleteOnboarding}>
+      <Stack.Protected guard={navigationState === "tabs"}>
         <Stack.Screen name="(tabs)" />
       </Stack.Protected>
-      <Stack.Protected guard={isConnected && shouldCompleteOnboarding}>
+      <Stack.Protected guard={navigationState === "onboarding"}>
         <Stack.Screen name="(on-boarding)" />
       </Stack.Protected>
     </Stack>
@@ -226,7 +253,7 @@ export function RootNavigator() {
 }
 ```
 
-The guards must remain mutually exclusive. Any changed bootstrap-error or unknown-account behavior is a product/navigation decision; do not invent it while adding an unrelated screen.
+The guards must remain mutually exclusive. The pure resolver is covered for unauthenticated, loading, missing Account, `pending`, and `completed`. Missing Account after the first provisioning attempt uses localized retry UI; it never opens Tabs or destroys a valid session.
 
 ## Group Layouts
 

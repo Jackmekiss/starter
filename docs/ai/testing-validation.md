@@ -2,16 +2,14 @@
 
 ## Discovered validation commands
 
-| Purpose                     | Command                                                                                                 | Source                             | Verified in this memory setup |
-| --------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------- | ----------------------------- |
-| Format check                | `pnpm run format:check`                                                                                 | `package.json`                     | Targeted Oxfmt passed         |
-| Lint                        | `pnpm run lint`                                                                                         | `package.json`                     | Passed 2026-08-20             |
-| Typecheck                   | `pnpm run typecheck`                                                                                    | `package.json`                     | Passed 2026-08-20             |
-| Unit/use-case tests         | `pnpm run test`                                                                                         | `package.json`, `vitest.config.ts` | 16 files, 32 tests passed     |
-| Story registry              | `pnpm run storybook:generate`                                                                           | `package.json`, `.rnstorybook/`    | Passed 2026-08-20             |
-| Storybook web bundle        | `STORYBOOK_SERVER=false STORYBOOK_ENABLED=true pnpm exec expo export --platform web --output-dir <tmp>` | Storybook/Expo docs                | Passed 2026-08-20             |
-| In-app Storybook web bundle | `EXPO_PUBLIC_STORYBOOK_ENABLED=true pnpm exec expo export --platform web --output-dir <tmp>`            | `package.json`, Expo Router        | Passed 2026-08-21             |
-| Broad code check            | `pnpm run check`                                                                                        | `package.json`                     | Not run                       |
+| Purpose             | Command                       | Source                             | Verified in this memory setup |
+| ------------------- | ----------------------------- | ---------------------------------- | ----------------------------- |
+| Format check        | `pnpm run format:check`       | `package.json`                     | Targeted Oxfmt passed         |
+| Lint                | `pnpm run lint`               | `package.json`                     | Passed 2026-08-20             |
+| Typecheck           | `pnpm run typecheck`          | `package.json`                     | Passed 2026-08-20             |
+| Unit/use-case tests | `pnpm run test`               | `package.json`, `vitest.config.ts` | 20 files, 37 tests passed     |
+| Story registry      | `pnpm run storybook:generate` | `package.json`, `.rnstorybook/`    | Passed 2026-08-20             |
+| Broad code check    | `pnpm run check`              | `package.json`                     | Not run                       |
 
 ## Fastest safe validation command
 
@@ -47,7 +45,7 @@ Unknown. No e2e test command or integration test runner was discovered.
 For source/UI changes:
 
 - Start the Expo app with `pnpm run start` or the platform-specific script.
-- Check startup route selection for unauthenticated, authenticated incomplete onboarding, and authenticated completed onboarding states.
+- Check startup route selection for loading, unauthenticated, missing Account with retry, pending onboarding, and completed onboarding states.
 - Verify loading, empty, and error states for any changed screen.
 - Confirm auth/session persistence still routes correctly after reload.
 - Switch the device between French, English, and an unsupported language; verify translated copy and the French fallback.

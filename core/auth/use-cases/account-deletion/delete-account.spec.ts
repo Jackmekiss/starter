@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { InMemoryAuthGateway } from "@core/auth/adapters/in-memory/in-memory-auth-gateway";
 import { createAuthApiOptions } from "@core/auth/apis/auth-api";
-import { accountBuilder } from "@core/auth/domain/builders/account-builder";
 import { authUserBuilder } from "@core/auth/domain/builders/auth-user-builder";
 import { createStore } from "@core/init-redux-store";
 
@@ -28,11 +27,9 @@ describe("Account Deletion", () => {
   });
 
   it("should delete account", async () => {
-    const account = accountBuilder().withId("1").build();
-    authGateway.account = account;
     authGateway.authUser = authUserBuilder()
-      .withId(account.id)
-      .withEmail(account.email)
+      .withId("1")
+      .withEmail("account@example.com")
       .build();
 
     await login();
@@ -69,6 +66,5 @@ describe("Account Deletion", () => {
   function expectAccountDeleted() {
     expect(store.getState().auth.user).toBeNull();
     expect(store.getState().auth.session).toBeNull();
-    expect(store.getState().auth.account).toBeNull();
   }
 });

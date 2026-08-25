@@ -12,6 +12,10 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["core/**/use-cases/**/*.spec.ts"],
+    include: [
+      "core/**/adapters/**/*.spec.ts",
+      "core/**/use-cases/**/*.spec.ts",
+      "src/app-runtime/runtime/**/*.spec.ts",
+    ],
   },
 });

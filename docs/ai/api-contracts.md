@@ -11,11 +11,15 @@ The current app uses RTK Query endpoint builders over local gateway contracts. A
 | Area                         | Path / endpoint                                      | Purpose                                                      | Auth                                                | Notes                                                                                         |
 | ---------------------------- | ---------------------------------------------------- | ------------------------------------------------------------ | --------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | Auth API options             | `core/auth/apis/auth-api.ts`                         | Builds RTK Query endpoints for auth use-cases.               | Current user context comes from auth state/gateway. | Runtime mounted in `src/app-runtime/runtime/auth-runtime.ts`.                                 |
-| Auth gateway                 | `core/auth/gateways/auth-gateway.ts`                 | Contract for account/auth data source.                       | Depends on adapter implementation.                  | Use-cases call domain-oriented methods directly.                                              |
-| Register                     | `AuthGateway.register`                               | Create auth user, account profile, and session.              | Unauthenticated.                                    | Input: `RegisterPayload`; result: `AuthResult<AuthContext>`.                                  |
+| Auth gateway                 | `core/auth/gateways/auth-gateway.ts`                 | Contract for identity/session data source.                   | Depends on adapter implementation.                  | Use-cases call domain-oriented methods directly.                                              |
+| Register                     | `AuthGateway.register`                               | Create an auth identity and optional session.                | Unauthenticated.                                    | Input: `RegisterPayload`; result: `AuthResult<AuthContext>`.                                  |
 | Login                        | `AuthGateway.login`                                  | Authenticate with email/password.                            | Unauthenticated.                                    | Input: `LoginPayload`; result: `AuthResult<AuthContext>`.                                     |
-| Retrieve account             | `AuthGateway.retrieveAccount`                        | Retrieve current account profile.                            | Current session implied.                            | Result: `AuthResult<Account \| null>`.                                                        |
-| Update account               | `AuthGateway.updateAccount`                          | Persist editable account fields.                             | Current session implied.                            | Input: `UpdateAccountPayload`; result: `AuthResult<Account>`.                                 |
+| Account API options          | `core/account/apis/account-api.ts`                   | Builds RTK Query endpoints for Account use-cases.            | Current identity comes from runtime composition.    | Mounted in `src/app-runtime/runtime/account-runtime.ts`.                                      |
+| Account gateway              | `core/account/gateways/account-gateway.ts`           | Contract for durable Account data.                           | Current identity implied by adapter implementation. | Independent from Auth and from any concrete transport.                                        |
+| Provision account            | `AccountGateway.provisionAccount`                    | Idempotently create or retrieve the current Account.         | Current session implied.                            | Result: `AccountResult<Account>`; a new Account starts `pending`.                             |
+| Retrieve account             | `AccountGateway.retrieveAccount`                     | Retrieve the current Account.                                | Current session implied.                            | Result: `AccountResult<Account>`.                                                             |
+| Update account               | `AccountGateway.updateAccount`                       | Persist editable Account fields.                             | Current session implied.                            | Input: `UpdateAccountPayload`; result: `AccountResult<Account>`.                              |
+| Complete onboarding          | `AccountGateway.completeOnboarding`                  | Idempotently complete the durable Account lifecycle.         | Current session implied.                            | No payload; result: `AccountResult<Account>` with `completed`.                                |
 | Request password reset       | `AuthGateway.requestPasswordReset`                   | Start password reset flow.                                   | Unauthenticated.                                    | Input: `RequestPasswordResetPayload`; result: `AuthResult<void>`.                             |
 | Reset password               | `AuthGateway.resetPassword`                          | Complete password reset.                                     | Reset challenge implied.                            | Input: `ResetPasswordPayload`; result: `AuthResult<void>`.                                    |
 | Google login                 | `AuthGateway.loginWithGoogle`                        | Authenticate/provision through Google provider.              | Unauthenticated.                                    | Result: `AuthResult<AuthContext>`; provider wiring Unknown.                                   |
@@ -34,9 +38,9 @@ The current app uses RTK Query endpoint builders over local gateway contracts. A
 
 - Endpoint builders return RTK Query query/mutation definitions.
 - Every fallible gateway operation returns `ContextResult<Value>` with `{ ok: true, value }` or `{ ok: false, error }`.
-- Auth and subscription use-cases call their gateway in `queryFn`; shared `toRtkQueryResult` converts each context result to RTK Query `{ data }` or `{ error }`.
-- Auth and subscription use-cases update durable state only after `queryFulfilled` succeeds, except logout which always clears local auth after the remote attempt settles.
-- `.unwrap()` rejects with the exact `AuthError` or `SubscriptionError` from the typed base query.
+- Auth, Account, and Subscription use-cases call their own gateway in `queryFn`; shared `toRtkQueryResult` converts each context result to RTK Query `{ data }` or `{ error }`.
+- Each context updates only its own durable state after `queryFulfilled` succeeds, except logout which always clears local identity-scoped state after the remote attempt settles.
+- `.unwrap()` rejects with the exact bounded-context error from the typed base query.
 - Technical errors use transport-independent categories; business codes belong to one bounded context.
 - Raw HTTP status, backend codes, SDK exceptions, and messages must remain inside concrete adapter mappers.
 
@@ -44,20 +48,18 @@ The current app uses RTK Query endpoint builders over local gateway contracts. A
 
 `HttpAuthGateway` is an executable Starter integration example, not evidence of an existing production backend. It is selected with `EXPO_PUBLIC_APP_MODE=http` and configured by `EXPO_PUBLIC_AUTH_API_URL`.
 
-| Method   | Remote path                    | Result            | Authentication |
-| -------- | ------------------------------ | ----------------- | -------------- |
-| `POST`   | `/auth/register`               | `AuthContext`     | Public         |
-| `POST`   | `/auth/login`                  | `AuthContext`     | Public         |
-| `POST`   | `/auth/login/google`           | `AuthContext`     | Public         |
-| `POST`   | `/auth/login/apple`            | `AuthContext`     | Public         |
-| `POST`   | `/auth/password/request-reset` | Empty success     | Public         |
-| `POST`   | `/auth/password/reset`         | Empty success     | Public         |
-| `GET`    | `/auth/account`                | `Account \| null` | Bearer session |
-| `PATCH`  | `/auth/account`                | `Account`         | Bearer session |
-| `DELETE` | `/auth/account`                | Empty success     | Bearer session |
-| `POST`   | `/auth/logout`                 | Empty success     | Bearer session |
+| Method   | Remote path                    | Result        | Authentication |
+| -------- | ------------------------------ | ------------- | -------------- |
+| `POST`   | `/auth/register`               | `AuthContext` | Public         |
+| `POST`   | `/auth/login`                  | `AuthContext` | Public         |
+| `POST`   | `/auth/login/google`           | `AuthContext` | Public         |
+| `POST`   | `/auth/login/apple`            | `AuthContext` | Public         |
+| `POST`   | `/auth/password/request-reset` | Empty success | Public         |
+| `POST`   | `/auth/password/reset`         | Empty success | Public         |
+| `DELETE` | `/auth/account`                | Empty success | Bearer session |
+| `POST`   | `/auth/logout`                 | Empty success | Bearer session |
 
-- Successful JSON is decoded into domain-owned `AuthContext`, `Account`, `AuthUser`, and `Session` values; malformed success payloads become `unexpected` errors.
+- Successful JSON is decoded into domain-owned `AuthContext`, `AuthUser`, and `Session` values; malformed success payloads become `unexpected` errors.
 - Error JSON may contain a documented snake-case `code`; recognized backend codes map to stable `AuthErrorCode` values inside `core/auth/adapters/http/`.
 - Raw backend `message` fields are ignored.
 - HTTP 408/504, 429, 5xx, 401, and 403 map to transport-independent technical categories, with login 401 mapped to `INVALID_CREDENTIALS`.

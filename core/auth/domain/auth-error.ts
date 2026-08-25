@@ -14,6 +14,7 @@ export type AuthErrorCode =
   | "OAUTH_CANCELLED"
   | "PASSWORD_RESET_EXPIRED"
   | "PASSWORD_RESET_INVALID"
+  | "PROVIDER_UNAVAILABLE"
   | "WEAK_PASSWORD";
 
 /** Failure exposed by authentication use-cases. */
@@ -36,6 +37,7 @@ function isAuthErrorCode(value: string): value is AuthErrorCode {
     value === "OAUTH_CANCELLED" ||
     value === "PASSWORD_RESET_EXPIRED" ||
     value === "PASSWORD_RESET_INVALID" ||
+    value === "PROVIDER_UNAVAILABLE" ||
     value === "WEAK_PASSWORD"
   );
 }

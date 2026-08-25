@@ -12,9 +12,7 @@ export type HttpAuthOperation =
   | "logout"
   | "register"
   | "request-password-reset"
-  | "reset-password"
-  | "retrieve-account"
-  | "update-account";
+  | "reset-password";
 
 const BACKEND_AUTH_CODES: Record<string, AuthErrorCode> = {
   account_missing: "ACCOUNT_NOT_FOUND",

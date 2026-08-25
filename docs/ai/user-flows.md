@@ -17,21 +17,21 @@ Reach the correct route group based on current auth and onboarding state.
 1. Redux Persist reads its serialized root through `secureSessionStorage`.
 2. The adapter loads and validates the native SecureStore session, then injects it into the sanitized auth slice.
 3. `PersistGate` mounts navigation after rehydration.
-4. When the Redux session exists, account retrieval starts with a forced mount refetch.
+4. When the Redux session exists, Account provisioning starts idempotently.
 5. Root navigator chooses `(auth)`, `(on-boarding)`, or `(tabs)` from the Redux session and account.
-6. `useAppReadiness` hides the splash after the initial account retrieval stops loading.
+6. `useAppReadiness` hides the splash after the first provisioning attempt stops loading.
 
 ### Edge cases
 
 - A session with an incomplete account is routed to `(on-boarding)`.
 - A session with a completed account is routed to `(tabs)`.
-- A missing or failed account response currently leaves route behavior to the existing auth/account state; dedicated production retry UX remains Unknown.
+- A missing or failed Account response renders localized retry UI while preserving the valid session.
 - Malformed secure sessions are rejected during Redux rehydration.
 
 ### Error / empty / loading states
 
-- Loading remains behind the splash until secure-session hydration and initial account retrieval finish.
-- Error UI is Unknown; route screens are placeholders.
+- Loading remains behind the splash until secure-session hydration and the first Account provisioning attempt finish.
+- Account bootstrap failure uses `AccountBootstrapError` with an explicit retry action.
 
 ### Relevant files
 
@@ -40,12 +40,11 @@ Reach the correct route group based on current auth and onboarding state.
 - `src/app-runtime/runtime/secure-session-storage.ts`
 - `src/app-runtime/runtime/store-runtime.ts`
 - `src/hooks/app-shell/useAppReadiness.ts`
-- `core/auth/use-cases/account-retrieval/retrieve-account.ts`
+- `core/account/use-cases/account-provisioning/provision-account.ts`
 
 ### Open questions
 
-- What user-facing loading or error UI should appear while account retrieval runs?
-- What user-facing retry state should a production app show after transient startup account retrieval failure?
+- What product-specific recovery guidance should supplement the generic Account retry state?
 
 ## Flow: Authentication and registration
 
@@ -64,14 +63,14 @@ Create or access an account.
 2. The login form validates email and password locally, then calls `useLoginMutation`.
 3. The login use-case reaches the selected in-memory, fake, or HTTP auth adapter through RTK Query.
 4. The gateway returns an `AuthResult`; HTTP/backend details have already been mapped to `AuthError`.
-5. On success, auth state stores user, session, and account and routing continues.
+5. On success, Auth stores user/session; the runtime then provisions Account through its own bounded context.
 6. On failure, `.unwrap()` rejects with `AuthError`, the presentation resolver selects safe translated copy, and the form renders it as an accessible root error.
 
 ### Edge cases
 
 - Email/password login can fail with `INVALID_CREDENTIALS`.
-- Google/Apple login can fail when the local adapter has no user/account.
-- Registration creates a pending onboarding account in the in-memory adapter.
+- Google/Apple login is explicitly unavailable in the neutral local adapters.
+- Account provisioning creates `pending`; neutral launch fixtures are deliberately preloaded as `completed`.
 
 ### Error / empty / loading states
 
@@ -110,13 +109,13 @@ Complete onboarding so the main app becomes accessible.
 ### Entry points
 
 - `src/app/(on-boarding)/index.tsx`
-- `core/auth/use-cases/onboarding-completion/complete-onboarding.ts`
+- `core/account/use-cases/onboarding-completion/complete-onboarding.ts`
 
 ### Happy path
 
-1. A connected account with onboarding status other than `completed` reaches `(on-boarding)`.
-2. The onboarding completion use-case updates the account through the auth gateway with `onboardingStatus: "completed"`.
-3. Auth state stores the updated account.
+1. A connected Account with `pending` onboarding reaches `(on-boarding)`.
+2. The dedicated onboarding completion use-case calls the semantic gateway operation.
+3. Account state stores the updated Account.
 4. Root navigation allows access to `(tabs)`.
 
 ### Edge cases
@@ -131,14 +130,13 @@ Complete onboarding so the main app becomes accessible.
 
 - `src/app/(on-boarding)/index.tsx`
 - `src/app-runtime/root-navigator.tsx`
-- `core/auth/use-cases/onboarding-completion/complete-onboarding.ts`
-- `core/auth/use-cases/account-modification/update-account.ts`
-- `core/auth/domain/account.ts`
+- `core/account/use-cases/onboarding-completion/complete-onboarding.ts`
+- `core/account/use-cases/account-updating/update-account.ts`
+- `core/account/domain/account.ts`
 
 ### Open questions
 
 - What steps or profile fields should onboarding collect?
-- Should onboarding have `pending` and `in-progress` UI distinctions?
 
 ## Flow: Main home route
 
@@ -188,15 +186,14 @@ Retrieve, update, log out, or delete an account.
 
 ### Happy path
 
-1. Account retrieval stores the current account in auth state.
-2. Account updates store the updated account in auth state.
-3. Logout waits for the gateway attempt to settle, then always clears local auth state while preserving the remote result.
-4. Successful account deletion clears local auth state; a failed deletion remains an RTK Query error.
+1. Account retrieval stores the current Account in Account state.
+2. Account updates store the updated Account in Account state.
+3. Logout waits for the gateway attempt to settle, then clears Auth, Account, and identity-scoped caches.
+4. Successful identity deletion clears the same local state; a failed deletion remains an RTK Query error.
 
 ### Edge cases
 
-- Updating a missing account returns the typed `ACCOUNT_NOT_FOUND` auth result.
-- Account retrieval can store `null`.
+- Updating or retrieving a missing Account returns the typed `ACCOUNT_NOT_FOUND` Account result.
 
 ### Error / empty / loading states
 
@@ -204,11 +201,11 @@ Retrieve, update, log out, or delete an account.
 
 ### Relevant files
 
-- `core/auth/use-cases/account-retrieval/retrieve-account.ts`
-- `core/auth/use-cases/account-modification/update-account.ts`
+- `core/account/use-cases/account-retrieval/retrieve-account.ts`
+- `core/account/use-cases/account-updating/update-account.ts`
 - `core/auth/use-cases/log-out/logout.ts`
 - `core/auth/use-cases/account-deletion/delete-account.ts`
-- `core/auth/domain/slice.ts`
+- `core/account/domain/slice.ts`
 
 ### Open questions
 

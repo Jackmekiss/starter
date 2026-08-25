@@ -3,6 +3,10 @@ import { persistStore } from "redux-persist";
 import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2";
 
 import {
+  accountApi,
+  accountSessionListenerMiddleware,
+} from "@/app-runtime/runtime/account-runtime";
+import {
   authApi,
   authSessionListenerMiddleware,
 } from "@/app-runtime/runtime/auth-runtime";
@@ -24,6 +28,7 @@ const persistConfig = {
 
 export const store = createStore(
   {
+    accountApi,
     authApi,
     subscriptionApi,
   },
@@ -31,6 +36,7 @@ export const store = createStore(
   {},
   persistConfig,
   [
+    accountSessionListenerMiddleware.middleware,
     authSessionListenerMiddleware.middleware,
     subscriptionSessionListenerMiddleware.middleware,
   ],

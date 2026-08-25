@@ -3,9 +3,7 @@ import {
   mapHttpAuthTransportError,
 } from "@core/auth/adapters/http/http-auth-error-mapper";
 import {
-  decodeHttpAccount,
   decodeHttpAuthContext,
-  decodeRequiredHttpAccount,
   decodeHttpVoid,
 } from "@core/auth/adapters/http/http-auth-response";
 import { AuthGateway } from "@core/auth/gateways/auth-gateway";
@@ -17,9 +15,7 @@ import type {
   RegisterPayload,
   RequestPasswordResetPayload,
   ResetPasswordPayload,
-  UpdateAccountPayload,
 } from "@core/auth/apis/types";
-import type { Account } from "@core/auth/domain/account";
 import type { AuthResult } from "@core/auth/domain/auth-result";
 import type { AuthSessionProvider } from "@core/auth/gateways/auth-session-provider";
 
@@ -72,26 +68,6 @@ export class HttpAuthGateway extends AuthGateway {
     this.requestTimeoutMilliseconds =
       options.requestTimeoutMilliseconds ??
       DEFAULT_REQUEST_TIMEOUT_MILLISECONDS;
-  }
-
-  /** Retrieves the account attached to the current bearer session. */
-  retrieveAccount(): Promise<AuthResult<Account | null>> {
-    return this.request(
-      "retrieve-account",
-      "/auth/account",
-      { authenticated: true, method: "GET" },
-      decodeHttpAccount,
-    );
-  }
-
-  /** Updates account fields through the authenticated HTTP endpoint. */
-  updateAccount(payload: UpdateAccountPayload): Promise<AuthResult<Account>> {
-    return this.request(
-      "update-account",
-      "/auth/account",
-      { authenticated: true, body: payload, method: "PATCH" },
-      decodeRequiredHttpAccount,
-    );
   }
 
   /** Creates an account and session through the public HTTP endpoint. */

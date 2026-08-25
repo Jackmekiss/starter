@@ -1,6 +1,6 @@
 # UI Ownership and Data Flow
 
-> Blueprint version: `1.0.0`
+> Blueprint version: `1.0.1`
 
 This is the frozen ownership contract for Starter's Expo presentation layer. Use it before deciding whether code belongs in a route, a feature section, a local primitive, or a frontend bounded context. The examples are Markdown skeletons to adapt in place; they are not generators or assets.
 
@@ -201,7 +201,7 @@ A feature section may call one relevant query or mutation hook when its loading/
 
 | State                                                      | Canonical owner             | Example                                     |
 | ---------------------------------------------------------- | --------------------------- | ------------------------------------------- |
-| Session, account, entitlement, synchronized collection     | core Redux slice            | `auth.account`, current subscription        |
+| Session, account, entitlement, synchronized collection     | core Redux slice            | `auth.session`, `account.current`           |
 | Request pending/failure/retry metadata                     | RTK Query hook              | `isLoading`, `isError`, `refetch`           |
 | Form fields and client validation                          | React Hook Form in the form | email, password, field errors               |
 | Submission copy for one mounted form                       | React Hook Form root error  | `setError("root", ...)`                     |

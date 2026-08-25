@@ -1,9 +1,6 @@
-import type { Account } from "@core/auth/domain/account";
 import type { AuthUser, Session } from "@core/auth/domain/auth";
 
-/**
- * Credentials and optional profile data required to create an account.
- */
+/** Credentials required to register an identity. */
 export interface RegisterPayload {
   /**
    * Email address used as the account login identifier.
@@ -14,16 +11,6 @@ export interface RegisterPayload {
    * Secret credential submitted to the auth provider during registration.
    */
   password: string;
-
-  /**
-   * Optional given name used to prefill the account profile.
-   */
-  firstName?: string;
-
-  /**
-   * Optional family name used to prefill the account profile.
-   */
-  lastName?: string;
 }
 
 /**
@@ -39,31 +26,6 @@ export interface LoginPayload {
    * Secret credential submitted for standard email login.
    */
   password: string;
-}
-
-/**
- * Partial account changes allowed through the account update use-case.
- */
-export interface UpdateAccountPayload {
-  /**
-   * Replacement avatar URI, with null clearing the current avatar.
-   */
-  avatarUri?: Account["avatarUri"];
-
-  /**
-   * Replacement given name for the account profile.
-   */
-  firstName?: string;
-
-  /**
-   * Replacement family name for the account profile.
-   */
-  lastName?: string;
-
-  /**
-   * Explicit onboarding lifecycle override after profile updates.
-   */
-  onboardingStatus?: Account["onboardingStatus"];
 }
 
 /**
@@ -91,12 +53,10 @@ export interface ResetPasswordPayload {
   recoveryUrl?: string;
 }
 
-/** Authenticated identity, session, and account returned by sign-in actions. */
+/** Authenticated identity and session returned by identity operations. */
 export interface AuthContext {
   /** Authenticated identity resolved by the selected provider. */
   user: AuthUser;
   /** Active session when the provider created one. */
   session: Session | null;
-  /** Account profile associated with the identity when available. */
-  account: Account | null;
 }

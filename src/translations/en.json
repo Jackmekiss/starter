@@ -22,6 +22,10 @@
   "auth__password_reset__error__expired": "This password reset link has expired.",
   "auth__password_reset__error__invalid": "This password reset link is invalid.",
   "auth__oauth__error__cancelled": "Sign-in was cancelled.",
+  "account__bootstrap__error__title": "Unable to load your account",
+  "account__bootstrap__error__description": "Your session is active, but your account could not be loaded. Try again before continuing.",
+  "account__bootstrap__retry": "Try again",
+  "account__bootstrap__retrying": "Trying again…",
   "subscription__restore__error__no_active_purchase": "No active purchase was found to restore.",
   "home__storybook__open": "Open Storybook"
 }

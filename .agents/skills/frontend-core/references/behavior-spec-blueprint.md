@@ -1,8 +1,13 @@
 # Behavior Spec Blueprint
 
-> Blueprint version: `1.0.0`
+> Blueprint version: `1.0.1`
 
 Use this frozen blueprint for behavior under `core/<context>/use-cases`. Specs exercise the public context action through RTK Query and the real Starter store.
+
+For Account onboarding, prove a provisioned Account starts `pending`, completion stores
+`completed`, and a repeated completion returns the same durable state. Root navigation specs must
+cover loading, unauthenticated, missing Account, pending Account, and completed Account through the
+pure runtime resolver selected by Vitest.
 
 ## Placeholders
 

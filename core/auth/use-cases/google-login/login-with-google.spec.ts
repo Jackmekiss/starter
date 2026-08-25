@@ -3,13 +3,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { InMemoryAuthGateway } from "@core/auth/adapters/in-memory/in-memory-auth-gateway";
 import { createAuthApiOptions } from "@core/auth/apis/auth-api";
-import { accountBuilder } from "@core/auth/domain/builders/account-builder";
-import { authUserBuilder } from "@core/auth/domain/builders/auth-user-builder";
-import { sessionBuilder } from "@core/auth/domain/builders/session-builder";
 import { createStore } from "@core/init-redux-store";
 
-import type { Account } from "@core/auth/domain/account";
-import type { AuthUser, Session } from "@core/auth/domain/auth";
 import type { ReduxStore } from "@core/init-redux-store";
 
 /**
@@ -30,41 +25,13 @@ describe("Google Login", () => {
     store = createStore({ authApi }, {});
   });
 
-  it("should store auth state when Google login succeeds", async () => {
-    const accountId = "google-account-id";
-    const email = "google@example.com";
-    const account = accountBuilder().withId(accountId).withEmail(email).build();
-    const user = authUserBuilder().withId(accountId).withEmail(email).build();
-    const session = sessionBuilder().withUserId(accountId).build();
-
-    authGateway.account = account;
-    authGateway.authUser = user;
-    authGateway.session = session;
-
-    await loginWithGoogle();
-
-    expectAuthState({
-      account,
-      session,
-      user,
-    });
-  });
-
-  it("should reject with auth error without changing durable state", async () => {
-    authGateway.account = null;
-    authGateway.authUser = null;
-
+  it("should expose Google as unavailable without changing auth state", async () => {
     await expect(loginWithGoogle()).rejects.toEqual({
       kind: "business",
-      code: "INVALID_CREDENTIALS",
+      code: "PROVIDER_UNAVAILABLE",
       retryable: false,
     });
-
-    expect(store.getState().auth).toEqual({
-      account: null,
-      session: null,
-      user: null,
-    });
+    expect(store.getState().auth).toEqual({ session: null, user: null });
   });
 
   /**
@@ -72,24 +39,5 @@ describe("Google Login", () => {
    */
   async function loginWithGoogle() {
     await store.dispatch(authApi.endpoints.loginWithGoogle.initiate()).unwrap();
-  }
-
-  /**
-   * Expects successful authentication data to be stored in auth state.
-   */
-  function expectAuthState({
-    account,
-    session,
-    user,
-  }: {
-    account: Account;
-    session: Session;
-    user: AuthUser;
-  }) {
-    expect(store.getState().auth).toEqual({
-      account,
-      session,
-      user,
-    });
   }
 });

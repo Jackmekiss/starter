@@ -1,5 +1,4 @@
 import type { AuthContext } from "@core/auth/apis/types";
-import type { Account, OnboardingStatus } from "@core/auth/domain/account";
 import type { AuthResult } from "@core/auth/domain/auth-result";
 import type { AuthUser, Session } from "@core/auth/domain/auth";
 
@@ -9,60 +8,17 @@ export function decodeHttpAuthContext(value: unknown): AuthResult<AuthContext> {
 
   const user = readAuthUser(value.user);
   const session = value.session === null ? null : readSession(value.session);
-  const account = value.account === null ? null : readAccount(value.account);
 
-  if (!user || session === undefined || account === undefined) {
+  if (!user || session === undefined) {
     return unexpectedResponse();
   }
 
-  return { ok: true, value: { user, session, account } };
-}
-
-/** Decodes a nullable account returned by the sample HTTP contract. */
-export function decodeHttpAccount(value: unknown): AuthResult<Account | null> {
-  if (value === null) return { ok: true, value: null };
-
-  const account = readAccount(value);
-  return account ? { ok: true, value: account } : unexpectedResponse();
-}
-
-/** Decodes the account required after a successful profile update. */
-export function decodeRequiredHttpAccount(value: unknown): AuthResult<Account> {
-  const account = readAccount(value);
-  return account ? { ok: true, value: account } : unexpectedResponse();
+  return { ok: true, value: { user, session } };
 }
 
 /** Accepts a successful response for an operation without response data. */
 export function decodeHttpVoid(_: unknown): AuthResult<void> {
   return { ok: true, value: undefined };
-}
-
-/** Reads a validated account from an external response. */
-function readAccount(value: unknown): Account | undefined {
-  if (
-    !isRecord(value) ||
-    typeof value.id !== "string" ||
-    typeof value.email !== "string" ||
-    typeof value.createdAt !== "string" ||
-    !isOptionalNullableString(value.avatarUri) ||
-    !isOptionalString(value.firstName) ||
-    !isOptionalString(value.lastName) ||
-    !isOptionalOnboardingStatus(value.onboardingStatus)
-  ) {
-    return undefined;
-  }
-
-  return {
-    id: value.id,
-    email: value.email,
-    createdAt: value.createdAt,
-    ...(value.avatarUri !== undefined ? { avatarUri: value.avatarUri } : {}),
-    ...(value.firstName !== undefined ? { firstName: value.firstName } : {}),
-    ...(value.lastName !== undefined ? { lastName: value.lastName } : {}),
-    ...(value.onboardingStatus !== undefined
-      ? { onboardingStatus: value.onboardingStatus }
-      : {}),
-  };
 }
 
 /** Reads a validated authenticated identity from an external response. */
@@ -113,28 +69,9 @@ function isOptionalString(value: unknown): value is string | undefined {
   return value === undefined || typeof value === "string";
 }
 
-/** Checks optional nullable external strings. */
-function isOptionalNullableString(
-  value: unknown,
-): value is string | null | undefined {
-  return value === undefined || value === null || typeof value === "string";
-}
-
 /** Checks optional external numbers. */
 function isOptionalNumber(value: unknown): value is number | undefined {
   return value === undefined || typeof value === "number";
-}
-
-/** Checks onboarding values accepted by the auth domain. */
-function isOptionalOnboardingStatus(
-  value: unknown,
-): value is OnboardingStatus | undefined {
-  return (
-    value === undefined ||
-    value === "pending" ||
-    value === "in-progress" ||
-    value === "completed"
-  );
 }
 
 /** Narrows external JSON values before reading response fields. */

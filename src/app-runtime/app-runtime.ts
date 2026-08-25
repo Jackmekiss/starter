@@ -1,6 +1,11 @@
 export { appMode } from "@/app-runtime/runtime/app-mode";
 export {
   useCompleteOnboardingMutation,
+  useProvisionAccountMutation,
+  useRetrieveAccountQuery,
+  useUpdateAccountMutation,
+} from "@/app-runtime/runtime/account-runtime";
+export {
   useDeleteAccountMutation,
   useLoginMutation,
   useLoginWithAppleMutation,
@@ -9,8 +14,6 @@ export {
   useRegisterMutation,
   useRequestPasswordResetMutation,
   useResetPasswordMutation,
-  useRetrieveAccountQuery,
-  useUpdateAccountMutation,
 } from "@/app-runtime/runtime/auth-runtime";
 export {
   useOpenSubscriptionManagementMutation,

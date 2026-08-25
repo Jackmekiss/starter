@@ -13,10 +13,11 @@
 | `src/translations/`        | Bundled French and English application copy.                                                                            | French is the typed source catalog and fallback locale.                                                                                                                                             |
 | `src/constants/`           | App constants and theme exports.                                                                                        | Keep durable domain constants in `core/` when they are business concepts.                                                                                                                           |
 | `src/lib/`                 | Small app-level helpers.                                                                                                | Avoid growing generic utility buckets.                                                                                                                                                              |
-| `core/auth/`               | Authentication bounded context.                                                                                         | Owns account/session domain, auth use-cases, auth gateway, adapters, selectors, and RTK Query API options.                                                                                          |
+| `core/auth/`               | Authentication bounded context.                                                                                         | Owns identity/session domain, auth use-cases, auth gateway, adapters, selectors, and RTK Query API options.                                                                                         |
+| `core/account/`            | Account bounded context.                                                                                                | Owns profile and onboarding truth, Account use-cases, gateway, adapters, selectors, and RTK Query API options.                                                                                      |
 | `core/subscription/`       | Subscription bounded context.                                                                                           | Owns premium entitlement domain, subscription use-cases, gateway, adapters, selectors, and RTK Query API options.                                                                                   |
 | `core/shared/`             | Transport-independent contracts and lower-level shared adapters.                                                        | Owns `ApplicationError`, `Result`, `toRtkQueryResult`, and the Supabase slugify helper.                                                                                                             |
-| `core/init-redux-store.ts` | Root Redux store factory for bounded-context slices and RTK Query APIs.                                                 | Runtime mounts both Auth and Subscription APIs.                                                                                                                                                     |
+| `core/init-redux-store.ts` | Root Redux store factory for bounded-context slices and RTK Query APIs.                                                 | Runtime mounts Auth, Account, and Subscription APIs.                                                                                                                                                |
 | `.agents/skills/`          | Repo-specific agent workflow and convention skills.                                                                     | [`frontend-core`](../../.agents/skills/frontend-core/SKILL.md) owns core/runtime guidance; [`frontend-ui`](../../.agents/skills/frontend-ui/SKILL.md) owns presentation and accessibility guidance. |
 | `docs/ai/`                 | Project memory system.                                                                                                  | Stable and operational memory for humans and agents.                                                                                                                                                |
 | `plans/`                   | Multi-session feature plans.                                                                                            | Use only when work is too large/risky for a single session.                                                                                                                                         |
@@ -34,7 +35,7 @@
 - Starter applies strategic DDD to organize frontend business truth by bounded context and pragmatic Clean Architecture to isolate UI, transport, storage, and SDK details.
 - Redux Toolkit in `domain/slice.ts` and RTK Query in use-cases/APIs are intentional parts of this frontend architecture, not violations to replace with academic abstractions.
 - Use-cases are explicit RTK Query endpoint builders under `core/<context>/use-cases/<action>/`.
-- Use-cases call their business gateway directly through `queryFn`; `toRtkQueryResult` owns the RTK Query result adaptation for auth and subscription.
+- Use-cases call their business gateway directly through `queryFn`; `toRtkQueryResult` owns the RTK Query result adaptation for each context.
 - Context API options are assembled in `core/<context>/apis/*-api.ts`.
 - Runtime adapters are selected in `src/app-runtime/runtime/*`; auth supports in-memory, fake, and opt-in HTTP implementations.
 - In-memory adapters are valid local infrastructure while real backend/provider integrations are absent.
@@ -69,11 +70,13 @@
 
 ## Auth / session approach
 
-- Auth domain state stores runtime `user`, `session`, and `account`; connection derives from `session`, and transient auth request failures stay in RTK Query.
+- Auth state stores only runtime `user` and `session`; connection derives from `session`.
+- Account state separately stores the current profile and durable onboarding status.
 - The secure-session adapter stays in `src/app-runtime/runtime/`; the auth domain remains independent from storage.
 - `PersistGate` waits for secure-session rehydration before mounting route selection.
-- Account retrieval starts only after a rehydrated session exists, and the splash remains visible during its initial load.
-- Route selection derives connection directly from `auth.session` and onboarding from `auth.account`.
+- Account provisioning starts only after a rehydrated session exists, and the splash remains visible during its first attempt.
+- Route selection derives connection from `auth.session` and onboarding from `account.current`.
+- Missing Account after a failed provisioning attempt renders localized retry UI without clearing the valid session.
 - Successful logout and account deletion clear `auth.session`; the next serialized persistence write removes SecureStore credentials.
 - `EXPO_PUBLIC_APP_MODE=fake` selects `FakeAuthGateway`; `http` selects `HttpAuthGateway`; all other modes use `InMemoryAuthGateway`.
 - The HTTP adapter reads the current Redux session through an injected `AuthSessionProvider` immediately before protected requests.

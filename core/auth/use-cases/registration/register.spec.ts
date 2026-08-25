@@ -6,10 +6,8 @@ import { createAuthApiOptions } from "@core/auth/apis/auth-api";
 import { authUserBuilder } from "@core/auth/domain/builders/auth-user-builder";
 import { sessionBuilder } from "@core/auth/domain/builders/session-builder";
 import { createStore } from "@core/init-redux-store";
-import { DeterministicDateProvider } from "@core/shared/adapters/date/deterministic-date-provider";
 
 import type { RegisterPayload } from "@core/auth/apis/types";
-import type { Account } from "@core/auth/domain/account";
 import type { AuthUser, Session } from "@core/auth/domain/auth";
 import type { ReduxStore } from "@core/init-redux-store";
 
@@ -26,46 +24,27 @@ describe("Registration", () => {
   let authApi: ReturnType<typeof createAuthApi>;
 
   beforeEach(() => {
-    const dateProvider = new DeterministicDateProvider();
-    dateProvider.dateOfNow = new Date("2026-06-17T00:00:00.000Z");
-    authGateway = new InMemoryAuthGateway(dateProvider);
+    authGateway = new InMemoryAuthGateway();
     authApi = createAuthApi(authGateway);
     store = createStore({ authApi }, {});
   });
 
-  it("should register account and store auth state", async () => {
-    authGateway.session = sessionBuilder().withUserId("1").build();
+  it("should register an identity and store auth state", async () => {
+    authGateway.session = sessionBuilder().withUserId("auth-user-id").build();
 
     const result = await register({
       email: "registered@example.com",
-      firstName: "Registered",
-      lastName: "User",
       password: "password",
     });
 
-    if (!result.account) {
-      throw new Error("Expected registered account.");
-    }
-
-    const { account } = result;
-
     expectAuthState({
-      account,
-      session: sessionBuilder().withUserId("1").build(),
+      session: sessionBuilder().withUserId("auth-user-id").build(),
       user: authUserBuilder()
-        .withId("1")
+        .withId("auth-user-id")
         .withEmail("registered@example.com")
         .build(),
     });
-    expect(account).toEqual({
-      avatarUri: null,
-      createdAt: "2026-06-17T00:00:00.000Z",
-      email: "registered@example.com",
-      firstName: "Registered",
-      id: "1",
-      lastName: "User",
-      onboardingStatus: "pending",
-    });
+    expect(result).toEqual(store.getState().auth);
   });
 
   /**
@@ -81,16 +60,13 @@ describe("Registration", () => {
    * Expects successful registration data to be stored in auth state.
    */
   function expectAuthState({
-    account,
     session,
     user,
   }: {
-    account: Account;
     session: Session;
     user: AuthUser;
   }) {
     expect(store.getState().auth).toEqual({
-      account,
       session,
       user,
     });

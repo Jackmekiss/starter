@@ -1,5 +1,12 @@
 # Worklog
 
+## 2026-08-25 — Account-Owned Onboarding
+
+- Reduced Account onboarding to durable `pending | completed` truth and a dedicated idempotent
+  completion operation.
+- Routed startup through a tested five-state resolver with localized Account retry UI.
+- Updated frontend blueprints, contracts, memory, and the accepted architecture decision.
+
 Older history: [2026-Q3.md](worklog-archive/2026-Q3.md).
 
 ## 2026-08-24 - Make Poppins weights deterministic on native

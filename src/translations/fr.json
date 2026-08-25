@@ -22,6 +22,10 @@
   "auth__password_reset__error__expired": "Ce lien de réinitialisation du mot de passe a expiré.",
   "auth__password_reset__error__invalid": "Ce lien de réinitialisation du mot de passe est invalide.",
   "auth__oauth__error__cancelled": "La connexion a été annulée.",
+  "account__bootstrap__error__title": "Impossible de charger votre compte",
+  "account__bootstrap__error__description": "Votre session est active, mais votre compte n’a pas pu être chargé. Réessayez avant de continuer.",
+  "account__bootstrap__retry": "Réessayer",
+  "account__bootstrap__retrying": "Nouvelle tentative…",
   "subscription__restore__error__no_active_purchase": "Aucun achat actif à restaurer n’a été trouvé.",
   "home__storybook__open": "Ouvrir Storybook"
 }

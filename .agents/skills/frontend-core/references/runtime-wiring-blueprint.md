@@ -1,8 +1,14 @@
 # Runtime Wiring Blueprint
 
-> Blueprint version: `1.0.0`
+> Blueprint version: `1.0.1`
 
 Use this frozen blueprint when adding or changing concrete gateway selection, RTK Query API creation, hook exports, middleware, persistence, store mounting, or the frontend composition root.
+
+Account onboarding remains durable Account truth. Runtime exports
+`useCompleteOnboardingMutation`, while navigation reads the Account selector. Do not compose a
+Zustand session store, hydration flag, or separate `shouldCreateAccount` value. In-memory and fake
+fixtures used to open the neutral Starter begin as `completed`; provisioning behavior specs seed
+`pending` explicitly.
 
 ## Placeholders
 
@@ -118,6 +124,8 @@ interface StoreApi {
 
 /** RTK Query API instances mounted into the Redux store. */
 export interface Apis {
+  /** Account API retained by the complete Starter baseline. */
+  accountApi: StoreApi;
   /** Authentication API retained by the complete Starter baseline. */
   authApi: StoreApi;
   /** Subscription API retained by the complete Starter baseline. */

@@ -41,7 +41,7 @@ Files inspected for product context:
 
 ## Important product rules
 
-- An account can have onboarding status `pending`, `in-progress`, or `completed`.
+- An account has durable onboarding status `pending` or `completed`; Account is the sole routing truth.
 - Routing sends connected users with incomplete onboarding to `(on-boarding)` and completed connected users to `(tabs)`.
 - A premium subscription is considered premium when tier is `premium` and status is `active` or `trialing`.
 - Logout always clears local auth state after the remote attempt settles; account deletion clears it only after successful deletion.

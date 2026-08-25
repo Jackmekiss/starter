@@ -10,6 +10,7 @@ import {
 } from "redux-persist";
 
 import { authSlice } from "@core/auth/domain/slice";
+import { accountSlice } from "@core/account/domain/slice";
 import {
   subscriptionOfferingSlice,
   subscriptionSlice,
@@ -37,6 +38,8 @@ interface StoreApi {
  * RTK Query API instances mounted into the Redux store.
  */
 export interface Apis {
+  /** Account RTK Query API mounted when Account endpoints are available. */
+  accountApi: StoreApi;
   /**
    * Auth RTK Query API mounted when authentication endpoints are available.
    */
@@ -68,12 +71,16 @@ export interface StoreRuntimeConfiguration {
  */
 function createReducers(apis: Partial<Apis>) {
   return combineReducers({
+    ...(apis.accountApi && {
+      [apis.accountApi.reducerPath]: apis.accountApi.reducer,
+    }),
     ...(apis.authApi && {
       [apis.authApi.reducerPath]: apis.authApi.reducer,
     }),
     ...(apis.subscriptionApi && {
       [apis.subscriptionApi.reducerPath]: apis.subscriptionApi.reducer,
     }),
+    [accountSlice.name]: accountSlice.reducer,
     [authSlice.name]: authSlice.reducer,
     [subscriptionSlice.name]: subscriptionSlice.reducer,
     [subscriptionOfferingSlice.name]: subscriptionOfferingSlice.reducer,
