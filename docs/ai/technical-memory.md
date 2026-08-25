@@ -40,7 +40,8 @@ current task or a factual Worklog entry records it.
 - React Native UI uses local shadcn-style primitives, NativeWind v5, Tailwind CSS v4, CVA, and focused
   RN Primitives. Gluestack is not installed.
 - Semantic light/dark tokens live in `src/global.css`; navigation follows the same appearance source.
-- Poppins assets are versioned for native and web.
+- Eight PostScript-named Poppins faces are versioned for native and web. Native text selects an
+  explicit family utility per weight instead of combining one family with generic `fontWeight`.
 - The shared UI surface contains 19 Fifteen-derived component families under `src/components/ui/`.
 - Stories are colocated with primitives.
 - Direct Storybook swaps the Expo entry point. In-app Storybook intentionally adds a guarded

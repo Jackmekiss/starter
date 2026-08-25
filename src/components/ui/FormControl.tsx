@@ -48,7 +48,7 @@ const FormControlContext = React.createContext<FormControlContextValue | null>(
   null,
 );
 
-const formControlLabelVariants = cva("text-foreground font-medium", {
+const formControlLabelVariants = cva("text-foreground font-body-medium", {
   variants: {
     size: {
       sm: "text-sm leading-5",

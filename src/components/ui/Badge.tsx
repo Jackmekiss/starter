@@ -85,7 +85,7 @@ const badgeVariants = cva(
   },
 );
 
-const badgeTextVariants = cva("font-normal", {
+const badgeTextVariants = cva("font-body", {
   variants: {
     action: {
       error: "text-destructive-status-foreground",

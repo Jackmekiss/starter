@@ -1,6 +1,6 @@
 # Components and Layout Blueprint
 
-> Blueprint version: `1.1.1`
+> Blueprint version: `1.2.0`
 
 Use this frozen blueprint when composing Starter screens, feature sections, or shared UI primitives. Starter preserves Fifteen's visual language, but implements it with React Native, shadcn-style local composition, NativeWind v5, Tailwind CSS v4, CVA, and focused `@rn-primitives` packages. Gluestack is not part of the runtime or public API.
 
@@ -112,7 +112,7 @@ Add a primitive only after reuse or a clear design-system responsibility justifi
 | SafeAreaView     | styled safe-area-context adapter                      | maps `className` to `style`                                                                                         |
 | ScreenHeader     | local composition                                     | centered wrapping title without truncation; `headingLevel="1"`; localized back label; `px-screen`                   |
 | Switch           | `@rn-primitives/switch` root + thumb                  | `sm`/`md`/`lg`; checked, invalid, disabled; localized control label and `valueLabel` required                       |
-| Text             | native text + variant context                         | Poppins; `h1`-`h4` own semantics, visual `heading` uses optional `headingLevel`; scalable type variants             |
+| Text             | native text + variant context                         | explicit Poppins face per weight; `h1`-`h4` own semantics, visual `heading` uses optional `headingLevel`            |
 | Textarea         | multiline input                                       | same state/variant language as Input; content-driven minimum height                                                 |
 | Toast            | react-native-toast-message surface + hook             | status tones; `outline`/`solid`; title/description/action/close; live-region semantics                              |
 
@@ -354,6 +354,8 @@ Render `outline` feedback on `bg-background` with the action's emphasis role. Re
 
 - Screens compose sections; sections own cohesive blocks; feature cards render explicit values; UI primitives remain generic.
 - The 19 canonical families preserve one visual language while using React Native/shadcn composition, never Gluestack.
+- Every Poppins weight selects its explicit `font-body-*` family; generic `fontWeight` utilities do
+  not select custom Poppins faces on native.
 - Poppins, 24-point screen spacing, shared radii, semantic brand/status tokens, and light/dark values come from the central theme.
 - Parent layout owns external placement; child layout owns internal spacing.
 - `@rn-primitives` owns native control state machines; local components own visual variants and accessibility integration.
@@ -378,6 +380,8 @@ Render `outline` feedback on `bg-background` with the action's emphasis role. Re
 - [ ] Hooks use the runtime facade; durable, request, and local interaction state each have one owner.
 - [ ] Generic props contain no business vocabulary and caller `className` overrides are preserved through `cn`.
 - [ ] Brand/status roles use semantic tokens with soft, border, and foreground counterparts in both schemes.
+- [ ] Shared and compound text uses `font-body`, `font-heading`, or the exact `font-body-*` family for
+      its intended Poppins face.
 - [ ] Layout uses `px-screen` at screen boundaries and remains stable with long/scaled text.
 - [ ] Native roles, names, states, touch targets, focus, live regions, and hidden content are correct.
 - [ ] Stories cover meaningful variants and states and follow [storybook-blueprint.md](storybook-blueprint.md).

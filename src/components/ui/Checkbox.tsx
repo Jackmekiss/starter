@@ -76,7 +76,7 @@ const checkboxIconVariants = cva("text-primary-foreground", {
   },
 });
 
-const checkboxLabelVariants = cva("text-secondary-foreground font-normal", {
+const checkboxLabelVariants = cva("text-secondary-foreground font-body", {
   variants: {
     size: {
       sm: "text-sm leading-[21px]",

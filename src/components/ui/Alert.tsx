@@ -264,7 +264,7 @@ function AlertTitle({ className, ...props }: AlertTitleProps) {
   return (
     <Text
       className={cn(
-        "text-base font-semibold",
+        "font-body-semibold text-base",
         alertForegroundVariants({ action, variant }),
         className,
       )}

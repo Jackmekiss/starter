@@ -112,7 +112,7 @@ const radioDotVariants = cva("rounded-full", {
   },
 });
 
-const radioLabelVariants = cva("text-foreground font-normal", {
+const radioLabelVariants = cva("text-foreground font-body", {
   variants: {
     size: {
       sm: "text-sm leading-5",

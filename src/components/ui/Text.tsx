@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 
 const textVariants = cva(
   cn(
-    "text-body-foreground font-body text-base font-normal",
+    "text-body-foreground font-body text-base",
     Platform.select({ web: "select-text" }),
   ),
   {
@@ -15,29 +15,29 @@ const textVariants = cva(
       variant: {
         default: "",
         body: "font-body",
-        heading: "font-heading leading-heading tracking-heading font-extrabold",
+        heading: "font-heading leading-heading tracking-heading",
         h1: cn(
-          "font-heading leading-heading tracking-heading text-center text-4xl font-extrabold",
+          "font-heading leading-heading tracking-heading text-center text-4xl",
           Platform.select({ web: "scroll-m-20 text-balance" }),
         ),
         h2: cn(
-          "font-heading leading-heading tracking-heading border-border border-b pb-2 text-3xl font-extrabold",
+          "font-heading leading-heading tracking-heading border-border border-b pb-2 text-3xl",
           Platform.select({ web: "scroll-m-20 first:mt-0" }),
         ),
         h3: cn(
-          "font-heading leading-heading tracking-heading text-2xl font-extrabold",
+          "font-heading leading-heading tracking-heading text-2xl",
           Platform.select({ web: "scroll-m-20" }),
         ),
         h4: cn(
-          "font-heading leading-heading tracking-heading text-xl font-extrabold",
+          "font-heading leading-heading tracking-heading text-xl",
           Platform.select({ web: "scroll-m-20" }),
         ),
         p: "mt-3 leading-7 sm:mt-6",
         blockquote: "mt-4 border-l-2 pl-3 italic sm:mt-6 sm:pl-6",
         code: "bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold",
         lead: "text-muted-foreground text-xl",
-        large: "text-lg font-semibold",
-        small: "text-sm font-medium leading-none",
+        large: "font-body-semibold text-lg",
+        small: "font-body-medium text-sm leading-none",
         muted: "text-muted-foreground text-sm",
       },
       size: {
@@ -54,14 +54,14 @@ const textVariants = cva(
         "6xl": "text-6xl leading-[3.75rem]",
       },
       weight: {
-        thin: "font-thin",
-        light: "font-light",
-        normal: "font-normal",
-        medium: "font-medium",
-        semibold: "font-semibold",
-        bold: "font-bold",
-        extrabold: "font-extrabold",
-        black: "font-black",
+        thin: "font-body-thin",
+        light: "font-body-light",
+        normal: "font-body",
+        medium: "font-body-medium",
+        semibold: "font-body-semibold",
+        bold: "font-body-bold",
+        extrabold: "font-body-extrabold",
+        black: "font-body-black",
       },
       treatment: {
         truncate: "truncate",

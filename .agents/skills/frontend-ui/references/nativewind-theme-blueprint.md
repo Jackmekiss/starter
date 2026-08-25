@@ -1,6 +1,6 @@
 # Frozen Blueprint: NativeWind, Theme, Variants, and Interop
 
-> Blueprint version: `1.1.1`
+> Blueprint version: `1.2.0`
 
 Use this reference for Starter styling infrastructure, theme tokens, typography, shared visual variants, icons, or third-party native components. It freezes the Fifteen-derived design language after translation to shadcn-style React Native composition. Preserve it unless an accepted repository decision explicitly replaces it.
 
@@ -13,14 +13,14 @@ app.json                                      # versioned Poppins assets and nat
 metro.config.js                              # NativeWind, plus isolated Storybook wrapper
 public/fonts/
 ├── OFL.txt
-├── Poppins_100Thin.ttf
-├── Poppins_300Light.ttf
-├── Poppins_400Regular.ttf
-├── Poppins_500Medium.ttf
-├── Poppins_600SemiBold.ttf
-├── Poppins_700Bold.ttf
-├── Poppins_800ExtraBold.ttf
-└── Poppins_900Black.ttf
+├── Poppins-Thin.ttf
+├── Poppins-Light.ttf
+├── Poppins-Regular.ttf
+├── Poppins-Medium.ttf
+├── Poppins-SemiBold.ttf
+├── Poppins-Bold.ttf
+├── Poppins-ExtraBold.ttf
+└── Poppins-Black.ttf
 src/
 ├── app/_layout.tsx                          # imports global.css once in the app entry
 ├── app-runtime/root-app-providers.tsx       # system scheme + navigation theme + toast host
@@ -96,8 +96,15 @@ Use exact role names rather than hue names or feature names. For example:
   --color-tertiary-strong: var(--tertiary-strong);
   /* expose every remaining role by the same exact mapping */
 
-  --font-body: Poppins;
-  --font-heading: Poppins;
+  --font-body: "Poppins-Regular";
+  --font-body-thin: "Poppins-Thin";
+  --font-body-light: "Poppins-Light";
+  --font-body-medium: "Poppins-Medium";
+  --font-body-semibold: "Poppins-SemiBold";
+  --font-body-bold: "Poppins-Bold";
+  --font-body-extrabold: "Poppins-ExtraBold";
+  --font-body-black: "Poppins-Black";
+  --font-heading: "Poppins-ExtraBold";
   --leading-heading: 1;
   --tracking-heading: 0.0125rem;
 
@@ -156,22 +163,24 @@ Light values live in `:root`. Automatic dark values override them under `@media 
 
 ## Typography
 
-Poppins is the body and heading family. Version the eight TTF assets under `public/fonts`; do not make CSS depend on a `node_modules` URL, because Metro web export does not copy that local resource reliably. Configure the Expo font plugin with the same `./public/fonts/...` files for weights 100, 300, 400, 500, 600, 700, 800, and 900 on Android and iOS. `global.css` owns eight matching `@font-face` declarations, and both app `_layout.tsx` and Storybook `preview.tsx` import that CSS.
+Poppins is the body and heading family. Version the eight static TTF assets under `public/fonts`; do not make CSS depend on a `node_modules` URL, because Metro web export does not copy that local resource reliably. Name every file exactly like its internal PostScript face. Configure the Expo font plugin with one shared `fonts` array so Android registers each filename as a family and iOS extracts the same internal family. This requires a new native build after any registration change.
 
-| Weight | Versioned asset                         |
-| ------ | --------------------------------------- |
-| 100    | `public/fonts/Poppins_100Thin.ttf`      |
-| 300    | `public/fonts/Poppins_300Light.ttf`     |
-| 400    | `public/fonts/Poppins_400Regular.ttf`   |
-| 500    | `public/fonts/Poppins_500Medium.ttf`    |
-| 600    | `public/fonts/Poppins_600SemiBold.ttf`  |
-| 700    | `public/fonts/Poppins_700Bold.ttf`      |
-| 800    | `public/fonts/Poppins_800ExtraBold.ttf` |
-| 900    | `public/fonts/Poppins_900Black.ttf`     |
+| Weight | Versioned asset                      | NativeWind family utility |
+| ------ | ------------------------------------ | ------------------------- |
+| 100    | `public/fonts/Poppins-Thin.ttf`      | `font-body-thin`          |
+| 300    | `public/fonts/Poppins-Light.ttf`     | `font-body-light`         |
+| 400    | `public/fonts/Poppins-Regular.ttf`   | `font-body`               |
+| 500    | `public/fonts/Poppins-Medium.ttf`    | `font-body-medium`        |
+| 600    | `public/fonts/Poppins-SemiBold.ttf`  | `font-body-semibold`      |
+| 700    | `public/fonts/Poppins-Bold.ttf`      | `font-body-bold`          |
+| 800    | `public/fonts/Poppins-ExtraBold.ttf` | `font-body-extrabold`     |
+| 900    | `public/fonts/Poppins-Black.ttf`     | `font-body-black`         |
 
-Each declaration uses the `Poppins` family, normal style, `font-display: swap`, its numeric weight, and an absolute public URL such as `url('/fonts/Poppins_400Regular.ttf') format('truetype')`. Keep these declarations in `global.css`; do not duplicate them in Storybook or a screen. Keep the font license beside the versioned assets.
+Each web `@font-face` declaration also uses its exact PostScript family and matching absolute public URL. `font-heading` aliases `Poppins-ExtraBold`. Keep these declarations in `global.css`; do not duplicate them in Storybook or a screen. Keep the font license beside the versioned assets.
 
-`Text.tsx` owns the finite type variants, heading roles, and `TextClassContext` used by compound controls. Its base copy uses `text-body-foreground`; headings and explicit high-emphasis copy use their semantic foreground roles. Named `h1` through `h4` variants derive their matching role/level automatically; the visual `heading` variant gains semantics only through `headingLevel="1" | ... | "6"`, which derives role and level together. Application code uses `font-body` or `font-heading`, never platform default family names or raw `fontFamily` values. Headings use `leading-heading` and `tracking-heading`; text must still scale and wrap.
+NativeWind's generic `font-medium`, `font-semibold`, and `font-bold` utilities set only `fontWeight`; they do not select a custom font file reliably on native. Every Poppins weight therefore uses the explicit family utility above. The only generic weight utility allowed in this design system is one paired with a non-Poppins family such as `font-mono`.
+
+`Text.tsx` owns the finite type variants, heading roles, and `TextClassContext` used by compound controls. Its base copy uses `text-body-foreground font-body`; headings use `font-heading`; and finite `weight` variants select the exact `font-body-*` family. Named `h1` through `h4` variants derive their matching role/level automatically; the visual `heading` variant gains semantics only through `headingLevel="1" | ... | "6"`, which derives role and level together. Compound primitives such as Button pass an explicit family through `TextClassContext`. Typed vendor adapters may use the same exact PostScript family through an imperative `fontFamily`; application screens do not. Headings use `leading-heading` and `tracking-heading`; text must still scale and wrap.
 
 Do not load fonts independently in screens, stories, or primitives. The shared CSS import is the web/Storybook font boundary, so stories never silently fall back to a system font.
 
@@ -311,7 +320,7 @@ Do not invent a Storybook-only palette or stylesheet. See [storybook-blueprint.m
 - NativeWind v5 utilities are the default for owned React Native UI.
 - Tailwind v4 semantic tokens live only in `global.css`.
 - The Fifteen-derived palette is expressed as role tokens, not raw component colors.
-- Poppins, the radius scale, and 24-point screen spacing are shared foundations.
+- Explicit Poppins face families, the radius scale, and 24-point screen spacing are shared foundations.
 - Every colored family provides the surface/border/foreground roles its variants consume in light and dark.
 - Automatic dark applies only without an explicit root data attribute; Storybook web light/dark uses `data-color-scheme` and native uses `Appearance`.
 - `THEME`, `Colors`, and `NAV_THEME` mirror only imperative CSS roles and stay synchronized.
@@ -329,6 +338,8 @@ Do not invent a Storybook-only palette or stylesheet. See [storybook-blueprint.m
 - Hand-building conflicting class strings instead of `cn` and CVA.
 - Wrapping owned components with `styled()`, guessing a vendor target, or exposing an untyped vendor surface.
 - Reimplementing focused native control behavior with generic views.
+- Combining the generic `font-*` weight utilities with Poppins instead of selecting the matching
+  `font-body-*` family.
 - Loading Poppins independently per screen or falling back silently to another design-system font.
 
 ## Validation Checklist
@@ -336,7 +347,10 @@ Do not invent a Storybook-only palette or stylesheet. See [storybook-blueprint.m
 - [ ] `global.css` keeps import order, `@theme inline` aliases, light root values, guarded automatic dark overrides, and the identical explicit dark selector.
 - [ ] Each new role has light/dark values and the required soft/border/foreground counterparts.
 - [ ] Every imperatively consumed value is synchronized in `THEME` and applicable compatibility/navigation exports.
-- [ ] Poppins weights are registered through Expo and typography uses `font-body`/`font-heading`.
+- [ ] Poppins filenames match their PostScript names, all eight faces are registered through one Expo
+      font array, and a fresh native build exposes them.
+- [ ] Poppins typography selects `font-body`, `font-heading`, or an explicit `font-body-*` face; generic
+      weight utilities do not attempt to select a Poppins weight.
 - [ ] A Storybook-enabled web export contains all eight files under its `fonts` assets and reports no unresolved/local-resource CSS warning.
 - [ ] Screen framing uses `px-screen` and reusable components use the shared radius scale.
 - [ ] Button actions, variants, sizes, text/icon colors, disabled, and busy states remain coherent.
@@ -347,4 +361,4 @@ Do not invent a Storybook-only palette or stylesheet. See [storybook-blueprint.m
 
 ## Independent Forward Validation
 
-When this blueprint changes, run an isolated generation scenario from a realistic UI request and this skill. Do not give the evaluator the current app implementation, an intended diff, or textual expectations. Evaluate semantic-token reuse, light/dark behavior, Poppins/radius/spacing foundations, local CVA ownership, focused native primitives, typed interop, accessibility, and story coverage. For font/theme infrastructure, require a web export containing all eight versioned Poppins assets with no unresolved/local-resource CSS warning, verify explicit web light/dark through the restored root data attribute, and verify native appearance restoration separately. Make only corrections supported by observable gaps.
+When this blueprint changes, run an isolated generation scenario from a realistic UI request and this skill. Do not give the evaluator the current app implementation, an intended diff, or textual expectations. Evaluate semantic-token reuse, light/dark behavior, explicit Poppins face selection, local CVA ownership, focused native primitives, typed interop, accessibility, and story coverage. For font/theme infrastructure, require a web export containing all eight versioned Poppins assets with no unresolved/local-resource CSS warning, inspect generated native registration or a fresh native build, and verify representative regular, medium, semibold, bold, heading, Button, form label, and vendor text surfaces without a system-font fallback. Verify explicit web light/dark through the restored root data attribute and native appearance restoration separately. Make only corrections supported by observable gaps.

@@ -39,7 +39,7 @@ const Link = React.forwardRef<React.ComponentRef<typeof Pressable>, LinkProps>(
   ) => {
     const isLinkDisabled = Boolean(disabled);
     const linkTextClassName = cn(
-      "text-primary web:group-hover:text-primary-strong web:group-focus-visible:text-primary-strong group-active:text-primary-strong text-sm font-bold underline",
+      "text-primary web:group-hover:text-primary-strong web:group-focus-visible:text-primary-strong group-active:text-primary-strong font-body-bold text-sm underline",
       textClassName,
     );
 
@@ -95,7 +95,7 @@ function LinkText({ className, ...props }: LinkTextProps) {
   return (
     <Text
       className={cn(
-        "text-primary web:group-hover:text-primary-strong web:group-focus-visible:text-primary-strong group-active:text-primary-strong text-sm font-bold underline",
+        "text-primary web:group-hover:text-primary-strong web:group-focus-visible:text-primary-strong group-active:text-primary-strong font-body-bold text-sm underline",
         className,
       )}
       {...props}

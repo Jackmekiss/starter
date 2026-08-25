@@ -41,59 +41,16 @@
       [
         "expo-font",
         {
-          "android": {
-            "fonts": [
-              {
-                "fontFamily": "Poppins",
-                "fontDefinitions": [
-                  {
-                    "path": "./public/fonts/Poppins_100Thin.ttf",
-                    "weight": 100
-                  },
-                  {
-                    "path": "./public/fonts/Poppins_300Light.ttf",
-                    "weight": 300
-                  },
-                  {
-                    "path": "./public/fonts/Poppins_400Regular.ttf",
-                    "weight": 400
-                  },
-                  {
-                    "path": "./public/fonts/Poppins_500Medium.ttf",
-                    "weight": 500
-                  },
-                  {
-                    "path": "./public/fonts/Poppins_600SemiBold.ttf",
-                    "weight": 600
-                  },
-                  {
-                    "path": "./public/fonts/Poppins_700Bold.ttf",
-                    "weight": 700
-                  },
-                  {
-                    "path": "./public/fonts/Poppins_800ExtraBold.ttf",
-                    "weight": 800
-                  },
-                  {
-                    "path": "./public/fonts/Poppins_900Black.ttf",
-                    "weight": 900
-                  }
-                ]
-              }
-            ]
-          },
-          "ios": {
-            "fonts": [
-              "./public/fonts/Poppins_100Thin.ttf",
-              "./public/fonts/Poppins_300Light.ttf",
-              "./public/fonts/Poppins_400Regular.ttf",
-              "./public/fonts/Poppins_500Medium.ttf",
-              "./public/fonts/Poppins_600SemiBold.ttf",
-              "./public/fonts/Poppins_700Bold.ttf",
-              "./public/fonts/Poppins_800ExtraBold.ttf",
-              "./public/fonts/Poppins_900Black.ttf"
-            ]
-          }
+          "fonts": [
+            "./public/fonts/Poppins-Thin.ttf",
+            "./public/fonts/Poppins-Light.ttf",
+            "./public/fonts/Poppins-Regular.ttf",
+            "./public/fonts/Poppins-Medium.ttf",
+            "./public/fonts/Poppins-SemiBold.ttf",
+            "./public/fonts/Poppins-Bold.ttf",
+            "./public/fonts/Poppins-ExtraBold.ttf",
+            "./public/fonts/Poppins-Black.ttf"
+          ]
         }
       ],
       "expo-image",

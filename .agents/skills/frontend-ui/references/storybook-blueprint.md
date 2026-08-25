@@ -1,6 +1,6 @@
 # Frozen Blueprint: React Native Storybook
 
-> Blueprint version: `1.0.1`
+> Blueprint version: `1.0.2`
 
 Use this reference when installing, configuring, extending, or validating Storybook for Starter. Direct Storybook is a presentation-only entry point for the same local components, CSS tokens, fonts, themes, localization, and overlay hosts used by the application. Starter also supports an explicit Fifteen-style in-app development route selected with `EXPO_PUBLIC_STORYBOOK_ENABLED=true`.
 
@@ -247,7 +247,7 @@ export default preview;
 
 Keep the preview focused. Localization and theme must remain ancestors of the local bottom-sheet provider because Gorhom's host re-renders stored portal nodes at the provider boundary instead of preserving contexts mounted below it. Add another provider only when a shared presentation primitive genuinely requires it and the application also mounts the corresponding provider.
 
-The preview's `@/global.css` import loads Starter's eight Poppins `@font-face` declarations from the versioned `/fonts/Poppins_*.ttf` public assets. Native registration points the Expo font plugin at those same files. Do not create a Storybook-only font loader or font mapping, and do not reference font URLs inside `node_modules` from CSS.
+The preview's `@/global.css` import loads Starter's eight face-specific Poppins `@font-face` declarations from the versioned `/fonts/Poppins-*.ttf` public assets. Native registration points the Expo font plugin at those same PostScript-named files. Do not create a Storybook-only font loader or font mapping, and do not reference font URLs inside `node_modules` from CSS.
 
 ## Story Anatomy
 

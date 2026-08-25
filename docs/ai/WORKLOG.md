@@ -2,6 +2,25 @@
 
 Older history: [2026-Q3.md](worklog-archive/2026-Q3.md).
 
+## 2026-08-24 - Make Poppins weights deterministic on native
+
+### Changes
+
+- Renamed all eight Poppins assets to their exact PostScript families and registered them through one
+  Expo font array.
+- Replaced generic weight utilities with explicit Poppins family utilities across Text, compound
+  controls, form labels, feedback components, and the phone-input adapter.
+- Versioned the corrected typography, component, and Storybook blueprints.
+
+### Validation
+
+- Passed typecheck, lint, formatting, 32 tests, skill validation, all-platform Expo export, direct
+  Storybook web export, and generated Android/iOS font-registration inspection.
+- Passed an isolated new-component probe using only explicit regular, medium, semibold, bold, and
+  heading families, with typecheck and formatting.
+- A fresh native build is required before visual device verification because font registration is a
+  native configuration change.
+
 ## 2026-08-24 - Bound and consolidate project memory
 
 ### Changes

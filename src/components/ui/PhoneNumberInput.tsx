@@ -141,9 +141,8 @@ const PhoneNumberInput = React.forwardRef<
             marginHorizontal: 0,
           },
           callingCode: {
-            fontFamily: "Poppins",
+            fontFamily: "Poppins-SemiBold",
             fontSize: 14,
-            fontWeight: "600",
             color: theme.secondaryForeground,
             lineHeight: 20,
           },
@@ -151,7 +150,7 @@ const PhoneNumberInput = React.forwardRef<
             display: "none",
           },
           input: {
-            fontFamily: "Poppins",
+            fontFamily: "Poppins-Regular",
             fontSize: 14,
             lineHeight: 20,
             color: theme.secondaryForeground,

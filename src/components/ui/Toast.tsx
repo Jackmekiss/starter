@@ -374,7 +374,7 @@ function ToastTitle({ className, ...props }: ToastTitleProps) {
   return (
     <Text
       className={cn(
-        "text-base font-semibold",
+        "font-body-semibold text-base",
         toastForegroundVariants({ action, variant }),
         className,
       )}
