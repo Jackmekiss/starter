@@ -357,7 +357,7 @@ function BottomSheetBackground({
   );
 }
 
-/** Shared bottom sheet wrapper matching Fifteen geometry without Gluestack. */
+/** Shared shadcn-style bottom sheet wrapper matching Fifteen geometry. */
 function BottomSheetModal({
   backdropAccessibilityHint,
   backdropAccessibilityLabel,

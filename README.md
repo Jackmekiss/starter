@@ -20,7 +20,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 Starter ships the Fifteen visual language as local shadcn-style React Native
 primitives: Poppins, semantic light/dark tokens, NativeWind v5, Tailwind CSS v4,
-CVA, Lucide, and RN Primitives. Gluestack is not part of the runtime.
+CVA, Lucide, and RN Primitives.
 
 Run Storybook directly (the isolated entry-point mode):
 

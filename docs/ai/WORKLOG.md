@@ -117,7 +117,7 @@ The user requested rebuilding the Starter frontend skills from zero so they gene
 
 - Use two frontend skills only: `frontend-core` for the business core and runtime composition, and `frontend-ui` for routes, screens, presentation, styling, localization, and accessibility.
 - Treat the blueprints as frozen generated-code contracts; change them only after an accepted decision and a new independent forward-test.
-- Use React Native primitives, NativeWind v5/Tailwind v4, CVA, and local primitives as Starter's UI stack; do not assume gluestack-ui.
+- Use React Native primitives, NativeWind v5/Tailwind v4, CVA, and local shadcn-style primitives as Starter's UI stack.
 
 ### Validation
 
@@ -144,11 +144,11 @@ The user requested rebuilding the Starter frontend skills from zero so they gene
 
 ### Context
 
-The user requested every Fifteen UI family missing from Starter, the same visual design language implemented with Starter's shadcn-style React Native stack instead of Gluestack, and Storybook documentation for the complete system.
+The user requested every Fifteen UI family missing from Starter, implemented with Starter's shadcn-style React Native stack, and Storybook documentation for the complete system.
 
 ### Changes
 
-- Audited Fifteen's 19 UI families and translated all missing capabilities without adding Gluestack or its provider/API conventions.
+- Audited Fifteen's 19 UI families and translated all missing capabilities into local shadcn-style primitives.
 - Added Alert, Badge, CameraView, Checkbox, FormControl, Link, PhoneNumberInput, Progress, Radio, SafeAreaView, ScreenHeader, Switch, and Toast.
 - Reworked the six existing families so Button, Input, Text, Textarea, Icon, and BottomSheetModal share Fifteen's Poppins metrics, semantic tokens, variants, states, and accessibility contracts.
 - Added focused RN Primitives and typed Expo/vendor adapters, eight versioned Poppins faces, synchronized light/dark theme mirrors, and a local composite bottom-sheet provider with portal-safe background hiding and Android back handling.

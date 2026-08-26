@@ -36,7 +36,7 @@ current task or a factual Worklog entry records it.
 ## UI Toolchain
 
 - React Native UI uses local shadcn-style primitives, NativeWind v5, Tailwind CSS v4, CVA, and focused
-  RN Primitives. Gluestack is not installed.
+  RN Primitives.
 - Semantic light/dark tokens live in `src/global.css`; navigation follows the same appearance source.
 - Eight PostScript-named Poppins faces are versioned for native and web. Native text selects an
   explicit family utility per weight instead of combining one family with generic `fontWeight`.
