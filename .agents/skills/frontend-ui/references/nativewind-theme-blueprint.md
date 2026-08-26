@@ -305,7 +305,7 @@ For another icon library, inspect its installed types and implementation. Reprod
 
 ## Toast and Overlay Styling
 
-`Toast.tsx` owns `toastConfig` and the imperative `useToast` surface. Toast actions are `error`, `info`, `muted`, `success`, and `warning`; surfaces use the corresponding semantic soft/border/foreground roles and the shared `rounded-2xl`/shadow language.
+`Toast.tsx` owns the local animated `ToastProvider` and imperative `useToast` surface. Toast actions are `error`, `info`, `muted`, `success`, and `warning`; surfaces use the corresponding semantic soft/border/foreground roles and the shared `rounded-2xl`/shadow language.
 
 Mount exactly one host in the application provider tree and one in the isolated Storybook provider tree. Bottom-sheet backgrounds, handles, and other imperative overlay props resolve from `THEME` through `useTheme()`, which consumes the shared `NAV_THEME` provider. Presentation components use NativeWind utilities for owned inner views.
 

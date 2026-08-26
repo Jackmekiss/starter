@@ -18,6 +18,11 @@ import {
   type ViewStyle,
 } from "react-native";
 import { FullWindowOverlay as RNFullWindowOverlay } from "react-native-screens";
+import Animated, {
+  FadeOut,
+  ReduceMotion,
+  ZoomIn,
+} from "react-native-reanimated";
 
 import { Icon, type IconProps } from "@/components/ui/Icon";
 import { Text, type TextProps } from "@/components/ui/Text";
@@ -78,6 +83,9 @@ const menuItemIconVariants = cva(
 
 const FullWindowOverlay =
   Platform.OS === "ios" ? RNFullWindowOverlay : React.Fragment;
+const AnimatedMenuContent = Animated.createAnimatedComponent(
+  DropdownMenuContentPrimitive,
+);
 
 /** Props accepted by the menu state root. */
 type MenuProps = React.ComponentProps<typeof DropdownMenuRootPrimitive> & {
@@ -182,13 +190,15 @@ function MenuContent({
               : StyleSheet.absoluteFill,
           })}
         >
-          <DropdownMenuContentPrimitive
+          <AnimatedMenuContent
             align={align}
             className={cn(
               "border-border bg-popover w-menu max-h-80 overflow-hidden rounded-2xl border p-2 shadow-lg shadow-black/5",
               Platform.select({ web: "z-50 cursor-default" }),
               className,
             )}
+            entering={ZoomIn.duration(150).reduceMotion(ReduceMotion.System)}
+            exiting={FadeOut.duration(150).reduceMotion(ReduceMotion.System)}
             side={side}
             sideOffset={sideOffset}
             style={contentStyle}
@@ -201,7 +211,7 @@ function MenuContent({
             >
               {injectMenuItemActionKeys(children)}
             </ScrollView>
-          </DropdownMenuContentPrimitive>
+          </AnimatedMenuContent>
         </DropdownMenuOverlayPrimitive>
       </FullWindowOverlay>
     </DropdownMenuPortalPrimitive>

@@ -6,7 +6,7 @@ import { Icon, type IconProps } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
 
 const inputFrameVariants = cva(
-  "flex-row items-center web:hover:border-control-border-strong web:focus-within:border-control-border-focus",
+  "flex-row items-center gap-2 overflow-hidden transition-colors duration-150 ease-out web:hover:border-control-border-strong web:focus-within:border-control-border-focus",
   {
     variants: {
       variant: {
@@ -200,7 +200,10 @@ function InputIcon({ className, size, ...props }: IconProps) {
     size ?? (context.size === "sm" ? 16 : context.size === "xl" ? 20 : 18);
   return (
     <Icon
-      className={cn("text-muted-foreground", className)}
+      className={cn(
+        "text-muted-foreground transition-colors duration-150 ease-out",
+        className,
+      )}
       size={resolvedSize}
       {...props}
     />

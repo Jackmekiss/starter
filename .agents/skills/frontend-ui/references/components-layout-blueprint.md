@@ -114,9 +114,21 @@ Add a primitive only after reuse or a clear design-system responsibility justifi
 | Switch           | `@rn-primitives/switch` root + thumb                  | `sm`/`md`/`lg`; checked, invalid, disabled; localized control label and `valueLabel` required                       |
 | Text             | native text + variant context                         | explicit Poppins face per weight; `h1`-`h4` own semantics, visual `heading` uses optional `headingLevel`            |
 | Textarea         | multiline input                                       | same state/variant language as Input; content-driven minimum height                                                 |
-| Toast            | react-native-toast-message surface + hook             | status tones; `outline`/`solid`; title/description/action/close; live-region semantics                              |
+| Toast            | local animated provider, surface, and hook            | stacked status feedback; `outline`/`solid`; title/description/action/close; live-region semantics                   |
 
 The catalog defines responsibilities, not permission to fork APIs. Inspect the existing component before changing names or aliases, and keep current callers source-compatible unless an accepted decision authorizes a migration.
+
+### Shared interaction motion
+
+Preserve Fifteen's motion when translating a primitive into the local shadcn API. `Button` applies
+`transition-colors duration-150 ease-out` to its root, text, and icon so native active feedback and
+web hover/focus feedback move together. Keep these utilities cross-platform rather than hiding them
+inside `Platform.select({ web: ... })`. `Input` applies the same transition to its frame and icon.
+
+`MenuContent` enters with `ZoomIn.duration(150)` and exits with `FadeOut.duration(150)` through a
+Reanimated wrapper around the accessible dropdown content. Apply `ReduceMotion.System` to both
+builders. Motion supplements the focused `@rn-primitives` state machine; it never replaces menu
+roles, focus management, dismissal, or portal behavior.
 
 ### Button spinner motion
 
@@ -345,13 +357,14 @@ interface ShowToastOptions {
 }
 
 interface ToastController {
-  close(): void;
+  close(id: string | number): void;
   closeAll(): void;
-  show(options: ShowToastOptions): void;
+  isActive(id: string | number): boolean;
+  show(options: ShowToastOptions): number;
 }
 ```
 
-Render `outline` feedback on `bg-background` with the action's emphasis role. Render softly filled `solid` feedback with the action's soft surface, semantic border/emphasis, and status foreground; errors use `destructive-status-foreground`. Mount one `react-native-toast-message` host with the exported `toastConfig` in the application provider tree and the Storybook provider tree. Use one accurate alert/live-region node; do not duplicate announcements through an extra manual accessibility announcement.
+Render `outline` feedback on `bg-background` with the action's emphasis role. Render softly filled `solid` feedback with the action's soft surface, semantic border/emphasis, and status foreground; errors use `destructive-status-foreground`. Mount one local `ToastProvider` in the application tree and one in the Storybook tree. It stacks Toasts with `gap-2`, animates each entrance and exit for 150 milliseconds, clears timers on close/unmount, and removes the fixed safe-area host when the stack becomes empty. Use one accurate alert/live-region node; do not duplicate announcements through an extra manual accessibility announcement.
 
 ## Accessibility Contract
 

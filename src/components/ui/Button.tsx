@@ -25,9 +25,9 @@ const BUTTON_SPINNER_TRANSITION_DURATION = 200;
 
 const buttonVariants = cva(
   cn(
-    "group shrink-0 flex-row items-center justify-center gap-2 rounded-full shadow-none",
+    "group shrink-0 flex-row items-center justify-center gap-2 rounded-full shadow-none transition-colors duration-150 ease-out",
     Platform.select({
-      web: "aria-invalid:ring-destructive/20 aria-invalid:border-destructive whitespace-nowrap outline-none transition-all disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+      web: "aria-invalid:ring-destructive/20 aria-invalid:border-destructive whitespace-nowrap outline-none disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
     }),
   ),
   {
@@ -49,9 +49,9 @@ const buttonVariants = cva(
       },
       size: {
         xs: "h-8 gap-2 px-3.5",
-        sm: "h-9 gap-2 px-4",
-        default: "h-10 gap-2 px-5",
-        md: "h-10 gap-2 px-5",
+        sm: "h-11 gap-2 px-4",
+        default: "h-11 gap-2 px-5",
+        md: "h-11 gap-2 px-5",
         lg: "h-11 gap-3 px-6",
         xl: "h-12 gap-3 px-7",
         icon: "size-10 p-0",
@@ -123,8 +123,8 @@ const buttonVariants = cva(
 
 const buttonTextVariants = cva(
   cn(
-    "font-body-semibold text-sm",
-    Platform.select({ web: "pointer-events-none transition-colors" }),
+    "font-body-semibold text-sm transition-colors duration-150 ease-out",
+    Platform.select({ web: "pointer-events-none" }),
   ),
   {
     variants: {
@@ -224,6 +224,7 @@ function Button({
   action = "primary",
   children,
   className,
+  hitSlop,
   size = "default",
   variant = "default",
   ...props
@@ -253,6 +254,7 @@ function Button({
             buttonVariants({ action, size, variant }),
             className,
           )}
+          hitSlop={hitSlop ?? (size === "xs" ? 6 : undefined)}
           {...props}
         >
           {children}
@@ -273,7 +275,15 @@ function ButtonIcon({ className, size: requestedSize, ...props }: IconProps) {
   const iconSize = requestedSize ?? resolveButtonIconSize(size);
 
   return (
-    <Icon className={cn(iconClassName, className)} size={iconSize} {...props} />
+    <Icon
+      className={cn(
+        "transition-colors duration-150 ease-out",
+        iconClassName,
+        className,
+      )}
+      size={iconSize}
+      {...props}
+    />
   );
 }
 

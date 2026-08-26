@@ -8,23 +8,20 @@ import {
   X,
 } from "lucide-react-native";
 import * as React from "react";
-import { Pressable, useWindowDimensions, View } from "react-native";
-import ToastMessage from "react-native-toast-message";
+import { Animated, Pressable, useWindowDimensions, View } from "react-native";
 
 import { Icon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Link";
+import { SafeAreaView } from "@/components/ui/SafeAreaView";
 import { Text } from "@/components/ui/Text";
 import { cn } from "@/lib/cn";
 
 import type { ComponentProps } from "react";
-import type {
-  ToastConfig,
-  ToastConfigParams,
-} from "react-native-toast-message";
 
 const DEFAULT_TOAST_DURATION = 4000;
+const TOAST_ANIMATION_DURATION = 150;
 const TOAST_HORIZONTAL_PADDING = 24;
-const TOAST_TYPE = "design-system";
+const TOAST_INITIAL_TRANSLATE_Y = -24;
 
 const toastIcons = {
   error: CircleX,
@@ -277,8 +274,8 @@ interface ToastCloseButtonProps extends Omit<
   accessibilityLabel: string;
 }
 
-/** Data passed through react-native-toast-message's custom renderer. */
-interface ToastPayload {
+/** Options accepted by the public design-system Toast API. */
+interface ShowToastOptions {
   /** Semantic purpose of the Toast. */
   action: ToastActionType;
   /** Optional localized accessible name for the visible action. */
@@ -291,14 +288,6 @@ interface ToastPayload {
   closeAccessibilityLabel: string;
   /** Runs the optional visible action. */
   onActionPress?: () => void;
-  /** Whether the close affordance is visible. */
-  showClose: boolean;
-  /** Surface treatment of the Toast. */
-  variant: ToastVariant;
-}
-
-/** Options accepted by the public design-system Toast API. */
-interface ShowToastOptions extends Omit<ToastPayload, "showClose" | "variant"> {
   /** Auto-dismiss duration in milliseconds. */
   duration?: number;
   /** Localized supporting copy displayed by the Toast. */
@@ -311,10 +300,12 @@ interface ShowToastOptions extends Omit<ToastPayload, "showClose" | "variant"> {
   variant?: ToastVariant;
 }
 
-/** Props accepted by the fixed react-native-toast-message renderer. */
-interface DesignSystemToastProps extends ToastPayload {
+/** Props accepted by the fixed design-system Toast renderer. */
+interface DesignSystemToastProps extends ShowToastOptions {
   /** Localized supporting copy displayed by the Toast. */
   description: string;
+  /** Optional host identity used by native automation. */
+  id?: string | number;
   /** Closes the current Toast. */
   onClose: () => void;
   /** Optional localized title displayed above the description. */
@@ -453,12 +444,11 @@ const ToastCloseButton = React.forwardRef<
         accessibilityRole="button"
         accessibilityState={{ ...accessibilityState, disabled: isDisabled }}
         className={cn(
-          "h-6 w-6 shrink-0 items-center justify-center",
+          "h-11 w-11 shrink-0 items-center justify-center",
           isDisabled && "opacity-50",
           className,
         )}
         disabled={isDisabled}
-        hitSlop={8}
         {...props}
       >
         <Icon
@@ -473,7 +463,7 @@ const ToastCloseButton = React.forwardRef<
   },
 );
 
-/** Fixed Toast anatomy consumed by react-native-toast-message. */
+/** Fixed Toast anatomy consumed by the local Toast host. */
 function DesignSystemToast({
   action,
   actionAccessibilityLabel,
@@ -481,11 +471,12 @@ function DesignSystemToast({
   className,
   closeAccessibilityLabel,
   description,
+  id,
   onActionPress,
   onClose,
-  showClose,
+  showClose = true,
   title,
-  variant,
+  variant = "outline",
 }: DesignSystemToastProps) {
   const announcement = title ? `${title}. ${description}` : description;
 
@@ -496,7 +487,12 @@ function DesignSystemToast({
   }
 
   return (
-    <Toast action={action} className={className} variant={variant}>
+    <Toast
+      action={action}
+      className={className}
+      nativeID={id === undefined ? undefined : `toast-${id}`}
+      variant={variant}
+    >
       <ToastContent>
         <ToastIcon />
         <ToastText>
@@ -536,73 +532,195 @@ function DesignSystemToast({
   );
 }
 
-/** Custom renderer registered on the application Toast host. */
-function renderDesignSystemToast({
-  hide,
-  props,
-  text1,
-  text2,
-}: ToastConfigParams<ToastPayload>) {
+/** One Toast managed by the local host. */
+interface ToastInstance extends ShowToastOptions {
+  id: number;
+  visible: boolean;
+}
+
+/** API shared between the Toast provider and consumers. */
+interface ToastContextValue {
+  /** Starts the exit animation for one Toast. */
+  close(id: string | number): void;
+  /** Starts the exit animation for every active Toast. */
+  closeAll(): void;
+  /** Reports whether a Toast is still visibly active. */
+  isActive(id: string | number): boolean;
+  /** Adds one Toast to the stack and returns its identity. */
+  show(options: ShowToastOptions): number;
+}
+
+const ToastContext = React.createContext<ToastContextValue | null>(null);
+
+/** Props accepted by the application Toast provider. */
+interface ToastProviderProps {
+  children?: React.ReactNode;
+}
+
+/** Props accepted by one animated host item. */
+interface ToastHostItemProps {
+  toast: ToastInstance;
+  /** Requests dismissal of the hosted Toast. */
+  onClose(id: number): void;
+  /** Removes the hosted Toast after its exit completes. */
+  onExited(id: number): void;
+}
+
+/** Animates one Toast and removes it only after its exit completes. */
+function ToastHostItem({ toast, onClose, onExited }: ToastHostItemProps) {
+  const [opacity] = React.useState(() => new Animated.Value(0));
+  const [translateY] = React.useState(
+    () => new Animated.Value(TOAST_INITIAL_TRANSLATE_Y),
+  );
+
+  React.useEffect(() => {
+    const animation = Animated.parallel([
+      Animated.timing(opacity, {
+        duration: TOAST_ANIMATION_DURATION,
+        toValue: toast.visible ? 1 : 0,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateY, {
+        duration: TOAST_ANIMATION_DURATION,
+        toValue: toast.visible ? 0 : TOAST_INITIAL_TRANSLATE_Y,
+        useNativeDriver: true,
+      }),
+    ]);
+
+    animation.start(({ finished }) => {
+      if (finished && !toast.visible) onExited(toast.id);
+    });
+
+    return () => animation.stop();
+  }, [onExited, opacity, toast.id, toast.visible, translateY]);
+
   return (
-    <DesignSystemToast
-      {...props}
-      description={text2 ?? ""}
-      onClose={hide}
-      title={text1}
-    />
+    <Animated.View style={{ opacity, transform: [{ translateY }] }}>
+      <DesignSystemToast {...toast} onClose={() => onClose(toast.id)} />
+    </Animated.View>
   );
 }
 
-/** Host configuration used by the root application and Storybook preview. */
-const toastConfig: ToastConfig = {
-  [TOAST_TYPE]: renderDesignSystemToast,
-};
+/** Hosts a stack of transient Toasts without leaving an inactive overlay. */
+function ToastProvider({ children }: ToastProviderProps) {
+  const [toasts, setToasts] = React.useState<ToastInstance[]>([]);
+  const nextIdRef = React.useRef(0);
+  const timersRef = React.useRef(
+    new Map<number, ReturnType<typeof setTimeout>>(),
+  );
 
-/** Displays one design-system Toast through the mounted root host. */
-function showToast({
-  action,
-  actionAccessibilityLabel,
-  actionLabel,
-  className,
-  closeAccessibilityLabel,
-  description,
-  duration = DEFAULT_TOAST_DURATION,
-  onActionPress,
-  showClose = true,
-  title,
-  variant = "outline",
-}: ShowToastOptions) {
-  ToastMessage.show({
-    position: "top",
-    props: {
-      action,
-      actionAccessibilityLabel,
-      actionLabel,
-      className,
-      closeAccessibilityLabel,
-      onActionPress,
-      showClose,
-      variant,
-    } satisfies ToastPayload,
-    text1: title,
-    text2: description,
-    type: TOAST_TYPE,
-    visibilityTime: duration,
-  });
-}
+  const close = React.useCallback((id: string | number) => {
+    const numericId = typeof id === "number" ? id : Number(id);
+    const timer = timersRef.current.get(numericId);
 
-/** Closes the currently visible Toast. */
-function closeToast() {
-  ToastMessage.hide();
+    if (timer !== undefined) {
+      clearTimeout(timer);
+      timersRef.current.delete(numericId);
+    }
+
+    setToasts((currentToasts) =>
+      currentToasts.map((toast) =>
+        toast.id === numericId ? { ...toast, visible: false } : toast,
+      ),
+    );
+  }, []);
+
+  const closeAll = React.useCallback(() => {
+    for (const timer of timersRef.current.values()) clearTimeout(timer);
+    timersRef.current.clear();
+    setToasts((currentToasts) =>
+      currentToasts.map((toast) => ({ ...toast, visible: false })),
+    );
+  }, []);
+
+  const remove = React.useCallback((id: number) => {
+    timersRef.current.delete(id);
+    setToasts((currentToasts) =>
+      currentToasts.filter((toast) => toast.id !== id),
+    );
+  }, []);
+
+  const show = React.useCallback(
+    (options: ShowToastOptions) => {
+      const id = nextIdRef.current;
+      nextIdRef.current += 1;
+      const duration = options.duration ?? DEFAULT_TOAST_DURATION;
+
+      setToasts((currentToasts) => [
+        ...currentToasts,
+        { ...options, duration, id, visible: true },
+      ]);
+
+      if (duration > 0) {
+        const timer = setTimeout(() => close(id), duration);
+        timersRef.current.set(id, timer);
+      }
+
+      return id;
+    },
+    [close],
+  );
+
+  const isActive = React.useCallback(
+    (id: string | number) => {
+      const numericId = typeof id === "number" ? id : Number(id);
+      return toasts.some((toast) => toast.id === numericId && toast.visible);
+    },
+    [toasts],
+  );
+
+  React.useEffect(
+    () => () => {
+      for (const timer of timersRef.current.values()) clearTimeout(timer);
+      timersRef.current.clear();
+    },
+    [],
+  );
+
+  const value = React.useMemo(
+    () => ({ close, closeAll, isActive, show }),
+    [close, closeAll, isActive, show],
+  );
+
+  return (
+    <ToastContext.Provider value={value}>
+      {children}
+      {toasts.length > 0 ? (
+        <View
+          accessible={false}
+          className="absolute inset-x-0 top-0 z-50 items-center px-6"
+          pointerEvents="box-none"
+        >
+          <SafeAreaView
+            accessible={false}
+            className="w-full items-center gap-2"
+            edges={["top"]}
+            pointerEvents="box-none"
+          >
+            {toasts.map((toast) => (
+              <ToastHostItem
+                key={toast.id}
+                onClose={close}
+                onExited={remove}
+                toast={toast}
+              />
+            ))}
+          </SafeAreaView>
+        </View>
+      ) : null}
+    </ToastContext.Provider>
+  );
 }
 
 /** Restricted design-system Toast API for presentation code. */
 function useToast() {
-  return {
-    close: closeToast,
-    closeAll: closeToast,
-    show: showToast,
-  };
+  const toast = React.useContext(ToastContext);
+
+  if (toast === null) {
+    throw new Error("useToast must be used within ToastProvider");
+  }
+
+  return toast;
 }
 
 Toast.displayName = "Toast";
@@ -621,7 +739,7 @@ export {
   ToastIcon,
   ToastText,
   ToastTitle,
-  toastConfig,
+  ToastProvider,
   toastDescriptionVariants,
   toastForegroundVariants,
   toastVariants,
@@ -637,6 +755,7 @@ export type {
   ToastDescriptionProps,
   ToastIconProps,
   ToastProps,
+  ToastProviderProps,
   ToastTextProps,
   ToastTitleProps,
   ToastVariant,

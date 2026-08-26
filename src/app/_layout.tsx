@@ -2,12 +2,11 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
-import Toast from "react-native-toast-message";
 
 import "@/global.css";
 import { RootAppProviders } from "@/app-runtime/root-app-providers";
 import { RootNavigator } from "@/app-runtime/root-navigator";
-import { toastConfig } from "@/components/ui/Toast";
+import { ToastProvider } from "@/components/ui/Toast";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -28,9 +27,10 @@ export default function AppLayout() {
   return (
     <KeyboardProvider>
       <RootAppProviders>
-        <RootNavigator />
-        <StatusBar />
-        <Toast config={toastConfig} />
+        <ToastProvider>
+          <RootNavigator />
+          <StatusBar />
+        </ToastProvider>
       </RootAppProviders>
     </KeyboardProvider>
   );

@@ -131,8 +131,8 @@ SafeAreaProvider
     └── LocalizationProvider
         └── ThemeProvider(NAV_THEME[colorScheme])
             └── BottomSheetModalProvider
-                ├── themed story canvas
-                └── Toast(config={toastConfig})
+                └── ToastProvider
+                    └── themed story canvas
 ```
 
 Do not mount Redux, `PersistGate`, runtime listeners, gateways, APIs, or a fake business runtime. A component that cannot render without those dependencies belongs in a feature/integration harness or must receive presentation-ready props.
@@ -147,11 +147,10 @@ import { useEffect } from "react";
 import { Appearance, Platform, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 
 import "@/global.css";
 import { BottomSheetModalProvider } from "@/components/ui/BottomSheetModal";
-import { toastConfig } from "@/components/ui/Toast";
+import { ToastProvider } from "@/components/ui/Toast";
 import { NAV_THEME, THEME } from "@/constants/theme";
 import { LocalizationProvider } from "@/localization/localization-provider";
 
@@ -209,8 +208,9 @@ function StorybookProviders({
         <LocalizationProvider>
           <ThemeProvider value={NAV_THEME[colorScheme]}>
             <BottomSheetModalProvider>
-              <View className="bg-background flex-1 p-6">{children}</View>
-              <Toast config={toastConfig} />
+              <ToastProvider>
+                <View className="bg-background flex-1 p-6">{children}</View>
+              </ToastProvider>
             </BottomSheetModalProvider>
           </ThemeProvider>
         </LocalizationProvider>
