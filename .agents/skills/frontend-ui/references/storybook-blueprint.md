@@ -1,8 +1,8 @@
 # Frozen Blueprint: React Native Storybook
 
-> Blueprint version: `1.0.3`
+> Blueprint version: `1.0.4`
 
-Use this reference when installing, configuring, extending, or validating Storybook for Starter. Direct Storybook is a presentation-only entry point for the same local components, CSS tokens, fonts, themes, localization, and overlay hosts used by the application. Starter also supports an explicit Fifteen-style in-app development route selected with `EXPO_PUBLIC_STORYBOOK_ENABLED=true`.
+Use this reference when installing, configuring, extending, or validating Storybook for Starter. Direct Storybook is a presentation-only entry point for the same local components, CSS tokens, fonts, themes, localization, and overlay hosts used by the application. Starter also supports an explicit in-app development route selected with `EXPO_PUBLIC_STORYBOOK_ENABLED=true`.
 
 Follow the installed Storybook types and the official React Native Storybook entry-point-swapping workflow. The pinned versions below form one known-compatible set for Starter's Expo 57 / React Native 0.86 baseline; update them only as one tested compatibility decision.
 
@@ -64,7 +64,7 @@ module.exports = withStorybook(nativewindConfig, {
 
 Keep `.rnstorybook/index.tsx` limited to `registerRootComponent(StorybookRoot)`. It must import its reusable root from `storybook-root.tsx`, never the Expo route.
 
-For the accepted Fifteen-style in-app mode, `pnpm run storybook:in-app` sets `EXPO_PUBLIC_STORYBOOK_ENABLED=true`. A guarded root `storybook` screen then renders `.rnstorybook/storybook-root.tsx`, and Home renders a localized floating launcher with `testID="home.storybook"`. This route is unavailable without the flag. The mode deliberately includes Storybook with the application bundle, so it is development-only and cannot be described as isolated.
+For the accepted in-app mode, `pnpm run storybook:in-app` sets `EXPO_PUBLIC_STORYBOOK_ENABLED=true`. A guarded root `storybook` screen then renders `.rnstorybook/storybook-root.tsx`, and Home renders a localized floating launcher with `testID="home.storybook"`. This route is unavailable without the flag. The mode deliberately includes Storybook with the application bundle, so it is development-only and cannot be described as isolated.
 
 ## Scripts
 
@@ -342,7 +342,7 @@ When dependencies are unavailable and installing them is outside the task, do no
 - Global mocking of business infrastructure merely to render a shared primitive.
 - Manual edits to `storybook.requires.ts` or blanket tooling ignores.
 - Stories that assert internal class strings, duplicate every permutation, contain production business fixtures, or silently skip accessibility states.
-- Adding a second UI runtime or provider only to render component stories.
+- Adding a Storybook-only UI runtime or provider; the shared gluestack `OverlayProvider` required by the canonical Menu must match the application provider tree.
 - Leaving a long-running Storybook server as the only automated validation.
 
 ## Validation

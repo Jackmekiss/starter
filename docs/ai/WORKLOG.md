@@ -117,7 +117,7 @@ The user requested rebuilding the Starter frontend skills from zero so they gene
 
 - Use two frontend skills only: `frontend-core` for the business core and runtime composition, and `frontend-ui` for routes, screens, presentation, styling, localization, and accessibility.
 - Treat the blueprints as frozen generated-code contracts; change them only after an accepted decision and a new independent forward-test.
-- Use React Native primitives, NativeWind v5/Tailwind v4, CVA, and local shadcn-style primitives as Starter's UI stack.
+- Use the local gluestack-ui v5 component contract, NativeWind v5/Tailwind v4, CVA, and React Native implementation helpers as Starter's UI stack.
 
 ### Validation
 
@@ -140,17 +140,17 @@ The user requested rebuilding the Starter frontend skills from zero so they gene
 - Optionally run native accessibility and appearance smoke tests.
 - Commit and push only when requested.
 
-## 2026-08-20 - Port Fifteen's design system and add isolated Storybook
+## 2026-08-20 - Complete the local design system and add isolated Storybook
 
 ### Context
 
-The user requested every Fifteen UI family missing from Starter, implemented with Starter's shadcn-style React Native stack, and Storybook documentation for the complete system.
+The user requested every missing UI family in Starter, implemented through the local React Native component stack, with Storybook documentation for the complete system.
 
 ### Changes
 
-- Audited Fifteen's 19 UI families and translated all missing capabilities into local shadcn-style primitives.
+- Audited the 19 target UI families and implemented all missing capabilities as local primitives.
 - Added Alert, Badge, CameraView, Checkbox, FormControl, Link, PhoneNumberInput, Progress, Radio, SafeAreaView, ScreenHeader, Switch, and Toast.
-- Reworked the six existing families so Button, Input, Text, Textarea, Icon, and BottomSheetModal share Fifteen's Poppins metrics, semantic tokens, variants, states, and accessibility contracts.
+- Reworked the six existing families so Button, Input, Text, Textarea, Icon, and BottomSheetModal share the canonical Poppins metrics, semantic tokens, variants, states, and accessibility contracts.
 - Added focused RN Primitives and typed Expo/vendor adapters, eight versioned Poppins faces, synchronized light/dark theme mirrors, and a local composite bottom-sheet provider with portal-safe background hiding and Android back handling.
 - Added one co-located story file for each family and React Native Storybook 10.4 through official Expo entry-point swapping, presentation-only providers, generated discovery, and normal-bundle isolation.
 - Corrected the swapped Expo entry to use `registerRootComponent` after a real browser test exposed a blank static export that bundling alone did not detect.
@@ -158,7 +158,7 @@ The user requested every Fifteen UI family missing from Starter, implemented wit
 
 ### Decisions
 
-- Preserve Fifteen's complete visual language while keeping local shadcn-style React Native APIs, NativeWind/CVA, and focused RN Primitives.
+- Preserve one complete visual language through local React Native APIs, NativeWind/CVA, and focused state helpers.
 - Keep Storybook outside Expo Router and application runtime through entry-point swapping.
 - Keep imperative vendor colors synchronized through the shared navigation theme and own bottom-sheet accessibility/Android dismissal in the local provider.
 
@@ -177,17 +177,17 @@ The user requested every Fifteen UI family missing from Starter, implemented wit
 - Review the complete diff and run the remaining native smoke tests when a target is available.
 - Commit and push only when requested.
 
-## 2026-08-21 - Add Fifteen-style in-app Storybook access
+## 2026-08-21 - Add in-app Storybook access
 
 ### Context
 
-The user requested the same Home access pattern used by Fifteen after confirming that the development app may trade Storybook bundle isolation for a navigable in-app route.
+The user requested a Home access pattern after confirming that the development app may trade Storybook bundle isolation for a navigable in-app route.
 
 ### Changes
 
 - Added `pnpm run storybook:in-app`, guarded by `EXPO_PUBLIC_STORYBOOK_ENABLED=true`.
 - Extracted the reusable Storybook root, retained the direct swapped entry, and added the development-only `/storybook` route.
-- Added the localized floating `home.storybook` launcher on Home, matching Fifteen's developer affordance.
+- Added the localized floating `home.storybook` developer launcher on Home.
 - Updated the Storybook blueprint, UI skill, README, architecture, decision, validation, current-state, and handoff documentation.
 
 ### Validation

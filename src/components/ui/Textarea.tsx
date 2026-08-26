@@ -36,7 +36,7 @@ type TextareaProps = Omit<React.ComponentProps<typeof TextInput>, "size"> &
     invalid?: boolean;
   };
 
-/** Multiline text input with Fifteen sizing and shadcn field semantics. */
+/** Multiline text input with design-system sizing and field semantics. */
 const Textarea = React.forwardRef<TextInput, TextareaProps>(
   (
     {

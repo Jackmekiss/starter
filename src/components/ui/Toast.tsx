@@ -312,7 +312,7 @@ interface DesignSystemToastProps extends ShowToastOptions {
   title?: string;
 }
 
-/** Toast surface matching the Fifteen outline and solid treatments. */
+/** Toast surface with the canonical outline and solid treatments. */
 const Toast = React.forwardRef<React.ComponentRef<typeof View>, ToastProps>(
   (
     { action = "muted", className, style, variant = "outline", ...props },

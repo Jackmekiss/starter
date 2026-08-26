@@ -2,9 +2,11 @@ import * as React from "react";
 import { Platform, View } from "react-native";
 import { styled } from "nativewind";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { appMode } from "@/app-runtime/app-runtime";
+import { LocalLoginButton } from "@/components/auth/local-login-button";
 import { LoginForm } from "@/components/auth/login-form";
+import { SafeAreaView } from "@/components/ui/SafeAreaView";
 import { Text } from "@/components/ui/Text";
 import { useTranslation } from "@/hooks/localization/useTranslation";
 
@@ -35,7 +37,7 @@ const StyledKeyboardAwareScrollView = styled(KeyboardAwareScrollViewAdapter, {
   contentContainerClassName: "contentContainerStyle",
 });
 
-/** Authentication route composing localized welcome copy and the login form. */
+/** Authentication route composing welcome copy and the active adapter's login entry. */
 export default function AuthIndexScreen() {
   const { t } = useTranslation();
 
@@ -60,7 +62,7 @@ export default function AuthIndexScreen() {
                 {t("auth__welcome__description")}
               </Text>
             </View>
-            <LoginForm />
+            {appMode === "http" ? <LoginForm /> : <LocalLoginButton />}
           </View>
         </View>
       </StyledKeyboardAwareScrollView>

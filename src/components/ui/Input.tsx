@@ -61,7 +61,7 @@ type InputProps = Omit<React.ComponentProps<typeof TextInput>, "size"> &
     invalid?: boolean;
   };
 
-/** Single-line input supporting Fifteen shapes through a shadcn API. */
+/** Single-line input with design-system shapes and a typed local API. */
 const Input = React.forwardRef<TextInput, InputProps>(
   (
     {

@@ -56,7 +56,7 @@ export const Group: Story = {
   render: RadioGroupStory,
 };
 
-/** Every radio size from Fifteen's design system. */
+/** Every radio size in the design system. */
 export const Sizes: Story = {
   render: RadioSizesStory,
 };

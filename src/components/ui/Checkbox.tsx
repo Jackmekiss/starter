@@ -100,7 +100,7 @@ type CheckboxProps = Omit<
   ComponentProps<typeof CheckboxPrimitive.Root>,
   "accessibilityLabel" | "checked" | "children" | "onCheckedChange"
 > & {
-  /** Localized accessible name for the standalone shadcn control. */
+  /** Localized accessible name for the standalone control. */
   accessibilityLabel: string;
   /** Current binary or indeterminate checked state. */
   checked: CheckboxCheckedState;
@@ -117,7 +117,7 @@ type CheckboxProps = Omit<
 };
 
 /**
- * Accessible shadcn-style checkbox with Fifteen's sizes and validation states.
+ * Accessible checkbox with design-system sizes and validation states.
  */
 function Checkbox({
   accessibilityState,

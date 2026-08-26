@@ -1,3 +1,4 @@
+import { OverlayProvider } from "@gluestack-ui/core/overlay/creator";
 import { ThemeProvider } from "expo-router/react-navigation";
 import { PortalHost } from "@rn-primitives/portal";
 import { type PropsWithChildren } from "react";
@@ -30,7 +31,11 @@ export function RootAppProviders({ children }: RootAppProvidersProps) {
           <PersistGate loading={null} persistor={persistor}>
             <LocalizationProvider>
               <ThemeProvider value={NAV_THEME[colorScheme]}>
-                <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+                <OverlayProvider>
+                  <BottomSheetModalProvider>
+                    {children}
+                  </BottomSheetModalProvider>
+                </OverlayProvider>
                 <PortalHost />
               </ThemeProvider>
             </LocalizationProvider>

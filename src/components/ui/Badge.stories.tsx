@@ -96,7 +96,7 @@ function BadgeVariantsStory() {
   );
 }
 
-/** Renders the three Fifteen Badge sizes. */
+/** Renders the three canonical Badge sizes. */
 function BadgeSizesStory() {
   return (
     <StoryFrame>

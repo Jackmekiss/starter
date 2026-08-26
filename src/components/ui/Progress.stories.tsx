@@ -38,7 +38,7 @@ type Story = StoryObj<typeof meta>;
 /** Controllable determinate progress playground. */
 export const Playground: Story = {};
 
-/** Every track thickness from Fifteen's design system. */
+/** Every track thickness in the design system. */
 export const Sizes: Story = {
   render: ProgressSizesStory,
 };

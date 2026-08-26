@@ -56,7 +56,7 @@ export const States: Story = {
   render: SwitchStatesStory,
 };
 
-/** Every switch size from Fifteen's design system. */
+/** Every switch size in the design system. */
 export const Sizes: Story = {
   render: SwitchSizesStory,
 };

@@ -1,139 +1,109 @@
-import * as SwitchPrimitive from "@rn-primitives/switch";
-import { cva } from "class-variance-authority";
-import { Platform } from "react-native";
+import { useTheme } from "expo-router";
+import * as React from "react";
+import { Switch as NativeSwitch } from "react-native";
 
+import { THEME } from "@/constants/theme";
 import { cn } from "@/lib/cn";
-
-import type { ComponentProps } from "react";
 
 /** Visual sizes supported by the shared switch. */
 type SwitchSize = "lg" | "md" | "sm";
 
 const switchSizes: SwitchSize[] = ["sm", "md", "lg"];
 
-const switchVariants = cva(
-  cn(
-    "shrink-0 flex-row items-center rounded-full border border-transparent p-0.5 shadow-sm shadow-black/5",
-    Platform.select({
-      web: "focus-visible:border-ring focus-visible:ring-ring/50 inline-flex cursor-default outline-none transition-shadow focus-visible:ring-[3px] disabled:cursor-not-allowed",
-    }),
-  ),
-  {
-    variants: {
-      checked: {
-        false: "bg-track",
-        true: "bg-primary",
-      },
-      invalid: {
-        false: "",
-        true: "bg-destructive",
-      },
-      size: {
-        sm: "h-5 w-9",
-        md: "h-6 w-11",
-        lg: "h-8 w-14",
-      },
-    },
-    defaultVariants: {
-      checked: false,
-      invalid: false,
-      size: "md",
-    },
-  },
-);
+const switchScales: Record<SwitchSize, number> = {
+  sm: 0.75,
+  md: 1,
+  lg: 1.25,
+};
 
-const switchThumbVariants = cva(
-  cn(
-    "rounded-full transition-transform",
-    Platform.select({ web: "pointer-events-none block" }),
-  ),
-  {
-    variants: {
-      checked: {
-        false: "bg-muted-foreground translate-x-0",
-        true: "bg-primary-foreground",
-      },
-      invalid: {
-        false: "",
-        true: "bg-destructive-foreground",
-      },
-      size: {
-        sm: "size-4",
-        md: "size-5",
-        lg: "size-7",
-      },
-    },
-    compoundVariants: [
-      { checked: true, className: "translate-x-4", size: "sm" },
-      { checked: true, className: "translate-x-5", size: "md" },
-      { checked: true, className: "translate-x-6", size: "lg" },
-    ],
-    defaultVariants: {
-      checked: false,
-      invalid: false,
-      size: "md",
-    },
-  },
-);
-
-/** Props accepted by the shared switch primitive. */
+/** Props accepted by the native animated switch through its local contract. */
 type SwitchProps = Omit<
-  ComponentProps<typeof SwitchPrimitive.Root>,
-  "accessibilityLabel" | "aria-valuetext"
+  React.ComponentProps<typeof NativeSwitch>,
+  | "accessibilityLabel"
+  | "ios_backgroundColor"
+  | "onValueChange"
+  | "thumbColor"
+  | "trackColor"
+  | "value"
 > & {
   /** Localized accessible name for the switch. */
   accessibilityLabel: string;
+  /** Controlled checked state. */
+  checked: boolean;
+  /** Handles changes emitted by the native control. */
+  onCheckedChange: (checked: boolean) => void;
   /** Shows the destructive validation treatment. */
   invalid?: boolean;
-  /** Visual size shared by the track and thumb. */
+  /** Visual size applied to the native control. */
   size?: SwitchSize;
-  /** Additional classes applied to the movable thumb. */
+  /** Retained for source compatibility; native platforms own thumb rendering. */
   thumbClassName?: string;
   /** Localized spoken value such as “On” or “Off”. */
   valueLabel: string;
 };
 
-/** Accessible switch with Fifteen's size and validation variants. */
-function Switch({
-  accessibilityState,
-  checked,
-  className,
-  disabled = false,
-  hitSlop = 8,
-  invalid = false,
-  size = "md",
-  thumbClassName,
-  valueLabel,
-  ...props
-}: SwitchProps) {
-  return (
-    <SwitchPrimitive.Root
-      accessibilityState={{
-        ...accessibilityState,
-        checked,
-        disabled,
-      }}
-      aria-invalid={invalid}
-      aria-valuetext={valueLabel}
-      checked={checked}
-      className={cn(
-        switchVariants({ checked, invalid, size }),
-        disabled && "opacity-40",
-        className,
-      )}
-      disabled={disabled}
-      hitSlop={hitSlop}
-      {...props}
-    >
-      <SwitchPrimitive.Thumb
-        className={cn(
-          switchThumbVariants({ checked, invalid, size }),
-          thumbClassName,
-        )}
-      />
-    </SwitchPrimitive.Root>
-  );
-}
+/** Native switch preserving platform animation and the local component API. */
+const Switch = React.forwardRef<
+  React.ComponentRef<typeof NativeSwitch>,
+  SwitchProps
+>(
+  (
+    {
+      accessibilityLabel,
+      accessibilityRole = "switch",
+      accessibilityState,
+      checked,
+      className,
+      disabled = false,
+      hitSlop = 8,
+      invalid = false,
+      onCheckedChange,
+      size = "md",
+      style,
+      thumbClassName: _thumbClassName,
+      valueLabel,
+      ...props
+    },
+    ref,
+  ) => {
+    const theme = THEME[useTheme().dark ? "dark" : "light"];
+    const inactiveTrackColor = invalid ? theme.destructive : theme.track;
 
-export { Switch, switchSizes, switchVariants };
+    return (
+      <NativeSwitch
+        ref={ref}
+        accessibilityLabel={accessibilityLabel}
+        accessibilityRole={accessibilityRole}
+        accessibilityState={{
+          ...accessibilityState,
+          checked,
+          disabled,
+        }}
+        aria-invalid={invalid}
+        aria-valuetext={valueLabel}
+        className={cn(
+          "web:cursor-pointer",
+          disabled && "opacity-40 web:cursor-not-allowed",
+          className,
+        )}
+        disabled={disabled}
+        hitSlop={hitSlop}
+        ios_backgroundColor={inactiveTrackColor}
+        onValueChange={onCheckedChange}
+        style={[{ transform: [{ scale: switchScales[size] }] }, style]}
+        thumbColor={checked ? theme.primaryForeground : theme.mutedForeground}
+        trackColor={{
+          false: inactiveTrackColor,
+          true: invalid ? theme.destructive : theme.primary,
+        }}
+        value={checked}
+        {...props}
+      />
+    );
+  },
+);
+
+Switch.displayName = "Switch";
+
+export { Switch, switchSizes };
 export type { SwitchProps, SwitchSize };

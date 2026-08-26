@@ -125,7 +125,7 @@ type TextProps = React.ComponentProps<typeof RNText> &
     headingLevel?: "1" | "2" | "3" | "4" | "5" | "6";
   };
 
-/** Cross-platform Poppins text primitive with semantic shadcn variants. */
+/** Cross-platform Poppins text primitive with semantic variants. */
 function Text({
   asChild = false,
   className,

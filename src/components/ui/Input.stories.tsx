@@ -37,12 +37,12 @@ type Story = StoryObj<typeof meta>;
 /** Controllable single-line input. */
 export const Playground: Story = {};
 
-/** Fifteen rounded, outline, and underlined surfaces. */
+/** Rounded, outline, and underlined surfaces. */
 export const Variants: Story = {
   render: InputVariantsStory,
 };
 
-/** Complete Fifteen input size scale. */
+/** Complete input size scale. */
 export const Sizes: Story = {
   render: InputSizesStory,
 };

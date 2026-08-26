@@ -25,7 +25,7 @@ const BUTTON_SPINNER_TRANSITION_DURATION = 200;
 
 const buttonVariants = cva(
   cn(
-    "group shrink-0 flex-row items-center justify-center gap-2 rounded-full shadow-none transition-colors duration-150 ease-out",
+    "group shrink-0 flex-row items-center justify-center gap-2 rounded-full transition-colors duration-150 ease-out",
     Platform.select({
       web: "aria-invalid:ring-destructive/20 aria-invalid:border-destructive whitespace-nowrap outline-none disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
     }),
@@ -38,12 +38,12 @@ const buttonVariants = cva(
         negative: "",
       },
       variant: {
-        default: "shadow-sm shadow-black/5",
-        solid: "shadow-sm shadow-black/5",
+        default: "",
+        solid: "",
         destructive:
-          "bg-destructive web:hover:bg-destructive-soft active:bg-destructive-soft web:focus-visible:ring-destructive-soft web:focus-visible:ring-4 shadow-sm shadow-black/5",
+          "bg-destructive web:hover:bg-destructive-soft active:bg-destructive-soft web:focus-visible:ring-destructive-soft web:focus-visible:ring-4",
         outline: "border-2 bg-transparent",
-        secondary: "bg-secondary active:opacity-80 shadow-sm shadow-black/5",
+        secondary: "bg-secondary active:opacity-80",
         ghost: "active:bg-accent",
         link: "bg-transparent",
       },
@@ -124,7 +124,9 @@ const buttonVariants = cva(
 const buttonTextVariants = cva(
   cn(
     "font-body-semibold text-sm transition-colors duration-150 ease-out",
-    Platform.select({ web: "pointer-events-none" }),
+    Platform.select({
+      web: "pointer-events-none",
+    }),
   ),
   {
     variants: {
@@ -219,7 +221,7 @@ const ButtonContext = React.createContext<ButtonContextValue>({
   variant: "default",
 });
 
-/** Pressable button primitive with Fifteen actions and shadcn composition. */
+/** Pressable button primitive with design-system actions and typed composition. */
 function Button({
   action = "primary",
   children,
@@ -287,7 +289,7 @@ function ButtonIcon({ className, size: requestedSize, ...props }: IconProps) {
   );
 }
 
-/** Resolves Fifteen's icon scale from the owning button size. */
+/** Resolves the icon scale from the owning button size. */
 function resolveButtonIconSize(size: ButtonVariantProps["size"]) {
   if (size === "xs") return 14;
   if (size === "sm") return 16;

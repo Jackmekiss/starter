@@ -17,7 +17,7 @@ type BadgeAction =
   | "success"
   | "warning";
 
-/** Badge sizes defined by the Fifteen design system. */
+/** Badge sizes defined by the application design system. */
 type BadgeSize = "lg" | "md" | "sm";
 
 /** Badge surface treatments. */
@@ -215,7 +215,7 @@ function BadgeIcon({
   );
 }
 
-/** Resolves the Fifteen icon scale for one Badge placement. */
+/** Resolves the icon scale for one Badge placement. */
 function resolveBadgeIconSize(size: BadgeSize, placement: "left" | "right") {
   if (placement === "right") {
     if (size === "lg") return 16;

@@ -1,3 +1,4 @@
+import { OverlayProvider } from "@gluestack-ui/core/overlay/creator";
 import { ThemeProvider } from "expo-router/react-navigation";
 import { PortalHost } from "@rn-primitives/portal";
 import { useEffect } from "react";
@@ -68,11 +69,13 @@ function StorybookProviders({
       <GestureHandlerRootView className="flex-1">
         <LocalizationProvider>
           <ThemeProvider value={NAV_THEME[colorScheme]}>
-            <BottomSheetModalProvider>
-              <ToastProvider>
-                <View className="bg-background flex-1 p-6">{children}</View>
-              </ToastProvider>
-            </BottomSheetModalProvider>
+            <OverlayProvider>
+              <BottomSheetModalProvider>
+                <ToastProvider>
+                  <View className="bg-background flex-1 p-6">{children}</View>
+                </ToastProvider>
+              </BottomSheetModalProvider>
+            </OverlayProvider>
             <PortalHost />
           </ThemeProvider>
         </LocalizationProvider>

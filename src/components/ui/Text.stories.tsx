@@ -82,17 +82,17 @@ export const Variants: Story = {
   render: TextVariantsStory,
 };
 
-/** Complete Fifteen type-size scale. */
+/** Complete type-size scale. */
 export const Sizes: Story = {
   render: TextSizesStory,
 };
 
-/** Fifteen's heading scale, intentionally one step above body copy. */
+/** Heading scale, intentionally one step above body copy. */
 export const HeadingSizes: Story = {
   render: TextHeadingSizesStory,
 };
 
-/** Complete Fifteen font-weight scale. */
+/** Complete font-weight scale. */
 export const Weights: Story = {
   render: TextWeightsStory,
 };

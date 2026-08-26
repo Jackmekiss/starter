@@ -56,7 +56,7 @@ export const States: Story = {
   render: FormControlStatesStory,
 };
 
-/** Every form-control text size from Fifteen's design system. */
+/** Every form-control text size in the design system. */
 export const Sizes: Story = {
   render: FormControlSizesStory,
 };

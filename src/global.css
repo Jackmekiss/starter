@@ -3,6 +3,8 @@
 @import "tailwindcss/utilities.css";
 @import "nativewind/theme";
 
+@source "./**/*.{js,jsx,ts,tsx,mdx}";
+
 @font-face {
   font-family: "Poppins-Thin";
   font-style: normal;
@@ -68,6 +70,14 @@
 }
 
 @theme inline {
+  /* Gluestack Menu token aliases mapped onto the application theme. */
+  --color-background-0: var(--popover);
+  --color-background-50: var(--canvas);
+  --color-background-100: var(--muted);
+  --color-border-100: var(--border);
+  --color-border-300: var(--ring);
+  --color-typography-900: var(--foreground);
+  --color-warning-500: var(--warning);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-background: var(--background);
@@ -152,7 +162,7 @@
   --radius-2xl: 1rem;
   --radius-3xl: 1.5rem;
   --radius-full: 9999px;
-  --spacing-menu: 13.125rem;
+  --spacing-menu: 210px;
   --spacing-screen: 1.5rem;
 }
 

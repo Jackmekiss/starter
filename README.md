@@ -18,9 +18,9 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 ## Design system and Storybook
 
-Starter ships the Fifteen visual language as local shadcn-style React Native
-primitives: Poppins, semantic light/dark tokens, NativeWind v5, Tailwind CSS v4,
-CVA, Lucide, and RN Primitives.
+Starter ships a local gluestack-ui v5 design system for React Native: Poppins,
+semantic light/dark tokens, NativeWind v5, Tailwind CSS v4, CVA, Lucide, and
+encapsulated native state helpers.
 
 Run Storybook directly (the isolated entry-point mode):
 
@@ -28,8 +28,8 @@ Run Storybook directly (the isolated entry-point mode):
 pnpm run storybook
 ```
 
-For the Fifteen-style developer button on Home, run the app in its explicit
-in-app Storybook mode:
+For the developer button on Home, run the app in its explicit in-app Storybook
+mode:
 
 ```bash
 pnpm run storybook:in-app

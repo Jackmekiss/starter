@@ -1,126 +1,142 @@
-import { CircleHelp, CreditCard, Info, Route } from "lucide-react-native";
-import { useState, type Key } from "react";
 import { View } from "react-native";
 
-import { Button } from "@/components/ui/Button";
+import { Button, ButtonText } from "@/components/ui/Button";
 import {
   Menu,
-  MenuContent,
   MenuItem,
   MenuItemIcon,
   MenuItemLabel,
   MenuSeparator,
-  MenuTrigger,
-  type MenuSize,
 } from "@/components/ui/Menu";
+import {
+  MenuCreditCardIcon,
+  MenuHelpIcon,
+  MenuInfoIcon,
+  MenuPathIcon,
+} from "@/components/ui/MenuIcons";
 import { Text } from "@/components/ui/Text";
 
 import type { Meta, StoryObj } from "@storybook/react-native";
+import type { ComponentProps } from "react";
 
-const sizes: MenuSize[] = ["sm", "md"];
+/** Props exposed by the Menu story playground. */
+type MenuProps = ComponentProps<typeof Menu>;
+
+/** Extra controls used by the Menu story playground. */
+interface MenuStoryArgs extends MenuProps {
+  disabled: boolean;
+}
+
+const sizes = ["sm", "md"] as const;
 
 const meta = {
   title: "UI/Menu",
   component: Menu,
-  render: MenuStory,
-} satisfies Meta<typeof Menu>;
+  args: {
+    disabled: false,
+    offset: 8,
+    placement: "bottom left",
+    size: "sm",
+    trigger: renderMenuTrigger,
+    useRNModal: true,
+  },
+  argTypes: {
+    placement: {
+      control: "select",
+      options: ["top", "bottom", "left", "right", "bottom left"],
+    },
+    size: { control: "select", options: sizes },
+  },
+  render: MenuPlayground,
+} satisfies Meta<MenuStoryArgs>;
 
 export default meta;
 
 /** Story object inferred from the Menu metadata. */
 type Story = StoryObj<typeof meta>;
 
-/** Interactive menu with icons, a separator, and a disabled action. */
-export const Default: Story = {};
+/** Controllable Menu example. */
+export const Playground: Story = {};
 
-/** Both supported menu sizes. */
+/** Menu opened by default to showcase icons, a separator, and item states. */
+export const WithIcons: Story = {
+  args: {
+    defaultIsOpen: true,
+    disabled: true,
+  },
+};
+
+/** Both Figma menu sizes. */
 export const Sizes: Story = {
   render: MenuSizesStory,
 };
 
-/** Menu whose surface follows its trigger width and reports item actions. */
-export const MatchTriggerWidth: Story = {
-  render: MatchTriggerWidthStory,
-};
-
-/** Renders one representative menu. */
-function MenuStory() {
-  return <MenuExample disabled size="sm" />;
-}
-
-/** Renders one trigger for each supported size. */
-function MenuSizesStory() {
+/** Renders one controllable Menu. */
+function MenuPlayground({ disabled, ...props }: MenuStoryArgs) {
   return (
-    <View className="flex-row items-start gap-8">
-      {sizes.map((size) => (
-        <View className="items-center gap-3" key={size}>
-          <Text size="sm" weight="semibold">
-            {size}
-          </Text>
-          <MenuExample size={size} />
-        </View>
-      ))}
-    </View>
-  );
-}
-
-/** Demonstrates trigger-width matching and collection-key actions. */
-function MatchTriggerWidthStory() {
-  const [selectedKey, setSelectedKey] = useState<Key>();
-
-  return (
-    <View className="items-start gap-3">
-      <Text size="sm">Last action: {selectedKey?.toString() ?? "None"}</Text>
-      <MenuExample
-        matchTriggerWidth
-        onAction={setSelectedKey}
-        size="sm"
-        triggerClassName="w-64"
-      />
-    </View>
-  );
-}
-
-/** Shared shadcn composition used by the Menu stories. */
-function MenuExample({
-  disabled = false,
-  matchTriggerWidth = false,
-  onAction,
-  size,
-  triggerClassName,
-}: {
-  disabled?: boolean;
-  matchTriggerWidth?: boolean;
-  onAction?: (key: Key) => void;
-  size: MenuSize;
-  triggerClassName?: string;
-}) {
-  return (
-    <Menu matchTriggerWidth={matchTriggerWidth} onAction={onAction} size={size}>
-      <MenuTrigger asChild>
-        <Button className={triggerClassName} size="sm" variant="outline">
-          <Text>Open menu</Text>
-        </Button>
-      </MenuTrigger>
-      <MenuContent>
+    <StoryFrame>
+      <Menu {...props} disabledKeys={disabled ? ["plugins"] : undefined}>
         <MenuItem key="account" textValue="Add account">
-          <MenuItemIcon as={CreditCard} />
+          <MenuItemIcon as={MenuCreditCardIcon} />
           <MenuItemLabel>Add account</MenuItemLabel>
         </MenuItem>
         <MenuItem key="help" textValue="Help">
-          <MenuItemIcon as={CircleHelp} />
+          <MenuItemIcon as={MenuHelpIcon} />
           <MenuItemLabel>Help</MenuItemLabel>
         </MenuItem>
         <MenuSeparator />
-        <MenuItem disabled={disabled} key="plugins" textValue="Plugins">
-          <MenuItemIcon as={Info} />
+        <MenuItem key="plugins" textValue="Plugins">
+          <MenuItemIcon as={MenuInfoIcon} />
           <MenuItemLabel>Plugins</MenuItemLabel>
         </MenuItem>
-        <MenuItem key="routes" textValue="Routes">
-          <MenuItemIcon as={Route} />
-          <MenuItemLabel>Routes</MenuItemLabel>
+        <MenuItem key="settings" textValue="Settings">
+          <MenuItemIcon as={MenuPathIcon} />
+          <MenuItemLabel>Settings</MenuItemLabel>
         </MenuItem>
-      </MenuContent>
-    </Menu>
+      </Menu>
+    </StoryFrame>
+  );
+}
+
+/** Renders triggers for both supported menu sizes. */
+function MenuSizesStory() {
+  return (
+    <StoryFrame>
+      {sizes.map((size) => (
+        <View className="items-center gap-3" key={size}>
+          <Text className="text-typography-900" size="sm" weight="semibold">
+            {size}
+          </Text>
+          <Menu size={size} trigger={renderMenuTrigger} useRNModal>
+            <MenuItem key={`${size}-account`} textValue="Add account">
+              <MenuItemIcon as={MenuCreditCardIcon} />
+              <MenuItemLabel>Add account</MenuItemLabel>
+            </MenuItem>
+            <MenuItem key={`${size}-help`} textValue="Help">
+              <MenuItemIcon as={MenuHelpIcon} />
+              <MenuItemLabel>Help</MenuItemLabel>
+            </MenuItem>
+          </Menu>
+        </View>
+      ))}
+    </StoryFrame>
+  );
+}
+
+/** Renders the button used to open a story menu. */
+function renderMenuTrigger(triggerProps: ComponentProps<typeof Button>) {
+  return (
+    <Button {...triggerProps} size="sm" variant="outline">
+      <ButtonText>Open menu</ButtonText>
+    </Button>
+  );
+}
+
+/** Provides a consistent surface and spacing for Menu stories. */
+function StoryFrame({ children }: { children: React.ReactNode }) {
+  return (
+    <View className="bg-background-50 min-h-96 w-full flex-row items-start justify-center gap-16 p-8">
+      {children}
+    </View>
   );
 }

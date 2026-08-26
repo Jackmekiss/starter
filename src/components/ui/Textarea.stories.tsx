@@ -35,7 +35,7 @@ export const States: Story = {
   render: TextareaStatesStory,
 };
 
-/** Complete Fifteen textarea size scale. */
+/** Complete textarea size scale. */
 export const Sizes: Story = {
   render: TextareaSizesStory,
 };

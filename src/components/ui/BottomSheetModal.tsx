@@ -357,7 +357,7 @@ function BottomSheetBackground({
   );
 }
 
-/** Shared shadcn-style bottom sheet wrapper matching Fifteen geometry. */
+/** Shared bottom sheet wrapper using the application geometry. */
 function BottomSheetModal({
   backdropAccessibilityHint,
   backdropAccessibilityLabel,

@@ -5,7 +5,7 @@ Last updated: 2026-08-25
 ## Focus
 
 Starter is a normalized Expo template with frontend Core, Account-owned two-state onboarding,
-its shadcn-style React Native design system, and direct or in-app Storybook.
+its local gluestack-ui v5 design system, and direct or in-app Storybook.
 
 ## Active Plan
 

@@ -1,8 +1,8 @@
 # Components and Layout Blueprint
 
-> Blueprint version: `1.3.1`
+> Blueprint version: `1.6.0`
 
-Use this frozen blueprint when composing Starter screens, feature sections, or shared UI primitives. Starter's design system uses React Native, shadcn-style local composition, NativeWind v5, Tailwind CSS v4, CVA, and focused `@rn-primitives` packages.
+Use this frozen blueprint when composing Starter screens, feature sections, or shared UI primitives. Starter uses gluestack-ui v5 as its sole component-system vocabulary, with NativeWind v5, Tailwind CSS v4, semantic tokens, React Native layout primitives, and locally adapted state helpers.
 
 The code blocks are adaptation skeletons. Replace placeholders, inspect installed public types, and preserve the nearest established public contract when extending an existing component.
 
@@ -56,7 +56,7 @@ core/<context>/adapters/selectors/**
 src/app-runtime/app-runtime.ts
 ```
 
-These 19 component families are Starter's canonical Fifteen-derived design-system surface. Use `Textarea`, never the historical `TextArea` spelling. Keep stories next to primitives and route Storybook-specific work through [storybook-blueprint.md](storybook-blueprint.md).
+These component families are Starter's canonical local design-system surface. Use `Textarea`, never the historical `TextArea` spelling. Keep stories next to primitives and route Storybook-specific work through [storybook-blueprint.md](storybook-blueprint.md).
 
 ## Ownership
 
@@ -94,7 +94,7 @@ Add a primitive only after reuse or a clear design-system responsibility justifi
 
 ## Canonical Family Contracts
 
-| Family           | shadcn / React Native shape                           | Starter-specific contract                                                                                           |
+| Family           | Implementation shape                                  | Starter-specific contract                                                                                           |
 | ---------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | Alert            | compound container, icon, title, description, action  | `error`, `info`, `muted`, `success`, `warning` tones; `outline` and softly filled `solid` treatments                |
 | Badge            | compact compound label/icon                           | `primary` plus status tones; `outline`/`solid`; `sm`/`md`/`lg`; pill radius                                         |
@@ -106,12 +106,13 @@ Add a primitive only after reuse or a clear design-system responsibility justifi
 | Icon             | typed Lucide adapter                                  | owning primitive supplies color/size; height/width map to Lucide `size` only                                        |
 | Input            | controlled native input                               | rounded/outline/underlined treatments; `sm` through `xl`; form-control state can be inherited                       |
 | Link             | `Pressable` or native link semantics                  | primary, underlined, bold, disabled-aware                                                                           |
+| Menu             | gluestack `createMenu` compound collection            | Render-prop trigger, placement/offset, disabled keys, `sm`/`md`, modal portal, and 150 ms motion                    |
 | PhoneNumberInput | typed vendor wrapper                                  | controlled international value; localized input/country-button labels and language; imperative theme props          |
 | Progress         | `@rn-primitives/progress` root + indicator            | localized control label plus optional visible value; `xs` through `2xl` track sizes                                 |
 | Radio            | `@rn-primitives/radio-group` root/item/indicator      | each item has a localized control label; checked/invalid/disabled; `sm`/`md`/`lg`                                   |
 | SafeAreaView     | styled safe-area-context adapter                      | maps `className` to `style`                                                                                         |
 | ScreenHeader     | local composition                                     | centered wrapping title without truncation; `headingLevel="1"`; localized back label; `px-screen`                   |
-| Switch           | `@rn-primitives/switch` root + thumb                  | `sm`/`md`/`lg`; checked, invalid, disabled; localized control label and `valueLabel` required                       |
+| Switch           | controlled React Native `Switch`                      | native platform animation; `sm`/`md`/`lg`; checked, invalid, disabled; localized label and `valueLabel` required    |
 | Text             | native text + variant context                         | explicit Poppins face per weight; `h1`-`h4` own semantics, visual `heading` uses optional `headingLevel`            |
 | Textarea         | multiline input                                       | same state/variant language as Input; content-driven minimum height                                                 |
 | Toast            | local animated provider, surface, and hook            | stacked status feedback; `outline`/`solid`; title/description/action/close; live-region semantics                   |
@@ -120,15 +121,18 @@ The catalog defines responsibilities, not permission to fork APIs. Inspect the e
 
 ### Shared interaction motion
 
-Preserve Fifteen's motion when translating a primitive into the local shadcn API. `Button` applies
-`transition-colors duration-150 ease-out` to its root, text, and icon so native active feedback and
-web hover/focus feedback move together. Keep these utilities cross-platform rather than hiding them
-inside `Platform.select({ web: ... })`. `Input` applies the same transition to its frame and icon.
+Preserve the canonical interaction motion when extending a local primitive. `Button`
+uses `transition-colors duration-150 ease-out` on its root, text, and icon. Do not add a press-scale
+animation or unresolved alpha shadow utilities. In particular, combining an animated NativeWind button with
+`shadow-black/5` can make Reanimated receive an unresolved alpha shadow color and crash with an
+invalid `#NaN...0d` value. `Input` uses the same cross-platform color transition on its frame and
+icon; unlike the affected Button, it does not carry an alpha shadow utility.
 
-`MenuContent` enters with `ZoomIn.duration(150)` and exits with `FadeOut.duration(150)` through a
-Reanimated wrapper around the accessible dropdown content. Apply `ReduceMotion.System` to both
-builders. Motion supplements the focused `@rn-primitives` state machine; it never replaces menu
-roles, focus management, dismissal, or portal behavior.
+Keep `Menu` as the canonical gluestack primitive:
+its root is the styled animated `ScrollView` supplied to `createMenu`, with
+`ZoomIn.duration(150)` and `FadeOut.duration(150)`, `shadow-sm`, and a `gap-2` content container.
+Keep the render-prop `trigger` API, direct `MenuItem` children, collection keys, disabled keys,
+placement, offset, modal portal, focus management, and dismissal behavior owned by gluestack.
 
 ### Button spinner motion
 
@@ -238,6 +242,24 @@ Use the readable role defined by the owning component's treatment. Status feedba
 
 ## Primitive Adapters
 
+### Canonical gluestack Menu
+
+Keep `@gluestack-ui/core` and `@gluestack-ui/utils` on their validated compatible versions, create the compound primitive
+with `@gluestack-ui/core/menu/creator`, and mount `OverlayProvider` in the application and
+Storybook provider trees. The immediate parent of every `MenuItem` is `Menu`; do not insert a
+higher-order wrapper between them. Do not replace this runtime with another dropdown implementation
+or split the render-prop trigger API into separate compound components.
+
+The local theme may expose the narrow aliases consumed by the component
+(`background-0/50/100`, `border-100/300`, `typography-900`, and `warning-500`) by mapping them to
+the existing semantic theme roles. Do not copy a parallel palette.
+
+Menu icons use the local gluestack `UiIcon` paint adapter and the canonical fill-based
+`MenuCreditCardIcon`, `MenuHelpIcon`, `MenuInfoIcon`, and `MenuPathIcon` glyphs. The
+`fill-typography-900` recipe is intentional for those glyphs. Do not substitute raw Lucide
+stroke icons: applying the fill recipe to Lucide turns their card and circle paths into solid
+blocks.
+
 ### Radix-style native primitives
 
 For checkable controls and progress, compose the installed focused package instead of recreating state machines:
@@ -336,7 +358,7 @@ Its public contract requires a localized phone-input `accessibilityLabel`, a loc
 - `FormControlInput` requires a localized native `accessibilityLabel` even when the visible web label is connected by IDs. It also connects description/message IDs and invalid/disabled/required state.
 - `Switch` requires a localized `accessibilityLabel` for the control and a localized spoken `valueLabel` such as the translated on/off value; do not synthesize English inside the primitive.
 - `Checkbox`, `RadioGroupItem`, and `Progress` each require a localized `accessibilityLabel`; visible copy does not replace the native name contract.
-- `Checkbox` remains a standalone shadcn control. The caller composes its visible label and may reuse exported `checkboxLabelVariants` for the canonical `sm`/`md`/`lg` label scale. Keep label composition outside the control instead of adding a compound label anatomy.
+- `Checkbox` remains a standalone design-system control. The caller composes its visible label and may reuse exported `checkboxLabelVariants` for the canonical `sm`/`md`/`lg` label scale. Keep label composition outside the control instead of adding a compound label anatomy.
 
 ## Toast Contract
 
@@ -383,18 +405,18 @@ Render `outline` feedback on `bg-background` with the action's emphasis role. Re
 ## Invariants
 
 - Screens compose sections; sections own cohesive blocks; feature cards render explicit values; UI primitives remain generic.
-- The 19 canonical families preserve one visual language through local React Native/shadcn composition.
+- The 20 canonical families preserve one gluestack-oriented visual language; React Native layout primitives and state helpers remain implementation details rather than a competing component system.
 - Every Poppins weight selects its explicit `font-body-*` family; generic `fontWeight` utilities do
   not select custom Poppins faces on native.
 - Poppins, 24-point screen spacing, shared radii, semantic brand/status tokens, and light/dark values come from the central theme.
 - Parent layout owns external placement; child layout owns internal spacing.
-- `@rn-primitives` owns native control state machines; local components own visual variants and accessibility integration.
+- Focused `@rn-primitives` own checkbox, radio, and progress state machines; gluestack owns Menu state, overlay, and collection behavior; local components own visual contracts.
 - Third-party adapters are narrow, typed, and map only verified props.
 - Every new or materially changed shared primitive has a focused Storybook story.
 
 ## Anti-Patterns
 
-- Adding a second UI runtime, provider, token object, foreign variant recipe, or copied compound API instead of extending the local design system.
+- Adding a competing design-system runtime, provider, token object, foreign variant recipe, or copied compound API alongside the local gluestack contract.
 - A `components/ui` primitive importing business vocabulary, translations, router, selectors, generated hooks, or runtime infrastructure.
 - Rebuilding a canonical primitive inside a feature or adding a competing palette/type scale.
 - Broad props such as `data`, `payload`, `config`, or `screenModel` when explicit props define the contract.

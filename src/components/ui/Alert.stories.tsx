@@ -66,7 +66,7 @@ export const Variants: Story = {
   render: AlertVariantsStory,
 };
 
-/** Title and description anatomy with the Fifteen density rules. */
+/** Title and description anatomy with the canonical density rules. */
 export const Anatomy: Story = {
   render: AlertAnatomyStory,
 };

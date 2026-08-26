@@ -1,10 +1,10 @@
 # Frozen Blueprint: NativeWind, Theme, Variants, and Interop
 
-> Blueprint version: `1.2.1`
+> Blueprint version: `1.6.0`
 
-Use this reference for Starter styling infrastructure, theme tokens, typography, shared visual variants, icons, or third-party native components. It freezes the Fifteen-derived design language after translation to shadcn-style React Native composition. Preserve it unless an accepted repository decision explicitly replaces it.
+Use this reference for Starter styling infrastructure, theme tokens, typography, shared visual variants, icons, or third-party native components. It defines the local gluestack-ui v5 design language and its React Native implementation boundaries. Preserve it unless an accepted repository decision explicitly replaces it.
 
-Semantic CSS tokens, local CVA recipes, native primitives, and typed adapters are the complete implementation reference for the design system.
+Semantic CSS tokens, local CVA recipes, native primitives, the canonical gluestack Menu, and typed adapters are the complete implementation reference for the design system.
 
 ## Canonical Owners
 
@@ -27,8 +27,9 @@ src/
 ├── components/ui/
 │   ├── Button.tsx                           # canonical action/variant/size recipe
 │   ├── Icon.tsx                             # Lucide adapter
+│   ├── Menu.tsx                             # canonical gluestack Menu
 │   ├── Text.tsx                             # Poppins body/heading scale
-│   ├── <Primitive>.tsx                      # local shadcn/RN component
+│   ├── <Primitive>.tsx                      # local design-system component
 │   └── <VendorWrapper>.tsx                  # typed third-party adapter
 ├── constants/theme.ts                       # imperative/native mirror
 ├── global.css                               # Tailwind v4 CSS-first tokens
@@ -36,6 +37,22 @@ src/
 ```
 
 `src/global.css` is the only palette and utility authority. `src/constants/theme.ts` mirrors only values required by imperative native APIs. A feature, route, story, or adapter does not own a second palette.
+
+## Gluestack v5 Installation Contract
+
+Keep the installation coherent as one gluestack-ui v5 stack:
+
+- `@gluestack-ui/core@^5.0.15` and `@gluestack-ui/utils@^5.0.6` are production dependencies;
+- `nativewind@5.0.0-preview.4` and `react-native-css@^3.0.7` provide the styling runtime;
+- Tailwind CSS v4, `@tailwindcss/postcss`, and PostCSS remain development dependencies;
+- `pnpm-workspace.yaml` pins `lightningcss` to exactly `1.30.1` through `overrides`;
+- `metro.config.js` composes `withNativewind`, `postcss.config.mjs` registers `@tailwindcss/postcss`, and no `tailwind.config.js` exists;
+- `nativewind-env.d.ts` references `react-native-css/types`;
+- `global.css` keeps the canonical imports followed by `@source "./**/*.{js,jsx,ts,tsx,mdx}";`;
+- the `w-menu` token remains an exact native-safe `210px` rather than a rem conversion;
+- application and Storybook roots both mount gluestack's `OverlayProvider`.
+
+Do not add a second gluestack theme or palette for Menu. The narrow aliases in `@theme inline` bind the Menu classes to the existing semantic theme.
 
 ## CSS-First Theme Contract
 
@@ -46,6 +63,8 @@ Keep this import order:
 @import "tailwindcss/preflight.css" layer(base);
 @import "tailwindcss/utilities.css";
 @import "nativewind/theme";
+
+@source "./**/*.{js,jsx,ts,tsx,mdx}";
 ```
 
 Do not add `tailwind.config.js`. Tailwind v4 configuration stays in `global.css`.
@@ -228,7 +247,7 @@ Owned components accept `className` and place it after base/CVA/state classes th
 
 ## Canonical Button Matrix
 
-`Button` keeps shadcn composition—`Pressable`, `TextClassContext`, explicit compound children, and CVA—while expressing Fifteen's visual contract.
+`Button` keeps its existing `Pressable`, `TextClassContext`, explicit compound-child, and CVA implementation behind the local gluestack-oriented component contract.
 
 Actions:
 
@@ -247,7 +266,7 @@ Sizes:
 | `xl`             | 48        | 28 (`px-7`)        |
 | `icon`           | 40 square | 0                  |
 
-The core action variants are `solid`, `outline`, and `link`; outline uses a two-point border. Preserve existing shadcn compatibility variants such as `default`, `destructive`, `secondary`, and `ghost` when callers use them. Historical aliases may normalize into the canonical local CVA variants without exposing another variant surface.
+The core action variants are `solid`, `outline`, and `link`; outline uses a two-point border. Preserve existing compatibility variants such as `default`, `destructive`, `secondary`, and `ghost` when callers use them. Historical aliases may normalize into the canonical local CVA variants without exposing another variant surface.
 
 All button actions are pill-shaped with `rounded-full`. Text sizes progress from `text-xs` through `text-xl`; icon sizes are 14, 16, 18, 20, and 24 points for `xs`, `sm`, `md`/default, `lg`, and `xl` respectively, while icon-only buttons use 20. Compound exports may include text, icon, spinner, and group helpers. Busy/disabled semantics remain native, and decorative child icons do not duplicate the accessible name.
 
@@ -259,10 +278,27 @@ Use the installed `@rn-primitives` 1.5.2 family for native state and interaction
 - `@rn-primitives/label`;
 - `@rn-primitives/progress`;
 - `@rn-primitives/radio-group`;
-- `@rn-primitives/switch`;
 - compatible `@rn-primitives/slot` for as-child composition.
 
-Local components own design tokens, sizes, indicators, form-control integration, and accessibility details. Checkbox, radio items, progress, and switches require localized `accessibilityLabel` values; switch also requires a localized `valueLabel`. Checkbox remains standalone and exports its finite label-size recipe for caller-owned visible copy. Do not reimplement checked, indeterminate, roving selection, thumb, or progress state machines with generic `Pressable` views. Inspect installed public types before composing; React Native Reusables conventions inform the shape but installed packages define the actual API.
+Local components own design tokens, sizes, indicators, form-control integration, and accessibility details. Checkbox, radio items, progress, and switches require localized `accessibilityLabel` values; switch also requires a localized `valueLabel`. Checkbox remains standalone and exports its finite label-size recipe for caller-owned visible copy. Switch uses React Native's controlled native `Switch`, maps the local `checked`/`onCheckedChange` contract to `value`/`onValueChange`, and preserves the native platform thumb animation. Do not reimplement checked, indeterminate, roving selection, thumb, or progress state machines with generic `Pressable` views. Inspect installed public types before composing; installed packages define the actual API.
+
+## Canonical gluestack Menu
+
+Menu is backed by `@gluestack-ui/core/menu/creator` and
+`@gluestack-ui/utils/nativewind-utils`. Keep its `tva` recipes, styled animated `ScrollView`,
+render-prop trigger API, direct item collection, modal overlay behavior, and 150 ms enter/exit
+animations. `OverlayProvider` is required in both the app and Storybook roots. Do not replace it
+with another dropdown runtime or split its render-prop trigger API into separate compound components.
+
+The local class names use a narrow compatibility layer in `@theme inline`; map those aliases onto
+the existing semantic variables rather than adding another palette. Local wrappers, styles, and
+assets remain copy-owned while state, collection, overlay, and SVG primitives run on the installed
+gluestack-ui v5 packages.
+
+The canonical icon path renders `MenuItemIcon` through the local gluestack `UiIcon` adapter and
+`createIcon` factory built on `@gluestack-ui/core/icon/creator`; stories use the four fill-based `Menu*Icon` glyphs from
+`MenuIcons.tsx`. Never feed a raw Lucide stroke icon into the Menu's `fill-typography-900` recipe;
+it fills the Lucide geometry and produces solid rectangles, circles, and blobs.
 
 ## Typed Third-Party Interop
 
@@ -319,18 +355,18 @@ Do not invent a Storybook-only palette or stylesheet. See [storybook-blueprint.m
 
 - NativeWind v5 utilities are the default for owned React Native UI.
 - Tailwind v4 semantic tokens live only in `global.css`.
-- The Fifteen-derived palette is expressed as role tokens, not raw component colors.
+- The application palette is expressed as role tokens, not raw component colors.
 - Explicit Poppins face families, the radius scale, and 24-point screen spacing are shared foundations.
 - Every colored family provides the surface/border/foreground roles its variants consume in light and dark.
 - Automatic dark applies only without an explicit root data attribute; Storybook web light/dark uses `data-color-scheme` and native uses `Appearance`.
 - `THEME`, `Colors`, and `NAV_THEME` mirror only imperative CSS roles and stay synchronized.
-- Existing local shadcn-style primitives and CVA recipes are extended before another component system is introduced.
+- Gluestack-ui v5 is the sole component-system vocabulary; React Native primitives and CVA recipes remain implementation details of locally owned components and screens.
 - `@rn-primitives` owns interactive state; local wrappers own the visual contract.
 - Typed `styled()` adapters remain local to incompatible vendors and map exact verified props.
 
 ## Anti-Patterns
 
-- Adding a second UI runtime, provider, variant engine, or copied token scale instead of extending the local shadcn design system.
+- Adding a competing design-system runtime, provider, variant engine, or copied token scale alongside the local gluestack contract.
 - Adding Tailwind v3 configuration, a parallel JavaScript palette, or story-only theme values.
 - Raw colors or repeated arbitrary radii/type/spacing values in routes, feature components, stories, or owned primitives.
 - Treating `primary` as a generic status color instead of using destructive/success/warning/info roles.
@@ -345,6 +381,7 @@ Do not invent a Storybook-only palette or stylesheet. See [storybook-blueprint.m
 ## Validation Checklist
 
 - [ ] `global.css` keeps import order, `@theme inline` aliases, light root values, guarded automatic dark overrides, and the identical explicit dark selector.
+- [ ] Gluestack core/utils, NativeWind, react-native-css, the `lightningcss@1.30.1` override, PostCSS, Metro, type reference, `@source`, and both overlay providers match the installation contract.
 - [ ] Each new role has light/dark values and the required soft/border/foreground counterparts.
 - [ ] Every imperatively consumed value is synchronized in `THEME` and applicable compatibility/navigation exports.
 - [ ] Poppins filenames match their PostScript names, all eight faces are registered through one Expo
@@ -355,6 +392,7 @@ Do not invent a Storybook-only palette or stylesheet. See [storybook-blueprint.m
 - [ ] Screen framing uses `px-screen` and reusable components use the shared radius scale.
 - [ ] Button actions, variants, sizes, text/icon colors, disabled, and busy states remain coherent.
 - [ ] Focused controls compose installed `@rn-primitives` packages rather than recreating state.
+- [ ] Menu preserves its canonical gluestack behavior, has direct item children, and runs under `OverlayProvider` in the app and Storybook.
 - [ ] Owned components forward `className`; vendor adapters are typed and map verified props.
 - [ ] Light/dark surfaces, status contrast, navigation, overlays, Storybook backgrounds, and imperative vendor props were reviewed.
 - [ ] Typecheck, relevant lint, targeted Oxfmt, and changed Storybook stories pass.

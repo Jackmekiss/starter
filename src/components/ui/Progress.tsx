@@ -86,7 +86,7 @@ function resolveProgressValue(
 }
 
 /**
- * Accessible determinate progress indicator with Fifteen's thickness scale.
+ * Accessible determinate progress indicator with the design-system thickness scale.
  */
 function Progress({
   className,

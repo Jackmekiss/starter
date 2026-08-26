@@ -35,12 +35,13 @@ current task or a factual Worklog entry records it.
 
 ## UI Toolchain
 
-- React Native UI uses local shadcn-style primitives, NativeWind v5, Tailwind CSS v4, CVA, and focused
-  RN Primitives.
+- React Native UI treats gluestack-ui v5 as its sole component-system vocabulary. NativeWind v5,
+  Tailwind CSS v4, CVA, and native implementation helpers complement it without defining a
+  competing component-system API.
 - Semantic light/dark tokens live in `src/global.css`; navigation follows the same appearance source.
 - Eight PostScript-named Poppins faces are versioned for native and web. Native text selects an
   explicit family utility per weight instead of combining one family with generic `fontWeight`.
-- The shared UI surface contains 19 Fifteen-derived component families under `src/components/ui/`.
+- The shared UI surface contains 20 local component families under `src/components/ui/`.
 - Stories are colocated with primitives.
 - Direct Storybook swaps the Expo entry point. In-app Storybook intentionally adds a guarded
   development route and Home launcher.

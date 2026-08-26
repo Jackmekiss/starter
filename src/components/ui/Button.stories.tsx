@@ -74,12 +74,12 @@ type Story = StoryObj<typeof meta>;
 /** Controllable button example. */
 export const Playground: Story = {};
 
-/** Fifteen action and surface combinations. */
+/** Canonical action and surface combinations. */
 export const Variants: Story = {
   render: ButtonVariantsStory,
 };
 
-/** Complete Fifteen button size scale. */
+/** Complete button size scale. */
 export const Sizes: Story = {
   render: ButtonSizesStory,
 };
@@ -116,7 +116,7 @@ function ButtonPlayground({ label, loading, ...buttonProps }: ButtonStoryArgs) {
   );
 }
 
-/** Renders every Fifteen action and visual variant. */
+/** Renders every action and visual variant. */
 function ButtonVariantsStory() {
   return (
     <ScrollView className="flex-1">

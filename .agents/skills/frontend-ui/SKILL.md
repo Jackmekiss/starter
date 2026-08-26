@@ -1,6 +1,6 @@
 ---
 name: frontend-ui
-description: "Implement, refactor, document, add Storybook stories for, or audit Starter's Expo and React Native presentation layer: Expo Router screens, the Fifteen-derived shadcn design system, Storybook on device, runtime-facade consumption, forms and typed errors, localization, NativeWind v5/Tailwind v4/CVA, themes, third-party interop, and native accessibility. Do not use for backend work or core-only bounded-context, gateway, adapter, Redux, or RTK Query API design."
+description: "Implement, refactor, document, add Storybook stories for, or audit Starter's Expo and React Native presentation layer: Expo Router screens, the local gluestack-ui v5 design system, Storybook on device, runtime-facade consumption, forms and typed errors, localization, NativeWind v5/Tailwind v4, themes, third-party interop, and native accessibility. Do not use for backend work or core-only bounded-context, gateway, adapter, Redux, or RTK Query API design."
 ---
 
 # Frontend UI
@@ -42,12 +42,12 @@ Preserve visible design and interaction behavior during accessibility-only work 
 - Keep generic primitives prop-driven; feature sections may own simple selectors, local navigation, formatting, and interaction state.
 - Use `react-hook-form` with `Controller` for real controlled forms.
 - Consume mutations with `.unwrap()` and pass unknown failures to the bounded context's presentation resolver.
-- Preserve Starter's shadcn/React Native design system: Poppins, 24-point screen spacing, semantic brand/status tokens, shared radii, and the 19 canonical UI families.
+- Preserve Starter's local gluestack-ui v5 design system: Poppins, 24-point screen spacing, semantic brand/status tokens, shared radii, canonical component APIs, and the gluestack Menu.
 - Select Poppins weights through the explicit `font-body-*` face utilities frozen in the theme
   blueprint; generic weight utilities do not select custom font files reliably on native.
-- Build from React Native primitives, `@rn-primitives`, Starter's local primitives, and CVA. Keep design-system composition, themes, variants, and public APIs locally owned.
+- Use gluestack-ui v5 as the sole component-system vocabulary. Treat React Native layout primitives and focused `@rn-primitives` as implementation details, not a second design system; keep reusable stateful controls behind locally owned component APIs. Preserve the canonical `Menu` implementation built with `@gluestack-ui/core/menu/creator` and `tva`, with `OverlayProvider` mounted in both application and Storybook roots.
 - Use NativeWind v5 utility classes and Tailwind v4 tokens; use a local `styled()` adapter for incompatible third-party native components.
-- Keep direct Storybook presentation-only through the official React Native entry-point swap. The accepted `EXPO_PUBLIC_STORYBOOK_ENABLED=true` in-app development mode may expose the guarded `/storybook` route and its Home launcher; it intentionally trades normal-bundle isolation for Fifteen-style navigation and must never be enabled for production builds. Stories do not import the Redux store, persistor, gateways, or runtime internals.
+- Keep direct Storybook presentation-only through the official React Native entry-point swap. The accepted `EXPO_PUBLIC_STORYBOOK_ENABLED=true` in-app development mode may expose the guarded `/storybook` route and its Home launcher; it intentionally trades normal-bundle isolation for in-app navigation and must never be enabled for production builds. Stories do not import the Redux store, persistor, gateways, or runtime internals.
 - Keep accessible names, roles, states, announcements, and automation exposure accurate without duplicating the accessibility tree.
 - Keep user-visible copy in typed translation catalogs; never display raw backend or exception messages.
 - Do not add automated tests or test-only infrastructure.
