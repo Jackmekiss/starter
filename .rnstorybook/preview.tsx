@@ -1,4 +1,5 @@
 import { ThemeProvider } from "expo-router/react-navigation";
+import { PortalHost } from "@rn-primitives/portal";
 import { useEffect } from "react";
 import { Appearance, Platform, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -72,6 +73,7 @@ function StorybookProviders({
               <View className="bg-background flex-1 p-6">{children}</View>
               <Toast config={toastConfig} />
             </BottomSheetModalProvider>
+            <PortalHost />
           </ThemeProvider>
         </LocalizationProvider>
       </GestureHandlerRootView>

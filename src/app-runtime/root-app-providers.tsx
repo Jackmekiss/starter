@@ -1,4 +1,5 @@
 import { ThemeProvider } from "expo-router/react-navigation";
+import { PortalHost } from "@rn-primitives/portal";
 import { type PropsWithChildren } from "react";
 import { useColorScheme } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -30,6 +31,7 @@ export function RootAppProviders({ children }: RootAppProvidersProps) {
             <LocalizationProvider>
               <ThemeProvider value={NAV_THEME[colorScheme]}>
                 <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+                <PortalHost />
               </ThemeProvider>
             </LocalizationProvider>
           </PersistGate>
