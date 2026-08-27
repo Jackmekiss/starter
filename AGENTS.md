@@ -6,6 +6,7 @@ Product guidance for Starter lives in `docs/ai/product-memory.md`.
 
 Available skills:
 
+- `begin-project`: convert Starter into a named product by renaming app identifiers, selecting and removing example bounded contexts, initializing memory, and validating the resulting repository
 - `frontend-core`: Starter's frontend DDD and Clean Architecture conventions for bounded contexts under `core/`, RTK Query use-cases, Redux-owned durable state, gateways, adapters, typed errors, and `src/app-runtime/` composition
 - `frontend-ui`: Starter's Expo Router routes, screens, components, forms, runtime-hook consumption, localization, NativeWind styling, themes, accessibility semantics, and accessibility audits
 - `project-memory`: resume work, checkpoint an interruption, remember durable context, or initialize project memory through four explicit modes
@@ -51,7 +52,7 @@ Always-on repository rules:
   - `docs/ai/api-contracts.md`
 - Before stopping with meaningful unfinished work, use `project-memory` in Checkpoint mode.
 - When durable context is discovered, use `project-memory` in Remember mode.
-- When this starter becomes a new project, use `project-memory` in Initialize mode.
+- When this starter becomes a new project, use `begin-project`; it delegates the memory reset to `project-memory` Initialize mode.
 - Keep memory files concise, versioned, and free of secrets.
 - Use `Unknown` rather than inventing missing facts.
 - Do not mix product memory with current task state.

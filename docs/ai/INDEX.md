@@ -8,7 +8,8 @@ branch, commit, dirty state, and changed files; memory never copies them.
 1. Read `AGENTS.md`, this index, and `CURRENT.md`.
 2. Read `HANDOFF.md` only when Current reports interrupted work.
 3. Load only the task-relevant stable memory or active plan.
-4. Use `project-memory` for Resume, Checkpoint, Remember, or Initialize workflows.
+4. Use `project-memory` for Resume, Checkpoint, or Remember; use `begin-project` to initialize a
+   derived product, including its source and identifiers.
 
 ## Owners
 
@@ -38,8 +39,8 @@ keeping roughly the latest 10–20 entries active.
 
 ## Starter Reset
 
-Initialize a derived product through `project-memory` Initialize mode. Preserve `AGENTS.md`,
-architecture, technical/testing memory, plans procedure, ADR procedure, and skills. Reset
+Initialize a derived product through `begin-project`, which uses `project-memory` Initialize mode for
+the memory reset. Preserve `AGENTS.md`, architecture, technical/testing memory, plans procedure, ADR procedure, and skills. Reset
 project-instance facts, Current, Handoff, decisions, failures, questions, plans, product-specific
 ADRs, and active or archived Worklog history from `docs/ai/_templates/`.
 

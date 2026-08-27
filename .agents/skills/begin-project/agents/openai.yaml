@@ -1,0 +1,4 @@
+interface:
+  display_name: "Begin Project"
+  short_description: "Convert Starter into a named Expo product"
+  default_prompt: "Use $begin-project to turn this frontend starter into my new product."
