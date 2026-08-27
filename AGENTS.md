@@ -9,12 +9,21 @@ Available skills:
 - `begin-project`: convert Starter into a named product by renaming app identifiers, selecting and removing example bounded contexts, initializing memory, and validating the resulting repository
 - `frontend-core`: Starter's frontend DDD and Clean Architecture conventions for bounded contexts under `core/`, RTK Query use-cases, Redux-owned durable state, gateways, adapters, typed errors, and `src/app-runtime/` composition
 - `frontend-ui`: Starter's Expo Router routes, screens, components, forms, runtime-hook consumption, localization, NativeWind styling, themes, accessibility semantics, and accessibility audits
+- `ui-ux-pro-max`: Starter's vendored, native-only design-intelligence catalog for exploring and critiquing visual direction, product patterns, color, typography, density, iconography, charts, motion intent, native ergonomics, and UX quality before implementation
 - `project-memory`: resume work, checkpoint an interruption, remember durable context, or initialize project memory through four explicit modes
 - `create-plan`: create an executable `plans/<feature-slug>.md` for multi-step, risky, or multi-session work
 
 Use the matching skill when the task needs deeper guidance.
 Codex may also activate these skills automatically when the request matches their descriptions.
 For a vertical slice that changes both business behavior and presentation, apply `frontend-core` before `frontend-ui`.
+
+Use `ui-ux-pro-max` before `frontend-ui` only when visual direction or UX quality is genuinely open. It produces a
+design contract and must not write code, select a new library, run generic stack guidance, or persist a generated
+design system unless the current user request explicitly authorizes that artifact. When the design is already
+approved, skip `ui-ux-pro-max` and use `frontend-ui` directly. `frontend-ui` remains authoritative for Expo
+Router, gluestack-ui v5, NativeWind v5, Lucide React Native, tokens, components, forms, accessibility semantics,
+Storybook, and implementation validation; Web, Next.js, Base UI, Shadcn, React DOM, and generic React Native
+implementation recommendations do not apply to Starter.
 
 The `frontend-*` skills are for the Expo app and frontend business core only. They are not backend/server standards.
 
