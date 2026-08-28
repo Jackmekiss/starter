@@ -1,4 +1,4 @@
-import {
+import BottomSheetComponent, {
   BottomSheetBackdrop,
   type BottomSheetBackdropProps as GorhomBottomSheetBackdropProps,
   type BottomSheetBackgroundProps as GorhomBottomSheetBackgroundProps,
@@ -6,6 +6,7 @@ import {
   type BottomSheetHandleProps,
   BottomSheetModal as BottomSheetModalComponent,
   BottomSheetModalProvider as GorhomBottomSheetModalProvider,
+  type BottomSheetProps as GorhomBottomSheetProps,
   BottomSheetScrollView,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
@@ -25,7 +26,11 @@ import { cn } from "@/lib/cn";
 
 /** Accessibility state shared by the application sibling and portaled sheets. */
 interface BottomSheetAccessibilityContextValue {
-  registerPresentedSheet: (sheetId: string, dismiss: () => void) => void;
+  registerPresentedSheet: (
+    sheetId: string,
+    dismiss: () => void,
+    isModal: boolean,
+  ) => void;
   unregisterPresentedSheet: (sheetId: string) => void;
 }
 
@@ -33,6 +38,7 @@ interface BottomSheetAccessibilityContextValue {
 interface PresentedSheet {
   dismiss: () => void;
   id: string;
+  isModal: boolean;
 }
 
 const BottomSheetAccessibilityContext = React.createContext<
@@ -54,14 +60,15 @@ function BottomSheetAccessibilityProvider({
   const backSubscriptionRef = React.useRef<ReturnType<
     typeof BackHandler.addEventListener
   > | null>(null);
-  const [presentedSheetCount, setPresentedSheetCount] = React.useState(0);
+  const [presentedModalCount, setPresentedModalCount] = React.useState(0);
 
   /** Publishes the synchronous stack and its render-facing count together. */
   const publishPresentedSheets = React.useCallback(
     (nextSheets: PresentedSheet[]) => {
       presentedSheetsRef.current = nextSheets;
-      setPresentedSheetCount((currentCount) =>
-        currentCount === nextSheets.length ? currentCount : nextSheets.length,
+      const nextModalCount = nextSheets.filter((sheet) => sheet.isModal).length;
+      setPresentedModalCount((currentCount) =>
+        currentCount === nextModalCount ? currentCount : nextModalCount,
       );
     },
     [],
@@ -98,7 +105,7 @@ function BottomSheetAccessibilityProvider({
   }, []);
 
   const registerPresentedSheet = React.useCallback(
-    (sheetId: string, dismiss: () => void) => {
+    (sheetId: string, dismiss: () => void, isModal: boolean) => {
       const currentSheets = presentedSheetsRef.current;
       const existingIndex = currentSheets.findIndex(
         (sheet) => sheet.id === sheetId,
@@ -107,7 +114,8 @@ function BottomSheetAccessibilityProvider({
 
       if (
         existingIndex === currentSheets.length - 1 &&
-        existingSheet?.dismiss === dismiss
+        existingSheet?.dismiss === dismiss &&
+        existingSheet.isModal === isModal
       ) {
         subscribeBackHandler();
         return;
@@ -115,7 +123,7 @@ function BottomSheetAccessibilityProvider({
 
       const nextSheets = [
         ...currentSheets.filter((sheet) => sheet.id !== sheetId),
-        { dismiss, id: sheetId },
+        { dismiss, id: sheetId, isModal },
       ];
       publishPresentedSheets(nextSheets);
       subscribeBackHandler();
@@ -152,16 +160,16 @@ function BottomSheetAccessibilityProvider({
     () => ({ registerPresentedSheet, unregisterPresentedSheet }),
     [registerPresentedSheet, unregisterPresentedSheet],
   );
-  const hasPresentedSheet = presentedSheetCount > 0;
+  const hasPresentedModal = presentedModalCount > 0;
 
   return (
     <BottomSheetAccessibilityContext.Provider value={contextValue}>
       <View
-        accessibilityElementsHidden={hasPresentedSheet}
-        aria-hidden={hasPresentedSheet}
+        accessibilityElementsHidden={hasPresentedModal}
+        aria-hidden={hasPresentedModal}
         className={cn("flex-1", className)}
         importantForAccessibility={
-          hasPresentedSheet ? "no-hide-descendants" : "auto"
+          hasPresentedModal ? "no-hide-descendants" : "auto"
         }
       >
         {children}
@@ -202,19 +210,36 @@ export interface BottomSheetModalRef {
   dismiss: () => void;
 }
 
-/** Core props that tune shared bottom sheet content and behavior. */
-interface BottomSheetModalBaseProps {
+/** Imperative ref exposed by an in-tree persistent bottom sheet. */
+export type BottomSheetPersistentRef = React.ElementRef<
+  typeof BottomSheetComponent
+>;
+
+/** Imperative ref exposed by the unified bottom sheet primitive. */
+export type BottomSheetRef = BottomSheetPersistentRef | BottomSheetModalRef;
+
+/** Behaviors supported by the unified bottom sheet primitive. */
+export type BottomSheetVariant = "persistent" | "nonModal" | "modal";
+
+/** Shared content props used by every bottom sheet variant. */
+interface BottomSheetContentBaseProps {
   children: React.ReactNode;
-  ref: React.Ref<BottomSheetModalRef>;
   /** Localized name describing the modal surface. */
   contentAccessibilityLabel: string;
   contentClassName?: string;
-  backgroundColor?: string;
   minHeight?: number;
+  scrollable?: boolean;
+}
+
+/** Core props that tune shared closable bottom sheet content and behavior. */
+interface BottomSheetModalBaseProps extends BottomSheetContentBaseProps {
+  ref?: React.Ref<BottomSheetModalRef>;
+  backgroundColor?: string;
   snapPoints?: (string | number)[];
   backdropOpacity?: number;
+  dismissOnBackdropPress?: boolean;
+  enablePanDownToClose?: boolean;
   onDismiss?: () => void;
-  scrollable?: boolean;
 }
 
 /** Requires localized backdrop copy exactly when a backdrop is rendered. */
@@ -252,6 +277,59 @@ type BottomSheetModalProps = BottomSheetModalBaseProps &
   BottomSheetBackdropAccessibility &
   BottomSheetHandleAccessibility;
 
+/** Props accepted by an always-visible, non-interactive sheet. */
+export type BottomSheetPersistentProps = Omit<
+  GorhomBottomSheetProps,
+  | "backdropComponent"
+  | "backgroundComponent"
+  | "children"
+  | "enableContentPanningGesture"
+  | "enableHandlePanningGesture"
+  | "enableOverDrag"
+  | "enablePanDownToClose"
+  | "handleComponent"
+  | "handleIndicatorStyle"
+> &
+  BottomSheetContentBaseProps & {
+    ref?: React.Ref<BottomSheetPersistentRef>;
+    variant: "persistent";
+  };
+
+/** Props accepted by a closable sheet that leaves the background interactive. */
+export type BottomSheetNonModalProps = Omit<
+  BottomSheetModalBaseProps,
+  "backdropOpacity" | "dismissOnBackdropPress"
+> & {
+  backdropAccessibilityHint?: never;
+  backdropAccessibilityLabel?: never;
+  handleAccessibilityHint: string;
+  handleAccessibilityLabel: string;
+  hasBackdrop?: never;
+  showHandle?: never;
+  variant: "nonModal";
+};
+
+/** Props accepted by a modal sheet with a blocking dismissible backdrop. */
+export type BottomSheetModalVariantProps = BottomSheetModalBaseProps & {
+  backdropAccessibilityHint: string;
+  backdropAccessibilityLabel: string;
+  handleAccessibilityHint?: never;
+  handleAccessibilityLabel?: never;
+  hasBackdrop?: never;
+  showHandle?: never;
+  variant: "modal";
+};
+
+/** Props accepted by either closable bottom sheet variant. */
+export type BottomSheetClosableProps =
+  | BottomSheetNonModalProps
+  | BottomSheetModalVariantProps;
+
+/** Props accepted by the unified bottom sheet primitive. */
+export type BottomSheetProps =
+  | BottomSheetPersistentProps
+  | BottomSheetClosableProps;
+
 /** Static bottom-sheet content with the shared screen gutters. */
 interface BottomSheetModalContentProps extends Pick<
   ViewProps,
@@ -271,27 +349,32 @@ interface BottomSheetModalContentProps extends Pick<
 /** Static bottom-sheet content with the shared screen gutters. */
 function BottomSheetModalContent({
   accessibilityLabel,
-  accessibilityViewIsModal = true,
+  accessibilityViewIsModal,
   accessible = false,
-  "aria-modal": ariaModal = true,
+  "aria-modal": ariaModal,
   children,
   className,
-  importantForAccessibility = "yes",
-  role = "dialog",
+  importantForAccessibility,
+  role,
   ...props
 }: BottomSheetModalContentProps) {
+  const resolvedAccessibilityViewIsModal = accessibilityViewIsModal ?? true;
+
   return (
     <BottomSheetView
       accessibilityLabel={accessibilityLabel}
-      accessibilityViewIsModal={accessibilityViewIsModal}
+      accessibilityViewIsModal={resolvedAccessibilityViewIsModal}
       accessible={accessible}
-      aria-modal={ariaModal}
+      aria-modal={ariaModal ?? resolvedAccessibilityViewIsModal}
       className={cn(
         "gap-4 bg-background px-screen pb-safe-offset-6 pt-4",
         className,
       )}
-      importantForAccessibility={importantForAccessibility}
-      role={role}
+      importantForAccessibility={
+        importantForAccessibility ??
+        (resolvedAccessibilityViewIsModal ? "yes" : "auto")
+      }
+      role={role ?? (resolvedAccessibilityViewIsModal ? "dialog" : undefined)}
       {...props}
     >
       {children}
@@ -307,29 +390,34 @@ interface BottomSheetModalScrollContentProps extends BottomSheetModalContentProp
 /** Scrollable bottom-sheet content with shared safe-area padding. */
 function BottomSheetModalScrollContent({
   accessibilityLabel,
-  accessibilityViewIsModal = true,
+  accessibilityViewIsModal,
   accessible = false,
-  "aria-modal": ariaModal = true,
+  "aria-modal": ariaModal,
   children,
   className,
   contentContainerClassName,
-  importantForAccessibility = "yes",
-  role = "dialog",
+  importantForAccessibility,
+  role,
   ...props
 }: BottomSheetModalScrollContentProps) {
+  const resolvedAccessibilityViewIsModal = accessibilityViewIsModal ?? true;
+
   return (
     <BottomSheetScrollView
       accessibilityLabel={accessibilityLabel}
-      accessibilityViewIsModal={accessibilityViewIsModal}
+      accessibilityViewIsModal={resolvedAccessibilityViewIsModal}
       accessible={accessible}
-      aria-modal={ariaModal}
+      aria-modal={ariaModal ?? resolvedAccessibilityViewIsModal}
       className={cn("bg-background", className)}
       contentContainerClassName={cn(
         "gap-4 px-screen pb-safe-offset-6 pt-4",
         contentContainerClassName,
       )}
-      importantForAccessibility={importantForAccessibility}
-      role={role}
+      importantForAccessibility={
+        importantForAccessibility ??
+        (resolvedAccessibilityViewIsModal ? "yes" : "auto")
+      }
+      role={role ?? (resolvedAccessibilityViewIsModal ? "dialog" : undefined)}
       {...props}
     >
       {children}
@@ -357,8 +445,88 @@ function BottomSheetBackground({
   );
 }
 
-/** Shared bottom sheet wrapper using the application geometry. */
-function BottomSheetModal({
+/** Shared content frame used by all three bottom sheet behaviors. */
+function BottomSheetContentFrame({
+  children,
+  contentAccessibilityLabel,
+  contentClassName,
+  isModal,
+  minHeight,
+  onAccessibilityEscape,
+  scrollable = false,
+}: BottomSheetContentBaseProps & {
+  isModal: boolean;
+  onAccessibilityEscape?: () => void;
+}) {
+  const accessibilityProps = {
+    accessibilityViewIsModal: isModal,
+    "aria-modal": isModal,
+    importantForAccessibility: isModal ? ("yes" as const) : ("auto" as const),
+    onAccessibilityEscape,
+    role: isModal ? ("dialog" as const) : undefined,
+    style: minHeight === undefined ? undefined : { minHeight },
+  };
+
+  return scrollable ? (
+    <BottomSheetModalScrollContent
+      {...accessibilityProps}
+      accessibilityLabel={contentAccessibilityLabel}
+      className={contentClassName}
+    >
+      {children}
+    </BottomSheetModalScrollContent>
+  ) : (
+    <BottomSheetModalContent
+      {...accessibilityProps}
+      accessibilityLabel={contentAccessibilityLabel}
+      className={contentClassName}
+    >
+      {children}
+    </BottomSheetModalContent>
+  );
+}
+
+/** Renders an always-visible sheet inside the current screen hierarchy. */
+function PersistentBottomSheet({
+  backgroundStyle,
+  children,
+  contentAccessibilityLabel,
+  contentClassName,
+  minHeight,
+  ref,
+  scrollable,
+  style,
+  ...props
+}: Omit<BottomSheetPersistentProps, "variant">) {
+  return (
+    <BottomSheetComponent
+      ref={ref}
+      {...props}
+      accessible={false}
+      backgroundComponent={BottomSheetBackground}
+      backgroundStyle={backgroundStyle}
+      enableContentPanningGesture={false}
+      enableHandlePanningGesture={false}
+      enableOverDrag={false}
+      enablePanDownToClose={false}
+      handleComponent={EmptyHandle}
+      style={style}
+    >
+      <BottomSheetContentFrame
+        contentAccessibilityLabel={contentAccessibilityLabel}
+        contentClassName={contentClassName}
+        isModal={false}
+        minHeight={minHeight}
+        scrollable={scrollable}
+      >
+        {children}
+      </BottomSheetContentFrame>
+    </BottomSheetComponent>
+  );
+}
+
+/** Shared closable bottom sheet wrapper using the application geometry. */
+function ClosableBottomSheet({
   backdropAccessibilityHint,
   backdropAccessibilityLabel,
   backdropOpacity = 0.6,
@@ -366,16 +534,19 @@ function BottomSheetModal({
   children,
   contentClassName,
   contentAccessibilityLabel,
+  dismissOnBackdropPress = true,
+  enablePanDownToClose,
   hasBackdrop = false,
   handleAccessibilityHint,
   handleAccessibilityLabel,
+  isModal,
   minHeight = 300,
   onDismiss,
   ref,
   scrollable = false,
   showHandle = false,
   snapPoints,
-}: BottomSheetModalProps) {
+}: BottomSheetModalProps & { isModal: boolean }) {
   const theme = THEME[useTheme().dark ? "dark" : "light"];
   const { registerPresentedSheet, unregisterPresentedSheet } =
     useBottomSheetAccessibility();
@@ -396,7 +567,7 @@ function BottomSheetModal({
       return;
     }
 
-    registerPresentedSheet(sheetId, dismiss);
+    registerPresentedSheet(sheetId, dismiss, isModal);
 
     try {
       modal.present();
@@ -404,7 +575,13 @@ function BottomSheetModal({
       unregisterPresentedSheet(sheetId);
       throw error;
     }
-  }, [dismiss, registerPresentedSheet, sheetId, unregisterPresentedSheet]);
+  }, [
+    dismiss,
+    isModal,
+    registerPresentedSheet,
+    sheetId,
+    unregisterPresentedSheet,
+  ]);
 
   React.useImperativeHandle(
     ref,
@@ -432,10 +609,15 @@ function BottomSheetModal({
         appearsOnIndex={0}
         disappearsOnIndex={-1}
         opacity={backdropOpacity}
-        pressBehavior="close"
+        pressBehavior={dismissOnBackdropPress ? "close" : "none"}
       />
     ),
-    [backdropAccessibilityHint, backdropAccessibilityLabel, backdropOpacity],
+    [
+      backdropAccessibilityHint,
+      backdropAccessibilityLabel,
+      backdropOpacity,
+      dismissOnBackdropPress,
+    ],
   );
 
   const renderHandle = React.useCallback(
@@ -468,6 +650,7 @@ function BottomSheetModal({
       backgroundComponent={BottomSheetBackground}
       backgroundStyle={{ backgroundColor: backgroundColor ?? theme.background }}
       enableDismissOnClose
+      enablePanDownToClose={enablePanDownToClose}
       handleComponent={showHandle ? renderHandle : EmptyHandle}
       handleIndicatorStyle={{
         backgroundColor: theme.mutedForeground,
@@ -478,34 +661,89 @@ function BottomSheetModal({
       snapPoints={snapPoints}
       stackBehavior="replace"
     >
-      {scrollable ? (
-        <BottomSheetModalScrollContent
-          accessibilityLabel={contentAccessibilityLabel}
-          className={contentClassName}
-          onAccessibilityEscape={handleAccessibilityEscape}
-          style={{ minHeight }}
-        >
-          {children}
-        </BottomSheetModalScrollContent>
-      ) : (
-        <BottomSheetModalContent
-          accessibilityLabel={contentAccessibilityLabel}
-          className={contentClassName}
-          onAccessibilityEscape={handleAccessibilityEscape}
-          style={{ minHeight }}
-        >
-          {children}
-        </BottomSheetModalContent>
-      )}
+      <BottomSheetContentFrame
+        contentAccessibilityLabel={contentAccessibilityLabel}
+        contentClassName={contentClassName}
+        isModal={isModal}
+        minHeight={minHeight}
+        onAccessibilityEscape={handleAccessibilityEscape}
+        scrollable={scrollable}
+      >
+        {children}
+      </BottomSheetContentFrame>
     </BottomSheetModalComponent>
   );
 }
 
+/** Unified bottom sheet primitive with Fifteen-aligned behavioral variants. */
+function BottomSheet(props: BottomSheetProps) {
+  if (props.variant === "persistent") {
+    const { variant: _variant, ...persistentProps } = props;
+
+    return <PersistentBottomSheet {...persistentProps} />;
+  }
+
+  if (props.variant === "nonModal") {
+    const { enablePanDownToClose, variant: _variant, ...closableProps } = props;
+
+    return (
+      <ClosableBottomSheet
+        {...closableProps}
+        enablePanDownToClose={enablePanDownToClose ?? true}
+        hasBackdrop={false}
+        isModal={false}
+        showHandle
+      />
+    );
+  }
+
+  const {
+    dismissOnBackdropPress,
+    enablePanDownToClose,
+    variant: _variant,
+    ...closableProps
+  } = props;
+
+  return (
+    <ClosableBottomSheet
+      {...closableProps}
+      dismissOnBackdropPress={dismissOnBackdropPress ?? true}
+      enablePanDownToClose={enablePanDownToClose ?? false}
+      hasBackdrop
+      isModal
+      showHandle={false}
+    />
+  );
+}
+
+/** Backward-compatible modal primitive for existing Starter call sites. */
+function BottomSheetModal(props: BottomSheetModalProps) {
+  return <ClosableBottomSheet {...props} isModal />;
+}
+
+/** Canonical content export shared by every bottom sheet variant. */
+const BottomSheetContent = BottomSheetModalContent;
+/** Canonical scroll content export shared by every bottom sheet variant. */
+const BottomSheetScrollContent = BottomSheetModalScrollContent;
+/** Props accepted by canonical static bottom sheet content. */
+type BottomSheetContentProps = BottomSheetModalContentProps;
+/** Props accepted by canonical scrollable bottom sheet content. */
+type BottomSheetScrollContentProps = BottomSheetModalScrollContentProps;
+
 export {
+  BottomSheet,
+  BottomSheetContent,
+  BottomSheetScrollContent,
   BottomSheetModal,
   BottomSheetModalContent,
   BottomSheetModalProvider,
   BottomSheetModalScrollContent,
 };
-export type { BottomSheetModalProps };
+export type {
+  BottomSheetContentProps,
+  BottomSheetModalContentProps,
+  BottomSheetModalProps,
+  BottomSheetModalScrollContentProps,
+  BottomSheetScrollContentProps,
+};
 export default BottomSheetModal;

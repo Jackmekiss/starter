@@ -1,6 +1,6 @@
 # Frozen Blueprint: Accessible React Native Presentation
 
-> Blueprint version: `1.3.0`
+> Blueprint version: `1.4.0`
 
 Use this reference while implementing or auditing routes, components, forms, overlays, dynamic feedback, images, or custom gestures for VoiceOver, TalkBack, React Native Web, Appium, and XCUITest. Accessibility is part of each owning component; it is not a separate visual system.
 
@@ -296,7 +296,7 @@ Hide the background sibling while the overlay is open:
 </View>
 ```
 
-Starter's local `BottomSheetModalProvider` composes Gorhom's provider first and a private accessibility guard second. This fixed order makes the guarded application `View` a native sibling of Gorhom's `PortalHost`; never invert or reconstruct the pair at call sites. Localization and theme providers are ancestors of the local provider so stored portal nodes receive those contexts. The guard tracks presented sheets in order, wraps the non-portaled sibling with `aria-hidden`, `accessibilityElementsHidden`, and `importantForAccessibility="no-hide-descendants"`, and restores traversal only after `onDismiss`. When the first sheet registers, it synchronously adds one Android `BackHandler` after the already-mounted router so the top sheet gets first refusal; it removes that listener when the final sheet unregisters. Every `BottomSheetModal` registers synchronously before `present()`, unregisters on dismissal/unmount, and uses `stackBehavior="replace"` so a minimized prior portal cannot remain traversable. Its custom decorative background replaces Gorhom's hard-coded English adjustable background semantics. Hardware back, the dismissing backdrop, the imperative `dismiss()`, and `onAccessibilityEscape` all converge on Gorhom dismissal before the guard is released; do not create parallel visibility state in feature code.
+Starter's local `BottomSheetModalProvider` composes Gorhom's provider first and a private accessibility guard second. This fixed order makes the guarded application `View` a native sibling of Gorhom's `PortalHost`; never invert or reconstruct the pair at call sites. Localization and theme providers are ancestors of the local provider so stored portal nodes receive those contexts. `BottomSheet` has three semantic behaviors: `persistent` stays in the screen hierarchy without modal semantics or gestures; `nonModal` is portaled and closable but leaves background traversal available; `modal` hides the non-portaled sibling with `aria-hidden`, `accessibilityElementsHidden`, and `importantForAccessibility="no-hide-descendants"` until `onDismiss`. Closable variants register synchronously before `present()`, share one ordered Android `BackHandler` so the top sheet gets first refusal, unregister on dismissal/unmount, and use `stackBehavior="replace"` so a minimized prior portal cannot remain traversable. The custom decorative background replaces Gorhom's hard-coded English adjustable background semantics. Modal backdrop, hardware back, imperative `dismiss()`, and `onAccessibilityEscape` all converge on Gorhom dismissal before modal isolation is released; do not create parallel visibility state in feature code. The backward-compatible `BottomSheetModal` export retains modal isolation.
 
 Also verify:
 

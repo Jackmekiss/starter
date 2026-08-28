@@ -1,15 +1,14 @@
-import { createRef, useRef } from "react";
+import { useRef } from "react";
 import { View } from "react-native";
 
 import {
-  BottomSheetModal,
+  BottomSheet,
   type BottomSheetModalRef,
 } from "@/components/ui/BottomSheetModal";
 import { Button } from "@/components/ui/Button";
 import { Text } from "@/components/ui/Text";
 
 import type { Meta, StoryObj } from "@storybook/react-native";
-import type { ComponentProps } from "react";
 
 const scrollItems = [
   "Account details",
@@ -23,73 +22,129 @@ const scrollItems = [
 ] as const;
 
 const meta = {
-  title: "UI/BottomSheetModal",
-  component: BottomSheetModal,
+  title: "UI/BottomSheet",
+  component: BottomSheet,
   args: {
-    backdropAccessibilityHint: "Closes the bottom sheet",
-    backdropAccessibilityLabel: "Close bottom sheet",
     children: null,
-    contentAccessibilityLabel: "Bottom sheet content",
-    hasBackdrop: true,
-    handleAccessibilityHint: "Swipe to resize the bottom sheet",
-    handleAccessibilityLabel: "Bottom sheet handle",
-    ref: createRef<BottomSheetModalRef>(),
-    showHandle: true,
+    contentAccessibilityLabel: "Persistent bottom sheet content",
     snapPoints: ["40%"],
+    variant: "persistent",
   },
-  render: BottomSheetModalStory,
-} satisfies Meta<typeof BottomSheetModal>;
+  render: PersistentBottomSheetStory,
+} satisfies Meta<typeof BottomSheet>;
 
 export default meta;
 
-/** Story type inferred from the bottom sheet metadata. */
+/** Story type inferred from the unified bottom sheet metadata. */
 type Story = StoryObj<typeof meta>;
 
-/** Presentable bottom sheet with themed content. */
-export const Basic: Story = {};
+/** Always-visible sheet without dismissal gestures or a handle. */
+export const Persistent: Story = {};
 
-/** Scrollable bottom sheet with longer content. */
-export const Scrollable: Story = {
-  args: {
-    scrollable: true,
-    snapPoints: ["65%"],
-  },
-  render: BottomSheetScrollableStory,
+/** Closable sheet that leaves the background interactive. */
+export const NonModal: Story = {
+  render: NonModalBottomSheetStory,
 };
 
-/** Renders a button that presents the shared bottom sheet. */
-function BottomSheetModalStory(
-  bottomSheetProps: ComponentProps<typeof BottomSheetModal>,
-) {
+/** Blocking modal sheet with an accessible dismissing backdrop. */
+export const Modal: Story = {
+  render: ModalBottomSheetStory,
+};
+
+/** Scrollable content inside a non-modal sheet. */
+export const Scrollable: Story = {
+  render: ScrollableBottomSheetStory,
+};
+
+/** Renders the in-tree persistent behavior. */
+function PersistentBottomSheetStory() {
+  return (
+    <View className="flex-1 gap-6">
+      <Text variant="muted">
+        The controls behind this sheet remain interactive.
+      </Text>
+      <BottomSheet
+        contentAccessibilityLabel="Persistent bottom sheet content"
+        enableDynamicSizing={false}
+        index={0}
+        snapPoints={["40%"]}
+        variant="persistent"
+      >
+        <View className="gap-2">
+          <Text variant="h3">Persistent</Text>
+          <Text>This sheet cannot be dragged, lowered, or dismissed.</Text>
+        </View>
+      </BottomSheet>
+    </View>
+  );
+}
+
+/** Renders the closable non-modal behavior. */
+function NonModalBottomSheetStory() {
   const bottomSheetRef = useRef<BottomSheetModalRef>(null);
 
-  /** Opens the bottom sheet from the story canvas. */
+  /** Opens the non-modal sheet from the story canvas. */
   function handleOpenPress() {
     bottomSheetRef.current?.present();
   }
 
   return (
-    <View className="flex-1 items-start">
+    <View className="flex-1 items-start gap-6">
       <Button onPress={handleOpenPress}>
-        <Text>Open bottom sheet</Text>
+        <Text>Open non-modal sheet</Text>
       </Button>
-      <BottomSheetModal {...bottomSheetProps} ref={bottomSheetRef}>
+      <BottomSheet
+        ref={bottomSheetRef}
+        contentAccessibilityLabel="Non-modal bottom sheet content"
+        handleAccessibilityHint="Swipe to resize or dismiss the bottom sheet"
+        handleAccessibilityLabel="Bottom sheet handle"
+        snapPoints={["40%"]}
+        variant="nonModal"
+      >
         <View className="gap-2">
-          <Text variant="h3">Bottom sheet</Text>
-          <Text variant="muted">
-            Shared presentation providers are available without application
-            state or runtime wiring.
+          <Text variant="h3">Non-modal</Text>
+          <Text>
+            The background remains interactive while this sheet is open.
           </Text>
         </View>
-      </BottomSheetModal>
+      </BottomSheet>
     </View>
   );
 }
 
-/** Renders the scrollable bottom sheet example. */
-function BottomSheetScrollableStory(
-  bottomSheetProps: ComponentProps<typeof BottomSheetModal>,
-) {
+/** Renders the blocking modal behavior. */
+function ModalBottomSheetStory() {
+  const bottomSheetRef = useRef<BottomSheetModalRef>(null);
+
+  /** Opens the modal sheet from the story canvas. */
+  function handleOpenPress() {
+    bottomSheetRef.current?.present();
+  }
+
+  return (
+    <View className="flex-1 items-start gap-6">
+      <Button onPress={handleOpenPress}>
+        <Text>Open modal sheet</Text>
+      </Button>
+      <BottomSheet
+        ref={bottomSheetRef}
+        backdropAccessibilityHint="Closes the bottom sheet"
+        backdropAccessibilityLabel="Close bottom sheet"
+        contentAccessibilityLabel="Modal bottom sheet content"
+        snapPoints={["40%"]}
+        variant="modal"
+      >
+        <View className="gap-2">
+          <Text variant="h3">Modal</Text>
+          <Text>The backdrop blocks interaction with the background.</Text>
+        </View>
+      </BottomSheet>
+    </View>
+  );
+}
+
+/** Renders longer content through the shared scroll container. */
+function ScrollableBottomSheetStory() {
   const bottomSheetRef = useRef<BottomSheetModalRef>(null);
 
   /** Opens the scrollable sheet from the story canvas. */
@@ -98,11 +153,19 @@ function BottomSheetScrollableStory(
   }
 
   return (
-    <View className="flex-1 items-start">
+    <View className="flex-1 items-start gap-6">
       <Button onPress={handleOpenPress}>
         <Text>Open scrollable sheet</Text>
       </Button>
-      <BottomSheetModal {...bottomSheetProps} ref={bottomSheetRef}>
+      <BottomSheet
+        ref={bottomSheetRef}
+        contentAccessibilityLabel="Scrollable bottom sheet content"
+        handleAccessibilityHint="Swipe to resize or dismiss the bottom sheet"
+        handleAccessibilityLabel="Bottom sheet handle"
+        scrollable
+        snapPoints={["65%"]}
+        variant="nonModal"
+      >
         <Text variant="h3">Settings</Text>
         {scrollItems.map((item) => (
           <View className="border-border gap-1 border-b pb-4" key={item}>
@@ -112,7 +175,7 @@ function BottomSheetScrollableStory(
             </Text>
           </View>
         ))}
-      </BottomSheetModal>
+      </BottomSheet>
     </View>
   );
 }
