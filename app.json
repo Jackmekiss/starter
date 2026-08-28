@@ -59,7 +59,64 @@
             "./public/fonts/Poppins-Bold.ttf",
             "./public/fonts/Poppins-ExtraBold.ttf",
             "./public/fonts/Poppins-Black.ttf"
-          ]
+          ],
+          "android": {
+            "fonts": [
+              {
+                "fontFamily": "ES Build",
+                "fontDefinitions": [
+                  {
+                    "path": "./public/fonts/ES-Build-Regular.ttf",
+                    "weight": 400
+                  },
+                  {
+                    "path": "./public/fonts/ES-Build-RegularItalic.ttf",
+                    "weight": 400,
+                    "style": "italic"
+                  },
+                  {
+                    "path": "./public/fonts/ES-Build-Medium.ttf",
+                    "weight": 500
+                  },
+                  {
+                    "path": "./public/fonts/ES-Build-MediumItalic.ttf",
+                    "weight": 500,
+                    "style": "italic"
+                  },
+                  {
+                    "path": "./public/fonts/ES-Build-SemiBold.ttf",
+                    "weight": 600
+                  },
+                  {
+                    "path": "./public/fonts/ES-Build-SemiBoldItalic.ttf",
+                    "weight": 600,
+                    "style": "italic"
+                  },
+                  {
+                    "path": "./public/fonts/ES-Build-Bold.ttf",
+                    "weight": 800
+                  },
+                  {
+                    "path": "./public/fonts/ES-Build-BoldItalic.ttf",
+                    "weight": 800,
+                    "style": "italic"
+                  }
+                ]
+              }
+            ]
+          },
+          "ios": {
+            "fonts": [
+              "./public/fonts/ES-Build-Regular.ttf",
+              "./public/fonts/ES-Build-RegularItalic.ttf",
+              "./public/fonts/ES-Build-Medium.ttf",
+              "./public/fonts/ES-Build-MediumItalic.ttf",
+              "./public/fonts/ES-Build-SemiBold.ttf",
+              "./public/fonts/ES-Build-SemiBoldItalic.ttf",
+              "./public/fonts/ES-Build-Bold.ttf",
+              "./public/fonts/ES-Build-BoldItalic.ttf"
+            ]
+          }
         }
       ],
       "expo-image",

@@ -69,6 +69,70 @@
   src: url("/fonts/Poppins-Black.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "ES Build";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/ES-Build-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "ES Build";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/ES-Build-RegularItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "ES Build";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/ES-Build-Medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "ES Build";
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/ES-Build-MediumItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "ES Build";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/ES-Build-SemiBold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "ES Build";
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/ES-Build-SemiBoldItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "ES Build";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("/fonts/ES-Build-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "ES Build";
+  font-style: italic;
+  font-weight: 800;
+  font-display: swap;
+  src: url("/fonts/ES-Build-BoldItalic.ttf") format("truetype");
+}
+
 @theme inline {
   /* Gluestack Menu token aliases mapped onto the application theme. */
   --color-background-0: var(--popover);
@@ -150,7 +214,7 @@
   --font-body-bold: "Poppins-Bold";
   --font-body-extrabold: "Poppins-ExtraBold";
   --font-body-black: "Poppins-Black";
-  --font-heading: "Poppins-ExtraBold";
+  --font-heading: "ES Build";
   --leading-heading: 1;
   --tracking-heading: 0.0125rem;
   --radius-base: var(--radius);
