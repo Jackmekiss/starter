@@ -44,6 +44,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "expo": "57.0.14",
+    "expo-build-properties": "~57.0.15",
     "expo-camera": "~57.0.3",
     "expo-constants": "57.0.12",
     "expo-dev-client": "57.0.13",
